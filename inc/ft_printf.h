@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/05 21:06:16 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/06 21:43:20 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,27 @@ typedef enum	Type
 
 typedef struct		s_parse
 {
-	char 			*type;
-	char 			length;
+	char 			type;
+	int				is_signed;
+	int				is_long;
+	int				is_longlong;
+	int				is_short;
+	int				is__int64;		//or unsigned __int64
+	int				is_size_t;			//or analog unsigned
+	int				is_intmax_t;		//or uintmax_t
+	int				is_ptrdiff_t;	//or analog unsigned
 	char			flag;
 	int				width;
+	int				width_param;
 	int				precision;
+	int				precision_param;
+	/*
+	Модификатор точности
+	указывает на минимальное количество символов, которое должно появиться при обработке типов d, i, o, u, x, X;
+	указывает на минимальное количество символов, которое должно появиться после десятичной запятой (точки) при обработке типов a, A, e, E, f, F;
+	максимальное количество значащих символов для типов g и G;
+	максимальное число символов, которые будут выведены для типа s;
+	*/
 	int				align;
 	char			*next;
 }					t_parse;
@@ -93,7 +109,7 @@ typedef struct		s_parse
 
 typedef struct		s_lst
 {
-	char			*type;
+	char			type;
 	int 			mod;
 	char			*s;
 	char			c;
@@ -103,7 +119,7 @@ typedef struct		s_lst
 	struct s_lst	*prev;
 }					t_node;
 
-int		ft_printf(const char * restrict format, ...);
+int		ft_printf(const char *restrict s, ...);
 int		ft_sum(int num, ...);
 t_parse	*parse_string(char *s, t_parse *params);
 
