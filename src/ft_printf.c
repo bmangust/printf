@@ -100,7 +100,7 @@ t_parse	*parse_string(char *tmp, t_parse *params)
 
 	stop = 0;
 	types = "%diufFeEgGxXoscpaAn";
-	lengths = "hlhhllLzjt";
+	lengths = "hlLzjt";
 	flags = "-+ 0#";
 	while (!stop && *tmp)
 	{
@@ -109,16 +109,10 @@ t_parse	*parse_string(char *tmp, t_parse *params)
 		else if ((params->width = ft_atoi(tmp)))
 			tmp += int_length(params->width) - 1;	//not sure, check
 		else if (ft_strchr(lengths, *tmp))
-		{
-			params->length = ft_strnew(2);
-			if (ft_strchr(flags, *(tmp + 1)))
-			{
-				ft_strncpy(params->length, tmp, 2);
-				++tmp;
-			}
+			if (ft_strchr(flags, *(tmp + 1)) == *tmp)
+				params->length = *tmp - 32;	//if "ll" or "hh" - write L or H
 			else
-				params->length[0] = *tmp;
-		}
+				params->length = *tmp;
 		else if (ft_strchr(types, *tmp))
 		{
 			write_type(params->type, params->length,*tmp);
@@ -146,8 +140,8 @@ int		ft_printf(const char * restrict s, ... )
 		{
 			tmp++;
 			parse_string(tmp, params);
-			print_arg();
-			//free params->width, params->type and params
+			print_arg(params, valist);
+			//free params->type and params
 
 			/*
 			if (*tmp == 'c')

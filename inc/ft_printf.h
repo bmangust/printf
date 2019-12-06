@@ -18,6 +18,18 @@
 # include <stdarg.h>
 # include "libft.h"
 
+typedef enum	Type
+{
+				CHAR,
+				INT,
+				FLOAT,
+				DOUBLE,
+				CHAR_P,
+				INT_P,
+				FLOAT_P,
+				DOUBLE_P,
+}				e_type;
+
 /*
 **	type:
 **	a - 0	hex in form 0xh.hhhhp+d (только C99)
