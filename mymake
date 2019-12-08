@@ -1,0 +1,5 @@
+all: make
+	gcc -Wall -Wextra -Werror main.c -L. -lftprintf -I ./inc
+
+clean:
+	rm ./a.out
