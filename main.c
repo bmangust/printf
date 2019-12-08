@@ -39,7 +39,7 @@
 int main(void)
 {
     // printf("%d", 1);
-    ft_printf("%c %s world No%d --- %c\n", 'r', "hi", 4, 'v');
+    ft_printf("\n->my string:%5d<-\n", 4);
     // ft_putchar(97);
 	// print_sum(5, 1,2,3,4,5);
     return (0);

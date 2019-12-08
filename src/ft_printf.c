@@ -87,6 +87,8 @@ int			int_length(int n)
 	int length;
 
 	length = 0;
+	if (n < 0)
+		++length;
 	while (n)
 	{
 		n /= 10;
@@ -95,18 +97,64 @@ int			int_length(int n)
 	return (length);
 }
 
+void	print_int(va_list valist, t_parse *params)
+{
+	int n;
+	int len;
+	int i;
+
+	n = va_arg(valist, int);
+	len = int_length(n);
+	i = ft_absint(params->width);
+	// printf("\nlength of n: %d\n", len);
+	if (params->width_param)
+		len = va_arg(valist, int);
+	if (params->width < 0)
+	{
+		ft_putnbr(n);
+		while (i-- > len)
+			ft_putchar(' ');
+
+	}
+
+	if (params->width && len < ft_absint(params->width))
+	{
+		while (i-- > len)
+			//need to add '0' or ' ' filler selector here
+			ft_putchar(' ');
+	}
+	ft_putnbr(n);
+}
+
+void	print_float(va_list valist, t_parse *params)
+{
+	(void) valist;
+	(void) params;
+}
+
+/*
+**	prints one argument
+*/
+
 void	print_arg(t_parse *params, va_list valist)
 {
-	char	*types;
-
-	types = "%diufFeEgGxXoscpaAn";
+	//types = "%diufFeEgGxXoscpaAn";
 	if (ft_strchr("diuxX", params->type))
-		ft_putnbr(va_arg(valist, int));
+		print_int(valist, params);
+		// ft_putnbr(va_arg(valist, int));
 	else if ('c' == params->type)
 		ft_putchar((char)va_arg(valist, int));
 	else if ('s' == params->type)
 		ft_putstr(va_arg(valist, char*));
+	else if ('%' == params->type)
+		ft_putchar('%');
+	else if (ft_strchr("fFgG", params->type))
+		print_float(valist, params);
 }
+
+/*
+**	checks size of a type, uses flags in params node
+*/
 
 void	check_size(t_parse *params, char *tmp)
 {
@@ -137,6 +185,11 @@ void	check_size(t_parse *params, char *tmp)
 		params->is_ptrdiff_t = 1;
 }
 
+/*
+**	parses string till type indetifier,
+**	returs list node with all parameters and pointer to next symbol
+*/
+
 t_parse	*parse_string(char *tmp, t_parse *params)
 {
 	int		stop;
@@ -144,10 +197,14 @@ t_parse	*parse_string(char *tmp, t_parse *params)
 	stop = 0;
 	while (!stop && *tmp)
 	{
+		// printf("\n==parse stinrg==\nstart: %c\n", tmp[0]);
 		if (ft_strchr("-+ 0#", *tmp))				//flag
 			params->flag = *tmp;
-		else if ((params->width = ft_atoi(tmp)))	//width
+		else if (ft_atoi(tmp))	//width
+		{
+			params->width = ft_atoi(tmp);
 			tmp += int_length(params->width) - 1;	//not sure, check
+		}
 		else if (*tmp == '*')
 			params->width_param = 1;				//add parameter here
 		else if (*tmp == '.')						//precision
@@ -166,6 +223,7 @@ t_parse	*parse_string(char *tmp, t_parse *params)
 			stop = 1;
 			++tmp;
 		}
+		// printf("\n=params=\nwidth: %d\nflag: %c\n", params->width, params->flag);
 		++tmp;
 	}
 	params->next = tmp;
@@ -189,6 +247,9 @@ int		ft_printf(const char *restrict s, ...)
 			tmp++;
 			params = new_param();
 			parse_string(tmp, params);
+			tmp = params->next;
+			// printf("\nparams:\ntype: %c\nwidth: %d\nnext: %s\n",
+			// 		params->type, params->width, params->next);
 			print_arg(params, valist);
 			del_param(params);
 		}
