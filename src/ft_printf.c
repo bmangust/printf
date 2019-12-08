@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/06 21:43:32 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/08 21:27:58 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,29 +101,24 @@ void	print_int(va_list valist, t_parse *params)
 {
 	int n;
 	int len;
-	int i;
 
 	n = va_arg(valist, int);
 	len = int_length(n);
-	i = ft_absint(params->width);
 	// printf("\nlength of n: %d\n", len);
 	if (params->width_param)
 		len = va_arg(valist, int);
-	if (params->width < 0)
+	if (params->flag == '-')
 	{
 		ft_putnbr(n);
-		while (i-- > len)
+		while ((params->width)-- > len)
 			ft_putchar(' ');
-
 	}
-
-	if (params->width && len < ft_absint(params->width))
+	else
 	{
-		while (i-- > len)
-			//need to add '0' or ' ' filler selector here
-			ft_putchar(' ');
+		while ((params->width)-- > len)
+			ft_putchar(' ');				//need to add '0' or ' ' filler selector here
+		ft_putnbr(n);
 	}
-	ft_putnbr(n);
 }
 
 void	print_float(va_list valist, t_parse *params)
@@ -220,13 +215,12 @@ t_parse	*parse_string(char *tmp, t_parse *params)
 		else if (ft_strchr("%diufFeEgGxXoscpaAn", *tmp))		//type
 		{
 			params->type = *tmp;
+			params->next = tmp;
 			stop = 1;
-			++tmp;
 		}
 		// printf("\n=params=\nwidth: %d\nflag: %c\n", params->width, params->flag);
 		++tmp;
 	}
-	params->next = tmp;
 	return (params);
 }
 
