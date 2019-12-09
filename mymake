@@ -1,5 +1,35 @@
-all: make
-	gcc -Wall -Wextra -Werror main.c -L. -lftprintf -I ./inc
+
+.PHONY: all clean fclean re
+
+NAME = print
+
+CC = gcc
+
+FLAGS = -Wall -Wextra -Werror
+
+SRC = main.c
+
+OBJ = $(SRC:.c=.o)
+
+LIB = -L. -lftprintf
+
+INC = -I ./inc
+
+MAKE = mymake
+
+all: $(OBJ)
+	$(CC) $(FLAGS) $(OBJ) $(LIB) $(INC) -o $(SRC)
+
+$(OBJ): lib
+	$(CC) $(FLAGS) -o $@ -c $(SRC) $(LIB) $(INC)
+
+lib:
+	make
 
 clean:
-	rm ./a.out
+	rm $(OBJ)
+
+fclean: clean $(MAKE)
+	rm $(NAME)
+
+re: fclean $(MAKE) all $(MAKE)
