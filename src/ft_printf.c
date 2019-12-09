@@ -44,7 +44,7 @@ t_parse		*new_param(void)
 	new->is_size_t = 0;
 	new->is_intmax_t = 0;
 	new->is_ptrdiff_t = 0;
-	new->flag = 0;
+	new->flags = NULL;
 	new->width = 0;
 	new->width_param = 0;
 	new->precision = 0;
@@ -97,27 +97,55 @@ int			int_length(int n)
 	return (length);
 }
 
+//void	select_flag_int(va_list valist, t_parse *params)
+//{
+//	char *f;
+//
+//	params->flags = ft_strnew(5);
+//	f = params->flags;
+//	while (ft_strchr("-+ 0#", *tmp))
+//	{
+//		*f = *tmp;
+//		f++;
+//		tmp++;
+//	}
+//}
+
+void	check_plus_flag_and_print(t_parse *params, int n, int len)
+{
+	if (params->flags && ft_strchr(params->flags, '+') && n >= 0)
+	{
+		ft_putchar('+');
+		ft_putnbr(n);
+		params->width -= (len + 1);
+		return ;
+	}
+	if (!params->flags)
+		ft_putchar(' ');
+	ft_putnbr(n);
+	params->width -= len;
+}
+
 void	print_int(va_list valist, t_parse *params)
 {
-	int n;
-	int len;
+	int		n;
+	int		len;
 
 	n = va_arg(valist, int);
 	len = int_length(n);
-	// printf("\nlength of n: %d\n", len);
 	if (params->width_param)
 		len = va_arg(valist, int);
-	if (params->flag == '-')
+	if (params->flags && ft_strchr(params->flags, '-'))
 	{
-		ft_putnbr(n);
-		while ((params->width)-- > len)
+		check_plus_flag_and_print(params, n, len);
+		while ((params->width)-- > 0)
 			ft_putchar(' ');
 	}
 	else
 	{
-		while ((params->width)-- > len)
-			ft_putchar(' ');				//need to add '0' or ' ' filler selector here
-		ft_putnbr(n);
+		while (--(params->width) > len)
+			ft_putchar(' ');			//need to add '0' or ' ' filler selector here
+		check_plus_flag_and_print(params, n, len);
 	}
 }
 
@@ -181,11 +209,35 @@ void	check_size(t_parse *params, char *tmp)
 }
 
 /*
+**	complex if check needs in this situation:
+**	printf(">%0+0+0d<", 4); where '0+0+' - flags, 0 - width
+*/
+
+char	*read_flags(char *tmp, t_parse *params)
+{
+	char *f;
+
+	params->flags = ft_strnew(5);
+	f = params->flags;
+	while (ft_strchr("-+ 0#", *tmp))
+	{
+		if ((*(ft_strchr("-+ 0#", *tmp)) == '0') &&
+			(ft_strchr("-+ 0#", *(tmp + 1)) == NULL) &&
+			(ft_strchr(params->flags, '0') != NULL))
+			return (--tmp);
+		*f = *tmp;
+		f++;
+		tmp++;
+	}
+	return (--tmp);
+}
+
+/*
 **	parses string till type indetifier,
 **	returs list node with all parameters and pointer to next symbol
 */
 
-t_parse	*parse_string(char *tmp, t_parse *params)
+t_parse	*parse_string(char *tmp, t_parse *params, va_list valist)
 {
 	int		stop;
 
@@ -194,14 +246,14 @@ t_parse	*parse_string(char *tmp, t_parse *params)
 	{
 		// printf("\n==parse stinrg==\nstart: %c\n", tmp[0]);
 		if (ft_strchr("-+ 0#", *tmp))				//flag
-			params->flag = *tmp;
+			tmp = read_flags(tmp, params);
 		else if (ft_atoi(tmp))	//width
 		{
 			params->width = ft_atoi(tmp);
 			tmp += int_length(params->width) - 1;	//not sure, check
 		}
 		else if (*tmp == '*')
-			params->width_param = 1;				//add parameter here
+			params->width = va_arg(valist, int);				//add parameter here
 		else if (*tmp == '.')						//precision
 		{
 			params->precision = ft_atoi(++tmp);
@@ -218,7 +270,7 @@ t_parse	*parse_string(char *tmp, t_parse *params)
 			params->next = tmp;
 			stop = 1;
 		}
-		// printf("\n=params=\nwidth: %d\nflag: %c\n", params->width, params->flag);
+		// printf("\n=params=\nwidth: %d\nflag: %c\n", params->width, params->flags);
 		++tmp;
 	}
 	return (params);
@@ -240,7 +292,7 @@ int		ft_printf(const char *restrict s, ...)
 		{
 			tmp++;
 			params = new_param();
-			parse_string(tmp, params);
+			parse_string(tmp, params, valist);
 			tmp = params->next;
 			// printf("\nparams:\ntype: %c\nwidth: %d\nnext: %s\n",
 			// 		params->type, params->width, params->next);

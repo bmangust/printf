@@ -69,7 +69,7 @@ typedef struct		s_parse
 	int				is_size_t;			//or analog unsigned
 	int				is_intmax_t;		//or uintmax_t
 	int				is_ptrdiff_t;	//or analog unsigned
-	char			flag;
+	char			*flags;
 	int				width;
 	int				width_param;
 	int				precision;
@@ -121,6 +121,6 @@ typedef struct		s_lst
 
 int		ft_printf(const char *restrict s, ...);
 int		ft_sum(int num, ...);
-t_parse	*parse_string(char *s, t_parse *params);
+t_parse	*parse_string(char *s, t_parse *params, va_list valist);
 
 #endif
