@@ -129,10 +129,79 @@ void	print_char(va_list valist, t_parse *params)
 	}
 }
 
-void		print_str(va_list valist, t_parse *params)
+void	print_str(va_list valist, t_parse *params)
 {
-	(void) valist;
-	(void) params;
+	int		len_str;
+	int		i;
+	char	*temp;
+
+	temp = va_arg(valist, char*);
+	len_str = ft_strlen(temp);
+	i = 0;
+//
+//	printf("FLAGS: %s\n", params->flags);
+//	printf("WIDTH: %d\n", params->width);
+//	printf("PRECISION: %d\n", params->precision);
+//	printf("LEN STR %d", len_str);
+
+
+	if ((params->width < len_str) && (params->precision == 0))
+	{
+		while (i < len_str)
+		{
+			ft_putchar(temp[i++]);
+			params->printed++;
+		}
+	}
+	//need to add check into ft_strchr(str, c) and remove it here
+	else if (params->flags && ft_strchr(params->flags, '-'))
+	{
+		if (params->precision != 0)
+		{
+			while ((params->precision)-- > 0)
+			{
+				ft_putchar(temp[i++]);
+				params->printed++;
+			}
+		}
+		else
+		{
+			while (i < len_str)
+			{
+				ft_putchar(temp[i++]);
+				params->printed++;
+			}
+		}
+		while ((params->width)-- > params->precision)
+		{
+			ft_putchar(' ');
+			params->printed++;
+		}
+	}
+	else
+	{
+		while ((params->width)-- > (params->precision))
+		{
+			ft_putchar(' ');
+			params->printed++;
+		}
+		if (params->precision != 0)
+		{
+			while ((params->precision)-- > 0)
+			{
+				ft_putchar(temp[i++]);
+				params->printed++;
+			}
+		}
+		else
+		{
+			while (i < len_str)
+			{
+				ft_putchar(temp[i++]);
+				params->printed++;
+			}
+		}
+	}
 }
 
 int			int_length(int n)

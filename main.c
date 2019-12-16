@@ -57,7 +57,7 @@ int main(int ac, char **av)
 	}
 	else
 	{
-		n = ft_printf("->%-+*c<-\n", 5, 'v');
+		n = ft_printf("->%3s<-\n", "hello");
 		ft_printf("->12345<-\n");
 		ft_printf("printed %d symbols in 1st line\n", n);
 	}
