@@ -18,6 +18,8 @@
 # include <stdarg.h>
 # include "libft.h"
 
+# define MAX(a,b) (a > b) ? a : b
+
 typedef enum	Type
 {
 				CHAR,
@@ -61,6 +63,7 @@ typedef enum	Type
 typedef struct		s_parse
 {
 	char 			type;
+	int				is_negative;
 	int				is_signed;
 	int				is_long;
 	int				is_longlong;
@@ -71,9 +74,7 @@ typedef struct		s_parse
 	int				is_ptrdiff_t;	//or analog unsigned
 	char			*flags;
 	int				width;
-	int				width_param;
 	int				precision;
-	int				precision_param;
 	/*
 	Модификатор точности
 	указывает на минимальное количество символов, которое должно появиться при обработке типов d, i, o, u, x, X;
@@ -81,7 +82,7 @@ typedef struct		s_parse
 	максимальное количество значащих символов для типов g и G;
 	максимальное число символов, которые будут выведены для типа s;
 	*/
-	int				align;
+	int				printed;
 	char			*next;
 }					t_parse;
 
