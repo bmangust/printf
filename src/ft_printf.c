@@ -103,10 +103,30 @@ t_node		*add_last_piece(t_node **head, t_node *new)
 	return (NULL);
 }
 
-void		print_char(va_list valist, t_parse *params)
+void	print_char(va_list valist, t_parse *params)
 {
-	(void) valist;
-	(void) params;
+	char	c;
+
+	c = (char)va_arg(valist, int);
+	if (params->flags && ft_strchr(params->flags, '-'))
+	{
+		ft_putchar(c);
+		while ((params->width)-- > 0)
+		{
+			ft_putchar(' ');
+			params->printed++;
+		}
+	}
+	else
+	{
+		while ((params->width)-- > 1)
+		{
+			ft_putchar(' ');
+			params->printed++;
+		}
+		ft_putchar(c);
+		params->printed++;
+	}
 }
 
 void		print_str(va_list valist, t_parse *params)
