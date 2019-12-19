@@ -21,7 +21,7 @@ all: $(OBJ)
 	$(CC) $(FLAGS) $(OBJ) $(LIB) $(INC) -o $(NAME)
 
 $(OBJ): lib
-	$(CC) $(FLAGS) -o $@ -c $(SRC) $(LIB) $(INC)
+	$(CC) $(FLAGS) -o $@ -c $(SRC) $(INC)
 
 lib:
 	make -f $(MAKELIB)

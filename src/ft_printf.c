@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/08 21:27:58 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/19 16:25:21 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ t_parse		*new_param(void)
 	if (!(new = (t_parse*)malloc(sizeof(t_parse))))
 		return (NULL);
 	new->type = 0;
-	new->is_negative = 0;
 	new->is_signed = 0;
 	new->is_long = 0;
 	new->is_longlong = 0;
@@ -49,37 +48,38 @@ t_parse		*new_param(void)
 	new->width = 0;
 	new->precision = 0;
 	new->printed = 0;
+	new->length = 0;
 	new->next = NULL;
 	return (new);
 }
 
-void		clear_param(t_parse *params)
+void		clear_param(t_parse *p)
 {
-	if (!params)
+	if (!p)
 		return ;
-	free(params->flags);
-	params->type = 0;
-	params->is_negative = 0;
-	params->is_signed = 0;
-	params->is_long = 0;
-	params->is_longlong = 0;
-	params->is_short = 0;
-	params->is__int64 = 0;
-	params->is_size_t = 0;
-	params->is_intmax_t = 0;
-	params->is_ptrdiff_t = 0;
-	params->flags = NULL;
-	params->width = 0;
-	params->precision = 0;
-	params->next = NULL;
+	free(p->flags);
+	p->type = 0;
+	p->is_signed = 0;
+	p->is_long = 0;
+	p->is_longlong = 0;
+	p->is_short = 0;
+	p->is__int64 = 0;
+	p->is_size_t = 0;
+	p->is_intmax_t = 0;
+	p->is_ptrdiff_t = 0;
+	p->flags = NULL;
+	p->width = 0;
+	p->precision = 0;
+	p->length = 0;
+	p->next = NULL;
 }
 
-void		del_param(t_parse *params)
+void		del_param(t_parse *p)
 {
-	if (!params)
+	if (!p)
 		return ;
-	free(params->flags);
-	free(params);
+	free(p->flags);
+	free(p);
 }
 
 t_node		*add_last_piece(t_node **head, t_node *new)
@@ -103,36 +103,36 @@ t_node		*add_last_piece(t_node **head, t_node *new)
 	return (NULL);
 }
 
-void	print_char(va_list valist, t_parse *params)
+void	print_char(va_list valist, t_parse *p)
 {
 	char	c;
 
 	c = (char)va_arg(valist, int);
-	if (params->flags && ft_strchr(params->flags, '-'))
+	if (p->flags && ft_strchr(p->flags, '-'))
 	{
 		ft_putchar(c);
-		while ((params->width)-- > 0)
+		while ((p->width)-- > 0)
 		{
 			ft_putchar(' ');
-			params->printed++;
+			p->printed++;
 		}
 	}
 	else
 	{
-		while ((params->width)-- > 1)
+		while ((p->width)-- > 1)
 		{
 			ft_putchar(' ');
-			params->printed++;
+			p->printed++;
 		}
 		ft_putchar(c);
-		params->printed++;
+		p->printed++;
 	}
 }
 
-void		print_str(va_list valist, t_parse *params)
+void		print_str(va_list valist, t_parse *p)
 {
 	(void) valist;
-	(void) params;
+	(void) p;
 }
 
 int			int_length(int n)
@@ -141,166 +141,146 @@ int			int_length(int n)
 
 	length = 0;
 	if (n < 0)
-		++length;
+		length++;
 	while (n)
 	{
 		n /= 10;
-		++length;
+		length++;
 	}
 	return (length);
 }
 
-void	check_width_and_print_int(t_parse *params, int n, int len)
+int			int_length_and_update(int n, t_parse *p)
 {
-	if (params->width > len && params->width > params->precision)
-		params->printed += params->width;
-	else
-		params->printed += MAX(params->precision, len);
-	if (n < 0 || ft_strchr(params->flags, '+'))
+	p->length = int_length(n);
+	if (n >= 0 && ft_strchr(p->flags, '+'))
+		p->length++;
+	if ((n < 0 || ft_strchr(p->flags, '+')) && p->precision)
+//				&& !ft_strchr(p->flags, '-'))
+		p->precision++;
+	return (p->length);
+}
+
+void	put_sign(int n, t_parse *p)
+{
+	if (n < 0 || ft_strchr(p->flags, '+'))
 	{
 		if (n < 0)
 			ft_putchar('-');
-		else
+		else if (ft_strchr(p->flags, '+'))
 			ft_putchar('+');
-		len--;
-		params->width -= 1;
-		params->printed++;
+		p->length -= 1;
+		p->width -= 1;
+		if ((n < 0 || ft_strchr(p->flags, '+')) && p->precision)
+//	 	&& !ft_strchr(p->flags, '-'))
+			p->precision -= 1;
 	}
-	while ((params->precision)-- > len)
+	else if (ft_strchr(p->flags, ' '))
 	{
-		ft_putchar('0');
-		params->width -= 1;
+		ft_putchar(' ');
+		p->printed += 1;
 	}
-	ft_putnbr(ft_absint(n));
-	params->width -= len;
 }
 
-void	print_int(va_list valist, t_parse *params)
+void	check_width_and_print_int(t_parse *p, int n)
 {
-	int		n;
-	int		len;
+	if (p->width > p->length && p->width > p->precision)
+		p->printed += p->width;
+	else
+		p->printed += MAX(p->precision, p->length);
+	put_sign(n , p);
+	while ((p->precision)-- > p->length)
+	{
+		ft_putchar('0');
+		p->width -= 1;
+	}
+	ft_putnbr(ft_absint(n));
+	p->width -= p->length;
+}
+
+void	print_int(va_list valist, t_parse *p)
+{
+	intmax_t	n;
 
 	n = va_arg(valist, int);
-	len = int_length(n);
-	if (n < 0)
-		params->is_negative = 1;
-	if (n < 0 && params->precision && !ft_strchr(params->flags, '-'))
-		params->precision++;
-	if (ft_strchr(params->flags, '-'))
+	int_length_and_update(n, p);
+	if (ft_strchr(p->flags, '-'))
 	{
-		check_width_and_print_int(params, n, len);
-		while ((params->width)-- > 0)
+		check_width_and_print_int(p, n);
+		while ((p->width)-- > 0)
 			ft_putchar(' ');
 	}
 	else
 	{
-		if (params->width > params->precision && params->width > len)
+		if (p->width > p->precision && p->width > p->length)
 		{
-			params->printed += params->width;
-			if (ft_strchr(params->flags, '0') && !params->precision)
+			p->printed += p->width;
+			if (ft_strchr(p->flags, '0') && !p->precision)
 			{
-				if (n < 0)
-					ft_putchar('-');
-				else if (ft_strchr(params->flags, '+'))
-					ft_putchar('+');
-				params->width--;
-				params->printed++;
-				n = ft_absint(n);
-			}
-			if (ft_strchr(params->flags, '0') && !params->precision)
-			{
-				if (ft_strchr(params->flags, '+') && params->is_negative)
-					params->width--;
-				while ((params->width) >= (MAX(len, params->precision)))
-				{
-					if (ft_strchr(params->flags, '0') && !params->precision)
-						ft_putchar('0');
-					else
-						ft_putchar(' ');
-					params->width--;
-				}
+				put_sign(n, p);
+				while (p->width-- > p->length)
+					ft_putchar('0');
 			}
 			else
+				while (p->width-- > (MAX(p->length, p->precision)))
+					ft_putchar(' ');
+			if (p->precision > 0)
 			{
-				while ((params->width) > (MAX(len, params->precision))) {
-					if (ft_strchr(params->flags, '0') && !params->precision)
-						ft_putchar('0');
-					else
-						ft_putchar(' ');
-					params->width--;
-				}
+				put_sign(n, p);
+				while (p->precision-- > p->length)
+					ft_putchar('0');
 			}
-			if ((!(ft_strchr(params->flags, '0') || !params->precision) &&
-			(params->is_negative && ft_strchr(params->flags, '+'))) || n < 0)
-			{
-				if (n < 0)
-					ft_putchar('-');
-				else if (ft_strchr(params->flags, '+'))
-					ft_putchar('+');
-				params->width--;
-				params->printed++;
-				n = ft_absint(n);
-			}
-			while (params->precision > len)
-			{
-				params->precision--;
-				ft_putchar('0');
-			}
-			ft_putnbr(n);
+			else if (!ft_strchr(p->flags, '0'))
+				put_sign(n, p);
+			if (n == -2147483648)
+				ft_putstr("2147483648");
+			else
+				ft_putnbr(ft_absint(n));
 		}
 		else
 		{
-			params->printed += MAX(len, params->precision);
-			if (ft_strchr(params->flags, '+') || params->is_negative)
-			{
-				if (n < 0)
-					ft_putchar('-');
-				else if (ft_strchr(params->flags, '+'))
-					ft_putchar('+');
-				params->width--;
-				params->printed++;
-			}
-			while (params->precision > len)
+			p->printed += MAX(p->length, p->precision);
+			put_sign(n, p);
+			while (p->precision > p->length)
 			{
 				ft_putchar('0');
-				params->precision--;
+				p->precision--;
 			}
 			ft_putnbr(ft_absint(n));
 		}
 	}
 }
 
-void	print_float(va_list valist, t_parse *params)
+void	print_float(va_list valist, t_parse *p)
 {
 	(void) valist;
-	(void) params;
+	(void) p;
 }
 
 /*
 **	prints one argument
 */
 
-void	print_arg(t_parse *params, va_list valist)
+void	print_arg(t_parse *p, va_list valist)
 {
 	//types = "%diufFeEgGxXoscpaAn";
-	if (ft_strchr("diuxX", params->type))
-		print_int(valist, params);
-		// ft_putnbr(va_arg(valist, int));
-	else if ('c' == params->type)
-		print_char(valist, params);
-	else if ('s' == params->type)
-		print_str(valist, params);
-	else if ('%' == params->type)
+	if (ft_strchr("diuxX", p->type))
+		print_int(valist, p);
+	else if ('c' == p->type)
+		print_char(valist, p);
+	else if ('s' == p->type)
+		print_str(valist, p);
+	else if ('%' == p->type)
 		ft_putchar('%');
-	else if (ft_strchr("fFgG", params->type))
-		print_float(valist, params);
+	else if (ft_strchr("fFgG", p->type))
+		print_float(valist, p);
 }
 
 /*
-**	checks size of a type, uses flags in params node
+**	checks size of a type, uses flags in p node
 */
 
-void	check_size(t_parse *params, char *tmp)
+void	check_size(t_parse *p, char *tmp)
 {
 	char	*sizes;
 	int		index;
@@ -310,38 +290,38 @@ void	check_size(t_parse *params, char *tmp)
 	if (ft_strchr(sizes, *tmp) == ft_strchr(sizes, *(tmp + 1)))
 	{
 		if (index == 0)
-			params->is_signed = 1;
+			p->is_signed = 1;
 		else if (index == 1)
-			params->is_longlong = 1;
+			p->is_longlong = 1;
 		tmp++;
 	}
 	else if (index == 0)
-		params->is_short = 1;
+		p->is_short = 1;
 	else if (index == 1)
-		params->is_long = 1;
+		p->is_long = 1;
 	else if (index == 2)
-		params->is__int64 = 1;
+		p->is__int64 = 1;
 	else if (index == 3)
-		params->is_size_t = 1;
+		p->is_size_t = 1;
 	else if (index == 4)
-		params->is_intmax_t = 1;
+		p->is_intmax_t = 1;
 	else if (index == 5)
-		params->is_ptrdiff_t = 1;
+		p->is_ptrdiff_t = 1;
 }
 
-char	*read_flags(char *tmp, t_parse *params)
+char	*read_flags(char *tmp, t_parse *p)
 {
 	char *f;
 
-	params->flags = ft_strnew(5);
-	f = params->flags;
+	p->flags = ft_strnew(5);
+	f = p->flags;
 	while (ft_strchr("-+ 0#", *tmp))
 	{
 		if ((*(ft_strchr("-+ 0#", *tmp)) == '0') &&
 			(ft_strchr("-+ 0#", *(tmp + 1)) == NULL) &&
-			(ft_strchr(params->flags, '0') != NULL))
+			(ft_strchr(p->flags, '0') != NULL))
 			return (--tmp);
-		if (!ft_strchr(params->flags, *tmp))
+		if (!ft_strchr(p->flags, *tmp))
 		{
 			*f = *tmp;
 			f++;
@@ -356,73 +336,73 @@ char	*read_flags(char *tmp, t_parse *params)
 **	returns list node with all parameters and pointer to next symbol
 */
 
-t_parse	*parse_string(char *tmp, t_parse *params, va_list valist)
+t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 {
 	int		stop;
 
 	stop = 0;
 	while (!stop && *tmp)
 	{
-		if (!params->flags && ft_strchr("-+ 0#", *tmp))				//flag
-			tmp = read_flags(tmp, params);
+		if (!p->flags && ft_strchr("-+ 0#", *tmp))				//flag
+			tmp = read_flags(tmp, p);
 		else if (ft_atoi(tmp))	//width
 		{
-			params->width = ft_atoi(tmp);
-			tmp += int_length(params->width) - 1;
+			p->width = ft_atoi(tmp);
+			tmp += int_length(p->width) - 1;
 		}
 		else if (*tmp == '*')
-			params->width = va_arg(valist, int);
+			p->width = va_arg(valist, int);
 		else if (*tmp == '.')						//precision
 		{
 			if (*(tmp + 1) == '*')
 			{
-				params->precision = va_arg(valist, int);
+				p->precision = va_arg(valist, int);
 				tmp++;
 			}
-			else if ((params->precision = ft_atoi(tmp + 1)))
-				tmp += int_length(params->precision);
+			else if ((p->precision = ft_atoi(tmp + 1)))
+				tmp += int_length(p->precision);
 		}
 		else if (ft_strchr("hlLzjt", *tmp))			//size
-			check_size(params, tmp);
+			check_size(p, tmp);
 		else if (ft_strchr("%diufFeEgGxXoscpaAn", *tmp))		//type
 		{
-			params->type = *tmp;
-			params->next = tmp;
+			p->type = *tmp;
+			p->next = tmp;
 			stop = 1;
 		}
 		++tmp;
 	}
-	return (params);
+	return (p);
 }
 
 int		ft_printf(const char *restrict s, ...)
 {
 	va_list	valist;
-	t_parse	*params;
+	t_parse	*p;
 	char	*tmp;
 	int		printed;
 
 	tmp = (char*)s;
 	va_start(valist, s);
-	params = new_param();
+	p = new_param();
 	while (*tmp)
 	{
 		if (*tmp != '%')
 		{
 			ft_putchar(*tmp);
-			params->printed++;
+			p->printed++;
 		}
 		else
 		{
 			tmp++;
-			parse_string(tmp, params, valist);
-			tmp = params->next;
-			print_arg(params, valist);
-			clear_param(params);
+			parse_string(tmp, p, valist);
+			tmp = p->next;
+			print_arg(p, valist);
+			clear_param(p);
 		}
 		tmp++;
 	}
-	printed = params->printed;
-	del_param(params);
+	printed = p->printed;
+	del_param(p);
 	return (printed);
 }

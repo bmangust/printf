@@ -1,45 +1,10 @@
 #include "ft_printf.h"
 #include "libft.h"
 
-// int ssum(int d, va_list valist)
-// {
-// 	int sum  = 0;
-// 	int n = d;
-// 	int i = 0;
-// 	n = va_arg(valist, int);
-// 	ft_putnbr(n);
-// 	ft_putendl("");
-// 	while (n || i < 10)
-// 	{
-// 		sum += n;
-// 		n = va_arg(valist, int);
-// 		ft_putnbr(n);
-// 		ft_putendl("");
-// 		++i;
-// 	}
-// 	return (sum);
-// }
-
-// void print_sum(int n, ...)
-// {
-// 	int sum  = 0;
-// 	va_list	valist;
-// 	va_start(valist, n);
-// 	sum = ssum(n, valist);
-// 	ft_putnbr(sum);
-// 	va_end(valist);
-// 	ft_putendl("");
-// 	va_start(valist, n);
-// 	sum = ssum(n, valist);
-// 	ft_putnbr(sum);
-// 	va_end(valist);
-// }
-
-
 int main(int ac, char **av)
 {
 	// printf(">%4.3d<\tprintf\n", 42);
-	int n;
+	int n, p;
 	if (ac == 2)
 	{
 		ft_printf(av[1], -4);
@@ -57,9 +22,11 @@ int main(int ac, char **av)
 	}
 	else
 	{
-		n = ft_printf("->%-+*c<-\n", 5, 'v');
+		n = ft_printf(">@moulitest: %5.d %5.0d<\n", 2147483648, 0);
+		p = printf(">@moulitest: %5.d %5.0d<\n", 2147483648, 0);
 		ft_printf("->12345<-\n");
 		ft_printf("printed %d symbols in 1st line\n", n);
+		ft_printf("printed %d symbols in 2st line\n", p);
 	}
 	return (0);
 }

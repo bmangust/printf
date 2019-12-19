@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/06 21:43:20 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/19 16:18:01 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,11 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <stdint.h>
 # include <stdarg.h>
 # include "libft.h"
 
 # define MAX(a,b) (a > b) ? a : b
-
-typedef enum	Type
-{
-				CHAR,
-				INT,
-				FLOAT,
-				DOUBLE,
-				CHAR_P,
-				INT_P,
-				FLOAT_P,
-				DOUBLE_P,
-}				e_type;
 
 /*
 **	type:
@@ -63,7 +52,6 @@ typedef enum	Type
 typedef struct		s_parse
 {
 	char 			type;
-	int				is_negative;
 	int				is_signed;
 	int				is_long;
 	int				is_longlong;
@@ -83,6 +71,7 @@ typedef struct		s_parse
 	максимальное число символов, которые будут выведены для типа s;
 	*/
 	int				printed;
+	int				length;
 	char			*next;
 }					t_parse;
 
