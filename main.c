@@ -22,9 +22,9 @@ int main(int ac, char **av)
 	}
 	else
 	{
-		n = ft_printf(">@moulitest: %5.d %5.0d<\n", 2147483648, 0);
-		p = printf(">@moulitest: %5.d %5.0d<\n", 2147483648, 0);
-		ft_printf("->12345<-\n");
+		n = ft_printf(">%d<\n", -2147483648);
+		p = printf(">%d<\n", -2147483648);
+		ft_printf(">12345<\n");
 		ft_printf("printed %d symbols in 1st line\n", n);
 		ft_printf("printed %d symbols in 2st line\n", p);
 	}

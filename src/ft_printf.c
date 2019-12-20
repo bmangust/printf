@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/19 16:25:21 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/20 21:10:09 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,12 +135,12 @@ void		print_str(va_list valist, t_parse *p)
 	(void) p;
 }
 
-int			int_length(int n)
+int			int_length(intmax_t n)
 {
 	int length;
 
 	length = 0;
-	if (n < 0)
+	if (n <= 0)
 		length++;
 	while (n)
 	{
@@ -150,18 +150,17 @@ int			int_length(int n)
 	return (length);
 }
 
-int			int_length_and_update(int n, t_parse *p)
+int			int_length_and_update(intmax_t n, t_parse *p)
 {
 	p->length = int_length(n);
 	if (n >= 0 && ft_strchr(p->flags, '+'))
 		p->length++;
 	if ((n < 0 || ft_strchr(p->flags, '+')) && p->precision)
-//				&& !ft_strchr(p->flags, '-'))
 		p->precision++;
 	return (p->length);
 }
 
-void	put_sign(int n, t_parse *p)
+void	put_sign(intmax_t n, t_parse *p)
 {
 	if (n < 0 || ft_strchr(p->flags, '+'))
 	{
@@ -172,7 +171,6 @@ void	put_sign(int n, t_parse *p)
 		p->length -= 1;
 		p->width -= 1;
 		if ((n < 0 || ft_strchr(p->flags, '+')) && p->precision)
-//	 	&& !ft_strchr(p->flags, '-'))
 			p->precision -= 1;
 	}
 	else if (ft_strchr(p->flags, ' '))
@@ -202,7 +200,11 @@ void	print_int(va_list valist, t_parse *p)
 {
 	intmax_t	n;
 
-	n = va_arg(valist, int);
+	n = va_arg(valist, intmax_t);
+//	add min int processing
+//	maybe change ft_putnbr_fd to intmax_t
+//	if (n == -2147483648)
+//		return (print_min_int(n));
 	int_length_and_update(n, p);
 	if (ft_strchr(p->flags, '-'))
 	{
@@ -232,10 +234,7 @@ void	print_int(va_list valist, t_parse *p)
 			}
 			else if (!ft_strchr(p->flags, '0'))
 				put_sign(n, p);
-			if (n == -2147483648)
-				ft_putstr("2147483648");
-			else
-				ft_putnbr(ft_absint(n));
+			ft_putnbr(ft_absint(n));
 		}
 		else
 		{

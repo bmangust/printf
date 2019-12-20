@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/16 23:38:01 by akraig            #+#    #+#             */
-/*   Updated: 2019/09/22 13:01:39 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/20 20:53:22 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int					ft_isascii(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-int					ft_absint(int n);
-float				ft_absfloat(float n);
+intmax_t 			ft_absint(intmax_t n);
+double				ft_absfloat(double n);
 void				*ft_memalloc(size_t size);
 void				ft_memdel(void **ap);
 char				*ft_strnew(size_t size);
