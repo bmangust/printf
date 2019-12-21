@@ -57,7 +57,10 @@ int main(int ac, char **av)
 	}
 	else
 	{
-		ft_printf("%5.2s is a string", "this");
+		//ft_printf("%5.2s is a string", "this");
+		//ft_printf("%s %s\n", NULL, "string");
+		//ft_printf("%s\n", NULL);
+		ft_printf("%-5c", 42);
 		//ft_printf("->%5.2s<-\n", "0123456789");
 		// ft_printf("->0123456789<-\n");
 		//ft_printf("printed %d symbols in 1st line\n", n);

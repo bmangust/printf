@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 20:13:37 by jbloodax         ###   ########.fr       */
+/*   Updated: 2019/12/21 21:01:15 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,8 @@ void	print_char(va_list valist, t_parse *p)
 	if (p->flags && ft_strchr(p->flags, '-'))
 	{
 		ft_putchar(c);
-		while ((p->width)-- > 0)
+		p->printed++;
+		while ((p->width)-- > 1)
 		{
 			ft_putchar(' ');
 			p->printed++;
@@ -130,30 +131,6 @@ void	print_char(va_list valist, t_parse *p)
 }
 
 
-/*
-void	print_str_with_precision(char *temp, t_parse *p)
-{
-	int		i;
-	int		precision;
-
-	i = 0;
-	precision = p->precision;
-	while ((precision)-- > 0)
-	{
-		ft_putchar(temp[i++]);
-		p->printed++;
-	}
-	while ((p->width)-- > p->precision)
-	{
-		ft_putchar('.');
-		p->printed++;
-	}
-}
-*/
-
-
-
-
 
 /*   RIGHT VERSION   */
 
@@ -163,6 +140,14 @@ void	print_str(char *temp, t_parse *p)
 	int		i;
 	int		precision;
 
+	if (!temp)
+	{
+		write(1, "(null)", 6);
+		p->printed += 6;
+		return ;
+	}
+	
+	
 	len_str = ft_strlen(temp);
 	i = 0;
 	precision = p->precision;
@@ -171,6 +156,8 @@ void	print_str(char *temp, t_parse *p)
 	// printf("WIDTH: %d\n", p->width);
 	// printf("PRECISION: %d\n", p->precision);
 	// printf("LEN STR %d", len_str);
+
+
 
 	if (ft_strchr(p->flags, '-'))
 	{
@@ -261,95 +248,7 @@ void	print_str(char *temp, t_parse *p)
 
 
 
-/*      PARSE
 
-int		print_str_continued(char *temp, t_parse *p, int len_str)
-{
-	int		i;
-	int		precision;
-
-
-	i = 0;
-	precision = p->precision;
-
-	if (p->precision != 0 && p->precision <= len_str)
-	{
-			while ((precision)-- > 0)
-		{
-			ft_putchar(temp[i++]);
-			p->printed++;
-		}
-		while ((p->width)-- > p->precision)
-		{
-			ft_putchar('.');
-			p->printed++;
-		}
-	}
-	else
-	{
-		if (p->width < len_str)
-		{
-			while (i < len_str)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-		}
-	}
-	return (i);
-}
-
-
-void	print_str(va_list valist, t_parse *p)
-{
-	int		len_str;
-	int		i;
-	char	*temp;
-
-
-	temp = va_arg(valist, char*);
-	len_str = ft_strlen(temp);
-	i = 0;
-
-
-	if (ft_strchr(p->flags, '-'))
-	{
-		print_str_continued(temp, p, len_str);
-		if (p->width > len_str)
-		{
-			while (i < len_str)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-			while (i++ < p->width)
-			{
-				ft_putchar('.');
-				p->printed++;
-			}	
-		}
-	}
-	else
-	{
-		print_str_continued(temp, p, len_str);
-
-		if (p->width > len_str)
-		{
-			while ((p->width)-- > len_str)
-			{
-				ft_putchar('.');
-				p->printed++;
-			}
-			while (i < len_str)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-		}
-	}
-}
-
-*/
 
 
 
