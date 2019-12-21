@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/16 23:38:01 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/20 20:53:22 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/21 19:57:26 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ int					ft_isascii(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-intmax_t 			ft_absint(intmax_t n);
-double				ft_absfloat(double n);
+intmax_t			ft_absint(intmax_t n);
+float				ft_absfloat(float n);
 void				*ft_memalloc(size_t size);
 void				ft_memdel(void **ap);
 char				*ft_strnew(size_t size);
@@ -69,14 +69,16 @@ char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strtrim(char const *s);
 char				**ft_strsplit(char const *s, char c);
 char				*ft_itoa(int n);
+char				*ft_itoa_base(int value, int base);
+char				*ft_itoa_baseu(int value, int base);
 void				ft_putchar(char c);
 void				ft_putstr(char const *s);
 void				ft_putendl(char const *s);
-void				ft_putnbr(int n);
+void				ft_putnbr(intmax_t n);
 void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char const *s, int fd);
 void				ft_putendl_fd(char const *s, int fd);
-void				ft_putnbr_fd(int n, int fd);
+void				ft_putnbr_fd(intmax_t n, int fd);
 t_list				*ft_lstnew(void const *content, size_t content_size);
 void				ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
 void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/20 21:10:09 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/21 20:14:29 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ t_parse		*new_param(void)
 	if (!(new = (t_parse*)malloc(sizeof(t_parse))))
 		return (NULL);
 	new->type = 0;
+	new->size = 0;
 	new->is_signed = 0;
 	new->is_long = 0;
 	new->is_longlong = 0;
@@ -59,6 +60,7 @@ void		clear_param(t_parse *p)
 		return ;
 	free(p->flags);
 	p->type = 0;
+	p->size = 0;
 	p->is_signed = 0;
 	p->is_long = 0;
 	p->is_longlong = 0;
@@ -129,9 +131,9 @@ void	print_char(va_list valist, t_parse *p)
 	}
 }
 
-void		print_str(va_list valist, t_parse *p)
+void		print_str(char *s, t_parse *p)
 {
-	(void) valist;
+	(void) s;
 	(void) p;
 }
 
@@ -180,6 +182,18 @@ void	put_sign(intmax_t n, t_parse *p)
 	}
 }
 
+void	check_size_and_print_int(intmax_t n, t_parse *p)
+{
+	if (p->size == LONG)
+		ft_putnbr(ft_absint((long int) n));
+	else if (p->size == LONGLONG)
+		ft_putnbr(ft_absint((long long int) n));
+	else if (p->size == SHORT)
+		ft_putnbr(ft_absint((short int) n));
+	else if (p->size == INT)
+		ft_putnbr(ft_absint((int) n));
+}
+
 void	check_width_and_print_int(t_parse *p, int n)
 {
 	if (p->width > p->length && p->width > p->precision)
@@ -192,7 +206,7 @@ void	check_width_and_print_int(t_parse *p, int n)
 		ft_putchar('0');
 		p->width -= 1;
 	}
-	ft_putnbr(ft_absint(n));
+	check_size_and_print_int(n, p);
 	p->width -= p->length;
 }
 
@@ -201,10 +215,6 @@ void	print_int(va_list valist, t_parse *p)
 	intmax_t	n;
 
 	n = va_arg(valist, intmax_t);
-//	add min int processing
-//	maybe change ft_putnbr_fd to intmax_t
-//	if (n == -2147483648)
-//		return (print_min_int(n));
 	int_length_and_update(n, p);
 	if (ft_strchr(p->flags, '-'))
 	{
@@ -234,7 +244,7 @@ void	print_int(va_list valist, t_parse *p)
 			}
 			else if (!ft_strchr(p->flags, '0'))
 				put_sign(n, p);
-			ft_putnbr(ft_absint(n));
+			check_size_and_print_int(n, p);
 		}
 		else
 		{
@@ -245,9 +255,28 @@ void	print_int(va_list valist, t_parse *p)
 				ft_putchar('0');
 				p->precision--;
 			}
-			ft_putnbr(ft_absint(n));
+			check_size_and_print_int(n, p);
 		}
 	}
+}
+
+void	print_oct(va_list valist, t_parse *p)
+{
+	char *s;
+
+	s = ft_itoa_base(va_arg(valist, int), 8);
+	print_str(s, p);
+}
+
+void	print_hex(va_list valist, t_parse *p)
+{
+	char *s;
+
+	if (p->type == 'x')
+		s = ft_itoa_base(va_arg(valist, int), 16);
+	else
+		s = ft_itoa_baseu(va_arg(valist, int), 16);
+	print_str(s, p);
 }
 
 void	print_float(va_list valist, t_parse *p)
@@ -255,7 +284,6 @@ void	print_float(va_list valist, t_parse *p)
 	(void) valist;
 	(void) p;
 }
-
 /*
 **	prints one argument
 */
@@ -263,12 +291,16 @@ void	print_float(va_list valist, t_parse *p)
 void	print_arg(t_parse *p, va_list valist)
 {
 	//types = "%diufFeEgGxXoscpaAn";
-	if (ft_strchr("diuxX", p->type))
+	if (ft_strchr("diu", p->type))
 		print_int(valist, p);
+	else if ('o' == p->type)
+		print_oct(valist, p);
+	else if (ft_strchr("xX", p->type))
+		print_hex(valist, p);
 	else if ('c' == p->type)
 		print_char(valist, p);
 	else if ('s' == p->type)
-		print_str(valist, p);
+		print_str(va_arg(valist, char*), p);
 	else if ('%' == p->type)
 		ft_putchar('%');
 	else if (ft_strchr("fFgG", p->type))
@@ -284,28 +316,20 @@ void	check_size(t_parse *p, char *tmp)
 	char	*sizes;
 	int		index;
 
-	sizes = "hlLzjt";
+	sizes = "hlL";
 	index = ft_strchrn(sizes, *tmp);
 	if (ft_strchr(sizes, *tmp) == ft_strchr(sizes, *(tmp + 1)))
 	{
 		if (index == 0)
-			p->is_signed = 1;
+			p->size = CHAR;
 		else if (index == 1)
-			p->is_longlong = 1;
+			p->size = LONGLONG;
 		tmp++;
 	}
 	else if (index == 0)
-		p->is_short = 1;
+		p->size = SHORT;
 	else if (index == 1)
-		p->is_long = 1;
-	else if (index == 2)
-		p->is__int64 = 1;
-	else if (index == 3)
-		p->is_size_t = 1;
-	else if (index == 4)
-		p->is_intmax_t = 1;
-	else if (index == 5)
-		p->is_ptrdiff_t = 1;
+		p->size = LONG;
 }
 
 char	*read_flags(char *tmp, t_parse *p)

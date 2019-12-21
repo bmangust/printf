@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/19 16:18:01 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/21 18:49:20 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,15 @@
 # include "libft.h"
 
 # define MAX(a,b) (a > b) ? a : b
+
+#define INT 0					//without flags for d, i
+#define FLOAT 0					//without flags for d, f
+#define SHORT (1 << 0)			//h
+#define LONG (1 << 1)			//l for int
+#define LONGLONG (1 << 2)		//ll
+#define UNSIGNED (1 << 3)		//unsigned numbers u, o, x, X,
+#define CHAR (1 << 4)			//hh
+#define LONGDOUBLE (1 << 5)		//L for float
 
 /*
 **	type:
@@ -52,14 +61,15 @@
 typedef struct		s_parse
 {
 	char 			type;
+	unsigned int	size;
 	int				is_signed;
 	int				is_long;
 	int				is_longlong;
 	int				is_short;
-	int				is__int64;		//or unsigned __int64
+	int				is__int64;			//or unsigned __int64
 	int				is_size_t;			//or analog unsigned
 	int				is_intmax_t;		//or uintmax_t
-	int				is_ptrdiff_t;	//or analog unsigned
+	int				is_ptrdiff_t;		//or analog unsigned
 	char			*flags;
 	int				width;
 	int				precision;
