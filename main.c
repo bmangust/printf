@@ -57,8 +57,8 @@ int main(int ac, char **av)
 	}
 	else
 	{
-		n = ft_printf("->%3s<-\n", "hello");
-		ft_printf("->12345<-\n");
+		n = ft_printf("->%-7s<-\n", "0123456789");
+		// ft_printf("->0123456789<-\n");
 		ft_printf("printed %d symbols in 1st line\n", n);
 	}
 	return (0);
