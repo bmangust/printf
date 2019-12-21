@@ -10,6 +10,8 @@ char	*ft_itoa_base(int value, int base)
 	val = value;
 	cnt = 0;
 	s = "0123456789abcdef";
+	if (value == 0)
+		return ("0");
 	while(value)
 	{
 		value /= base;
@@ -36,6 +38,8 @@ char	*ft_itoa_baseu(int value, int base)
 	val = value;
 	cnt = 0;
 	s = "0123456789ABCDEF";
+	if (value == 0)
+		return ("0");
 	while(value)
 	{
 		value /= base;

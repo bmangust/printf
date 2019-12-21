@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 20:43:18 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/21 21:34:21 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,7 @@ t_parse		*new_param(void)
 	new->type = 0;
 	new->size = 0;
 	new->is_signed = 0;
-	new->is_long = 0;
-	new->is_longlong = 0;
-	new->is_short = 0;
-	new->is__int64 = 0;
-	new->is_size_t = 0;
-	new->is_intmax_t = 0;
-	new->is_ptrdiff_t = 0;
+	new->spaces = 0;
 	new->flags = NULL;
 	new->width = 0;
 	new->precision = 0;
@@ -62,13 +56,7 @@ void		clear_param(t_parse *p)
 	p->type = 0;
 	p->size = 0;
 	p->is_signed = 0;
-	p->is_long = 0;
-	p->is_longlong = 0;
-	p->is_short = 0;
-	p->is__int64 = 0;
-	p->is_size_t = 0;
-	p->is_intmax_t = 0;
-	p->is_ptrdiff_t = 0;
+	p->spaces = 0;
 	p->flags = NULL;
 	p->width = 0;
 	p->precision = 0;
@@ -392,7 +380,7 @@ void	put_sign(intmax_t n, t_parse *p)
 		if ((n < 0 || ft_strchr(p->flags, '+')) && p->precision)
 			p->precision -= 1;
 	}
-	else if (ft_strchr(p->flags, ' '))
+	else if (ft_strchr(p->flags, ' ') && p->spaces == 0)
 	{
 		ft_putchar(' ');
 		p->printed += 1;
@@ -427,11 +415,23 @@ void	check_width_and_print_int(t_parse *p, int n)
 	p->width -= p->length;
 }
 
-void	print_int(va_list valist, t_parse *p)
+intmax_t	get_int(va_list valist, t_parse *p)
 {
 	intmax_t	n;
 
-	n = va_arg(valist, intmax_t);
+	if (p->size == LONG)
+		n = va_arg(valist, long int);
+	else if (p->size == LONGLONG)
+		n = va_arg(valist, long long int);
+//	else if (p->size == SHORT)
+//		n = va_arg(valist, int);
+	else
+		n = va_arg(valist, int);
+	return (n);
+}
+
+void	print_int(intmax_t n, t_parse *p)
+{
 	int_length_and_update(n, p);
 	if (ft_strchr(p->flags, '-'))
 	{
@@ -451,8 +451,11 @@ void	print_int(va_list valist, t_parse *p)
 					ft_putchar('0');
 			}
 			else
+			{
 				while (p->width-- > (MAX(p->length, p->precision)))
 					ft_putchar(' ');
+				p->spaces = 1;
+			}
 			if (p->precision > 0)
 			{
 				put_sign(n, p);
@@ -509,7 +512,7 @@ void	print_arg(t_parse *p, va_list valist)
 {
 	//types = "%diufFeEgGxXoscpaAn";
 	if (ft_strchr("diu", p->type))
-		print_int(valist, p);
+		print_int(get_int(valist, p), p);
 	else if ('o' == p->type)
 		print_oct(valist, p);
 	else if (ft_strchr("xX", p->type))
@@ -519,7 +522,10 @@ void	print_arg(t_parse *p, va_list valist)
 	else if ('s' == p->type)
 		print_str(va_arg(valist, char*), p);
 	else if ('%' == p->type)
+	{
 		ft_putchar('%');
+		p->printed++;
+	}
 	else if (ft_strchr("fFgG", p->type))
 		print_float(valist, p);
 }

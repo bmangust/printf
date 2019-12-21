@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 18:49:20 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/21 20:55:46 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,7 @@ typedef struct		s_parse
 	char 			type;
 	unsigned int	size;
 	int				is_signed;
-	int				is_long;
-	int				is_longlong;
-	int				is_short;
-	int				is__int64;			//or unsigned __int64
-	int				is_size_t;			//or analog unsigned
-	int				is_intmax_t;		//or uintmax_t
-	int				is_ptrdiff_t;		//or analog unsigned
+	int				spaces;
 	char			*flags;
 	int				width;
 	int				precision;

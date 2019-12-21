@@ -22,8 +22,8 @@ int main(int ac, char **av)
 	}
 	else
 	{
-		n = ft_printf(">%%<\n");
-		p = printf(">%o<\n", 40);
+		n = ft_printf(">% 10.5d<\n", 4242);
+		p = printf(">% 10.5d<\n", 4242);
 		ft_printf("printed %d symbols in 1st line\n", n);
 		ft_printf("printed %d symbols in 2st line\n", p);
 	}
