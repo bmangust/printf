@@ -15,7 +15,7 @@ LIB = -L. -lftprintf
 
 INC = -I ./inc
 
-MAKELIB = Makefile_lib
+MAKELIB = Makefile
 
 all: $(OBJ)
 	$(CC) $(FLAGS) $(OBJ) $(LIB) $(INC) -o $(NAME)

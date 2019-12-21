@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 20:14:29 by akraig           ###   ########.fr       */
+/*   Updated: 2019/12/21 20:43:18 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,11 +131,228 @@ void	print_char(va_list valist, t_parse *p)
 	}
 }
 
-void		print_str(char *s, t_parse *p)
+
+/*
+void	print_str_with_precision(char *temp, t_parse *p)
 {
-	(void) s;
-	(void) p;
+	int		i;
+	int		precision;
+
+	i = 0;
+	precision = p->precision;
+	while ((precision)-- > 0)
+	{
+		ft_putchar(temp[i++]);
+		p->printed++;
+	}
+	while ((p->width)-- > p->precision)
+	{
+		ft_putchar('.');
+		p->printed++;
+	}
 }
+*/
+
+
+
+
+
+/*   RIGHT VERSION   */
+
+void	print_str(char *temp, t_parse *p)
+{
+	int		len_str;
+	int		i;
+	int		precision;
+
+	len_str = ft_strlen(temp);
+	i = 0;
+	precision = p->precision;
+
+	// printf("FLAGS: %s\n", p->flags);
+	// printf("WIDTH: %d\n", p->width);
+	// printf("PRECISION: %d\n", p->precision);
+	// printf("LEN STR %d", len_str);
+
+	if (ft_strchr(p->flags, '-'))
+	{
+			
+		if (p->precision != 0 && p->precision <= len_str)
+		{
+			while ((precision)-- > 0)
+			{
+				ft_putchar(temp[i++]);
+				p->printed++;
+			}
+			while ((p->width)-- > p->precision)
+			{
+				ft_putchar(' ');
+				p->printed++;
+			}
+		}	
+		else
+		{
+			if (p->width < len_str)
+			{
+				while (i < len_str)
+				{
+					ft_putchar(temp[i++]);
+					p->printed++;
+				}
+			}
+			else
+			{
+				while (i < len_str)
+				{
+					ft_putchar(temp[i++]);
+					p->printed++;
+				}
+				while (i++ < p->width)
+				{
+					ft_putchar(' ');
+					p->printed++;
+				}
+			}
+		}	
+
+	}
+	else
+	{		
+		if (p->precision != 0 && p->precision <= len_str)
+		{
+			while ((p->width)-- > p->precision)
+			{
+				ft_putchar(' ');
+				p->printed++;
+			}
+			while ((precision)-- > 0)
+			{
+				ft_putchar(temp[i++]);
+				p->printed++;
+			}
+			
+		}	
+		else
+		{
+			if (p->width < len_str)
+			{
+				while (i < len_str)
+				{
+					ft_putchar(temp[i++]);
+					p->printed++;
+				}
+			}
+			else
+			{
+				while ((p->width)-- > len_str)
+				{
+					ft_putchar(' ');
+					p->printed++;
+				}
+								
+				while (i < len_str)
+				{
+					ft_putchar(temp[i++]);
+					p->printed++;
+				}
+			}
+		}
+	}
+}
+
+
+
+
+/*      PARSE
+
+int		print_str_continued(char *temp, t_parse *p, int len_str)
+{
+	int		i;
+	int		precision;
+
+
+	i = 0;
+	precision = p->precision;
+
+	if (p->precision != 0 && p->precision <= len_str)
+	{
+			while ((precision)-- > 0)
+		{
+			ft_putchar(temp[i++]);
+			p->printed++;
+		}
+		while ((p->width)-- > p->precision)
+		{
+			ft_putchar('.');
+			p->printed++;
+		}
+	}
+	else
+	{
+		if (p->width < len_str)
+		{
+			while (i < len_str)
+			{
+				ft_putchar(temp[i++]);
+				p->printed++;
+			}
+		}
+	}
+	return (i);
+}
+
+
+void	print_str(va_list valist, t_parse *p)
+{
+	int		len_str;
+	int		i;
+	char	*temp;
+
+
+	temp = va_arg(valist, char*);
+	len_str = ft_strlen(temp);
+	i = 0;
+
+
+	if (ft_strchr(p->flags, '-'))
+	{
+		print_str_continued(temp, p, len_str);
+		if (p->width > len_str)
+		{
+			while (i < len_str)
+			{
+				ft_putchar(temp[i++]);
+				p->printed++;
+			}
+			while (i++ < p->width)
+			{
+				ft_putchar('.');
+				p->printed++;
+			}	
+		}
+	}
+	else
+	{
+		print_str_continued(temp, p, len_str);
+
+		if (p->width > len_str)
+		{
+			while ((p->width)-- > len_str)
+			{
+				ft_putchar('.');
+				p->printed++;
+			}
+			while (i < len_str)
+			{
+				ft_putchar(temp[i++]);
+				p->printed++;
+			}
+		}
+	}
+}
+
+*/
+
 
 int			int_length(intmax_t n)
 {
