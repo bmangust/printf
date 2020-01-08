@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 21:34:21 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/07 18:03:29 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,39 +119,19 @@ void	print_char(va_list valist, t_parse *p)
 	}
 }
 
-
-/*
-void	print_str_with_precision(char *temp, t_parse *p)
-{
-	int		i;
-	int		precision;
-
-	i = 0;
-	precision = p->precision;
-	while ((precision)-- > 0)
-	{
-		ft_putchar(temp[i++]);
-		p->printed++;
-	}
-	while ((p->width)-- > p->precision)
-	{
-		ft_putchar('.');
-		p->printed++;
-	}
-}
-*/
-
-
-
-
-
-/*   RIGHT VERSION   */
-
-void	print_str(char *temp, t_parse *p)
+void		print_str(char *temp, t_parse *p)
 {
 	int		len_str;
 	int		i;
 	int		precision;
+
+	if (!temp)
+	{
+		write(1, "(null)", 6);
+		p->printed += 6;
+		return ;
+	}
+
 
 	len_str = ft_strlen(temp);
 	i = 0;
@@ -162,9 +142,11 @@ void	print_str(char *temp, t_parse *p)
 	// printf("PRECISION: %d\n", p->precision);
 	// printf("LEN STR %d", len_str);
 
+
+
 	if (ft_strchr(p->flags, '-'))
 	{
-			
+
 		if (p->precision != 0 && p->precision <= len_str)
 		{
 			while ((precision)-- > 0)
@@ -177,7 +159,7 @@ void	print_str(char *temp, t_parse *p)
 				ft_putchar(' ');
 				p->printed++;
 			}
-		}	
+		}
 		else
 		{
 			if (p->width < len_str)
@@ -201,11 +183,11 @@ void	print_str(char *temp, t_parse *p)
 					p->printed++;
 				}
 			}
-		}	
+		}
 
 	}
 	else
-	{		
+	{
 		if (p->precision != 0 && p->precision <= len_str)
 		{
 			while ((p->width)-- > p->precision)
@@ -218,28 +200,20 @@ void	print_str(char *temp, t_parse *p)
 				ft_putchar(temp[i++]);
 				p->printed++;
 			}
-			
-		}	
-		else
-		{
-			if (p->width < len_str)
-			{
-				while (i < len_str)
-				{
+
+		} else {
+			if (p->width < len_str) {
+				while (i < len_str) {
 					ft_putchar(temp[i++]);
 					p->printed++;
 				}
-			}
-			else
-			{
-				while ((p->width)-- > len_str)
-				{
+			} else {
+				while ((p->width)-- > len_str) {
 					ft_putchar(' ');
 					p->printed++;
 				}
-								
-				while (i < len_str)
-				{
+
+				while (i < len_str) {
 					ft_putchar(temp[i++]);
 					p->printed++;
 				}
@@ -248,137 +222,47 @@ void	print_str(char *temp, t_parse *p)
 	}
 }
 
-
-
-
-/*      PARSE
-
-int		print_str_continued(char *temp, t_parse *p, int len_str)
-{
-	int		i;
-	int		precision;
-
-
-	i = 0;
-	precision = p->precision;
-
-	if (p->precision != 0 && p->precision <= len_str)
-	{
-			while ((precision)-- > 0)
-		{
-			ft_putchar(temp[i++]);
-			p->printed++;
-		}
-		while ((p->width)-- > p->precision)
-		{
-			ft_putchar('.');
-			p->printed++;
-		}
-	}
-	else
-	{
-		if (p->width < len_str)
-		{
-			while (i < len_str)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-		}
-	}
-	return (i);
-}
-
-
-void	print_str(va_list valist, t_parse *p)
-{
-	int		len_str;
-	int		i;
-	char	*temp;
-
-
-	temp = va_arg(valist, char*);
-	len_str = ft_strlen(temp);
-	i = 0;
-
-
-	if (ft_strchr(p->flags, '-'))
-	{
-		print_str_continued(temp, p, len_str);
-		if (p->width > len_str)
-		{
-			while (i < len_str)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-			while (i++ < p->width)
-			{
-				ft_putchar('.');
-				p->printed++;
-			}	
-		}
-	}
-	else
-	{
-		print_str_continued(temp, p, len_str);
-
-		if (p->width > len_str)
-		{
-			while ((p->width)-- > len_str)
-			{
-				ft_putchar('.');
-				p->printed++;
-			}
-			while (i < len_str)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-		}
-	}
-}
-
+/*
+**	printing int
 */
 
-
-int			int_length(intmax_t n)
+int		int_length_and_update(__intmax_t n, t_parse *p)
 {
-	int length;
-
-	length = 0;
-	if (n <= 0)
-		length++;
-	while (n)
-	{
-		n /= 10;
-		length++;
-	}
-	return (length);
-}
-
-int			int_length_and_update(intmax_t n, t_parse *p)
-{
-	p->length = int_length(n);
+	p->length = ft_int_length_base(n, 10);
 	if (n >= 0 && ft_strchr(p->flags, '+'))
 		p->length++;
 	if ((n < 0 || ft_strchr(p->flags, '+')) && p->precision)
 		p->precision++;
+//	if (n < 0 || p->precision > p->length)
+//		p->length--;
 	return (p->length);
 }
 
-void	put_sign(intmax_t n, t_parse *p)
+int     is_positive(__intmax_t n, t_parse *p)
 {
-	if (n < 0 || ft_strchr(p->flags, '+'))
+	if (p->size == INT)
+		return ((int) n >= 0) ? 1 : 0;
+	else if (p->size == LONG)
+		return ((long int) n >= 0) ? 1 : 0;
+	else if (p->size == LONGLONG)
+		return ((long long int) n >= 0) ? 1 : 0;
+	else if (p->size == SHORT)
+		return ((short int) n >= 0) ? 1 : 0;
+}
+
+void	put_sign(__intmax_t n, t_parse *p)
+{
+	if (!is_positive(n, p) || ft_strchr(p->flags, '+'))
 	{
-		if (n < 0)
+		if (!is_positive(n, p))
 			ft_putchar('-');
 		else if (ft_strchr(p->flags, '+'))
 			ft_putchar('+');
 		p->length -= 1;
 		p->width -= 1;
-		if ((n < 0 || ft_strchr(p->flags, '+')) && p->precision)
+		if ((!is_positive(n, p) || ft_strchr(p->flags, '+')) && p->precision)
 			p->precision -= 1;
+//		p->printed += 1;
 	}
 	else if (ft_strchr(p->flags, ' ') && p->spaces == 0)
 	{
@@ -387,85 +271,80 @@ void	put_sign(intmax_t n, t_parse *p)
 	}
 }
 
-void	check_size_and_print_int(intmax_t n, t_parse *p)
+void	check_size_and_print_int(__intmax_t n, t_parse *p)
 {
-	if (p->size == LONG)
+	if (p->size == INT)
+		ft_putnbr(ft_absint((int) n));
+	else if (p->size == LONG)
 		ft_putnbr(ft_absint((long int) n));
 	else if (p->size == LONGLONG)
 		ft_putnbr(ft_absint((long long int) n));
 	else if (p->size == SHORT)
 		ft_putnbr(ft_absint((short int) n));
-	else if (p->size == INT)
-		ft_putnbr(ft_absint((int) n));
 }
 
-void	check_width_and_print_int(t_parse *p, int n)
+void	print_left_aligned_int(t_parse *p, int n)
 {
 	if (p->width > p->length && p->width > p->precision)
 		p->printed += p->width;
 	else
 		p->printed += MAX(p->precision, p->length);
+	if (ft_strchr(p->flags, ' ') && is_positive(n, p) && p->width > p->length)
+	{
+		p->printed -= 1;
+		p->width -= 1;
+	}
 	put_sign(n , p);
+	p->width -= MAX(p->precision, p->length);
 	while ((p->precision)-- > p->length)
 	{
 		ft_putchar('0');
-		p->width -= 1;
+//		p->width -= 1;
 	}
 	check_size_and_print_int(n, p);
-	p->width -= p->length;
+    while ((p->width)-- > 0)
+        ft_putchar(' ');
 }
 
-intmax_t	get_int(va_list valist, t_parse *p)
+void	print_int_max_width(__intmax_t n, t_parse *p)
 {
-	intmax_t	n;
-
-	if (p->size == LONG)
-		n = va_arg(valist, long int);
-	else if (p->size == LONGLONG)
-		n = va_arg(valist, long long int);
-//	else if (p->size == SHORT)
-//		n = va_arg(valist, int);
+	p->printed += p->width;
+	if (ft_strchr(p->flags, '0') && !p->precision) {
+		put_sign(n, p);
+		while (p->width-- > p->length)
+			ft_putchar('0');
+	}
 	else
-		n = va_arg(valist, int);
-	return (n);
+	{
+//	    if (!is_positive(n, p))
+//	        p->width--;
+		while (p->width-- > (MAX(p->length, p->precision)))
+			ft_putchar(' ');
+		p->spaces = 1;
+        if (p->precision > 0)
+        {
+            put_sign(n, p);
+            while (p->precision-- > p->length)
+                ft_putchar('0');
+        }
+        else //if (!ft_strchr(p->flags, '0'))
+            put_sign(n, p);
+    }
+	check_size_and_print_int(n, p);
 }
 
-void	print_int(intmax_t n, t_parse *p)
+void	print_int(va_list valist, t_parse *p)
 {
+	__intmax_t	n;
+
+	n = va_arg(valist, __intmax_t);
 	int_length_and_update(n, p);
 	if (ft_strchr(p->flags, '-'))
-	{
-		check_width_and_print_int(p, n);
-		while ((p->width)-- > 0)
-			ft_putchar(' ');
-	}
+        print_left_aligned_int(p, n);
 	else
 	{
 		if (p->width > p->precision && p->width > p->length)
-		{
-			p->printed += p->width;
-			if (ft_strchr(p->flags, '0') && !p->precision)
-			{
-				put_sign(n, p);
-				while (p->width-- > p->length)
-					ft_putchar('0');
-			}
-			else
-			{
-				while (p->width-- > (MAX(p->length, p->precision)))
-					ft_putchar(' ');
-				p->spaces = 1;
-			}
-			if (p->precision > 0)
-			{
-				put_sign(n, p);
-				while (p->precision-- > p->length)
-					ft_putchar('0');
-			}
-			else if (!ft_strchr(p->flags, '0'))
-				put_sign(n, p);
-			check_size_and_print_int(n, p);
-		}
+			print_int_max_width(n, p);
 		else
 		{
 			p->printed += MAX(p->length, p->precision);
@@ -480,24 +359,36 @@ void	print_int(intmax_t n, t_parse *p)
 	}
 }
 
-void	print_oct(va_list valist, t_parse *p)
+/*
+**	printing oct and hex
+*/
+
+void	print_base(int value, t_parse *p, int base)
 {
-	char *s;
+	char	*s;
+	char	*number;
 
-	s = ft_itoa_base(va_arg(valist, int), 8);
-	print_str(s, p);
-}
-
-void	print_hex(va_list valist, t_parse *p)
-{
-	char *s;
-
-	if (p->type == 'x')
-		s = ft_itoa_base(va_arg(valist, int), 16);
+	p->length = ft_int_length_base(value, base);
+	s = ft_strnew(MAX(p->precision, p->length));
+	if (p->precision > p->length)
+	{
+		while ((p->precision)-- > p->length)
+			ft_strcat(s, "0");
+	}
+	if (base == 8)
+		number = ft_itoa_base(value, 8);
 	else
-		s = ft_itoa_baseu(va_arg(valist, int), 16);
+		number = ((p->type == 'x') ? ft_itoa_base(value, 16) : ft_itoa_baseu(value, 16));
+	ft_strcat(s, number);
+	free(number);
+	p->precision = 0;
 	print_str(s, p);
+	free(s);
 }
+
+/*
+**	printing float
+*/
 
 void	print_float(va_list valist, t_parse *p)
 {
@@ -512,11 +403,11 @@ void	print_arg(t_parse *p, va_list valist)
 {
 	//types = "%diufFeEgGxXoscpaAn";
 	if (ft_strchr("diu", p->type))
-		print_int(get_int(valist, p), p);
+		print_int(valist, p);
 	else if ('o' == p->type)
-		print_oct(valist, p);
+		print_base(va_arg(valist, int), p, 8);
 	else if (ft_strchr("xX", p->type))
-		print_hex(valist, p);
+		print_base(va_arg(valist, int), p, 16);
 	else if ('c' == p->type)
 		print_char(valist, p);
 	else if ('s' == p->type)
@@ -582,6 +473,27 @@ char	*read_flags(char *tmp, t_parse *p)
 **	returns list node with all parameters and pointer to next symbol
 */
 
+char	*check_flag_width_and_prec(char *tmp, t_parse *p, va_list valist)
+{
+	if (!p->flags && ft_strchr("-+ 0#", *tmp))				//flag
+		tmp = read_flags(tmp, p);
+	else if (ft_atoi(tmp))    									//width
+	{
+		p->width = ft_atoi(tmp);
+		tmp += ft_int_length_base(p->width, 10) - 1;
+	} else if (*tmp == '*')
+		p->width = va_arg(valist, int);
+	else if (*tmp == '.')                        				//precision
+	{
+		if (*(tmp + 1) == '*') {
+			p->precision = va_arg(valist, int);
+			tmp++;
+		} else if ((p->precision = ft_atoi(tmp + 1)))
+			tmp += ft_int_length_base(p->precision, 10);
+	}
+	return (tmp);
+}
+
 t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 {
 	int		stop;
@@ -589,32 +501,18 @@ t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 	stop = 0;
 	while (!stop && *tmp)
 	{
-		if (!p->flags && ft_strchr("-+ 0#", *tmp))				//flag
-			tmp = read_flags(tmp, p);
-		else if (ft_atoi(tmp))	//width
-		{
-			p->width = ft_atoi(tmp);
-			tmp += int_length(p->width) - 1;
-		}
-		else if (*tmp == '*')
-			p->width = va_arg(valist, int);
-		else if (*tmp == '.')						//precision
-		{
-			if (*(tmp + 1) == '*')
-			{
-				p->precision = va_arg(valist, int);
-				tmp++;
-			}
-			else if ((p->precision = ft_atoi(tmp + 1)))
-				tmp += int_length(p->precision);
-		}
-		else if (ft_strchr("hlLzjt", *tmp))			//size
+		tmp = check_flag_width_and_prec(tmp, p, valist);
+		if (ft_strchr("hlLzjt", *tmp))			//size
 			check_size(p, tmp);
 		else if (ft_strchr("%diufFeEgGxXoscpaAn", *tmp))		//type
 		{
 			p->type = *tmp;
 			p->next = tmp;
 			stop = 1;
+		}
+		else
+		{
+			//ERROR PARSING
 		}
 		++tmp;
 	}

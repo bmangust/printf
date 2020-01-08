@@ -19,7 +19,7 @@
 # include <stdarg.h>
 # include "libft.h"
 
-# define MAX(a,b) (a > b) ? a : b
+# define MAX(a,b) ((a > b) ? a : b)
 
 #define INT 0					//without flags for d, i
 #define FLOAT 0					//without flags for d, f
