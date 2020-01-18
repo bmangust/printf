@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static void	ft_cycles(__intmax_t nb, int lower_f, int fd)
+static void	ft_cycles(intmax_t nb, int lower_f, int fd)
 {
 	int temp[10];
 	int i;
@@ -34,7 +34,7 @@ static void	ft_cycles(__intmax_t nb, int lower_f, int fd)
 	}
 }
 
-void		ft_putnbr_fd(__intmax_t nb, int fd)
+void		ft_putnbr_fd(intmax_t nb, int fd)
 {
 	int lower_f;
 

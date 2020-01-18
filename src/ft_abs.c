@@ -1,7 +1,7 @@
 #include <limits.h>
 #include <stdint.h>
 
-__intmax_t ft_absint(__intmax_t n)
+intmax_t ft_absint(intmax_t n)
 {
 //    if (n == INT_MIN)
 //        return (0);

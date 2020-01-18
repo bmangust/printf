@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/07 18:03:29 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/18 17:16:08 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ void		print_str(char *temp, t_parse *p)
 **	printing int
 */
 
-int		int_length_and_update(__intmax_t n, t_parse *p)
+int		int_length_and_update(intmax_t n, t_parse *p)
 {
 	p->length = ft_int_length_base(n, 10);
 	if (n >= 0 && ft_strchr(p->flags, '+'))
@@ -238,7 +238,7 @@ int		int_length_and_update(__intmax_t n, t_parse *p)
 	return (p->length);
 }
 
-int     is_positive(__intmax_t n, t_parse *p)
+int     is_positive(intmax_t n, t_parse *p)
 {
 	if (p->size == INT)
 		return ((int) n >= 0) ? 1 : 0;
@@ -248,9 +248,10 @@ int     is_positive(__intmax_t n, t_parse *p)
 		return ((long long int) n >= 0) ? 1 : 0;
 	else if (p->size == SHORT)
 		return ((short int) n >= 0) ? 1 : 0;
+	return (0);
 }
 
-void	put_sign(__intmax_t n, t_parse *p)
+void	put_sign(intmax_t n, t_parse *p)
 {
 	if (!is_positive(n, p) || ft_strchr(p->flags, '+'))
 	{
@@ -271,7 +272,7 @@ void	put_sign(__intmax_t n, t_parse *p)
 	}
 }
 
-void	check_size_and_print_int(__intmax_t n, t_parse *p)
+void	check_size_and_print_int(intmax_t n, t_parse *p)
 {
 	if (p->size == INT)
 		ft_putnbr(ft_absint((int) n));
@@ -306,7 +307,7 @@ void	print_left_aligned_int(t_parse *p, int n)
         ft_putchar(' ');
 }
 
-void	print_int_max_width(__intmax_t n, t_parse *p)
+void	print_int_max_width(intmax_t n, t_parse *p)
 {
 	p->printed += p->width;
 	if (ft_strchr(p->flags, '0') && !p->precision) {
@@ -335,9 +336,9 @@ void	print_int_max_width(__intmax_t n, t_parse *p)
 
 void	print_int(va_list valist, t_parse *p)
 {
-	__intmax_t	n;
+	intmax_t	n;
 
-	n = va_arg(valist, __intmax_t);
+	n = va_arg(valist, intmax_t);
 	int_length_and_update(n, p);
 	if (ft_strchr(p->flags, '-'))
         print_left_aligned_int(p, n);
