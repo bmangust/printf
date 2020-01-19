@@ -15,6 +15,8 @@ int		ft_pow(int a, int b)
 	int res;
 
 	res = 1;
+	if (b == 0)
+		return (res);
 	if (b < 0)
 		return (-1);
 	while (b > 0)

@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 21:01:15 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/19 16:12:42 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,7 @@ void	print_str(char *temp, t_parse *p)
 		p->printed += 6;
 		return ;
 	}
-	
-	
+		
 	len_str = ft_strlen(temp);
 	i = 0;
 	precision = p->precision;
@@ -156,8 +155,6 @@ void	print_str(char *temp, t_parse *p)
 	// printf("WIDTH: %d\n", p->width);
 	// printf("PRECISION: %d\n", p->precision);
 	// printf("LEN STR %d", len_str);
-
-
 
 	if (ft_strchr(p->flags, '-'))
 	{
@@ -249,12 +246,68 @@ void	print_str(char *temp, t_parse *p)
 
 
 
+int		float_base(double x, t_parse *p)
+{
+	float	rest;
+	int		E;
+	int		e;			// counter of power of 2		
+	//(void) 	p;
+	int		base;
+
+	E = p->E;
+	e = 0;
+	rest = 1;
+	base = 0;
+	while (E++ < p->E * -1)       
+	{
+		rest = x / ft_pow(2, E);
+		if (rest >= 1 && rest < 2)
+		{
+			e = E + 1;
+			break ;
+		}
+	}
+	rest = x;
+	while (rest > 0 && e-- > 0)
+	{
+		//printf("* rest: %f\n* base: %d\n* power: %d\n", rest, base, e);
+		base += ft_pow(2, e);
+		rest = x - base;
+		//printf("____________\n");
+	}
+	// printf("REST in the end: %f\n", rest);
+	// printf("POWER in the end: %d\n", e);
+	// printf("___________\n");
+	if (e >= 0)
+		base += rest;
+	//printf("BASE: %d\n", base);
+	return (base);
+}
 
 
+void	print_float(va_list valist, t_parse *p)
+{
+	float	x;
+	int		integer;
+	int		fract;
+	//char	sign;
+
+	x = va_arg(valist, double);
+	integer = float_base(x, p);
+	fract = float_base(((x - integer) * ft_pow(10, p->precision)), p);
+	(integer < 0 || x < 0) ? fract *= -1 : fract;
+	
+	
+	printf("x: %f\n", x);
+	printf("INTEGER: %d\n", integer);
+	printf("FRACTIONAL: %d\n", fract);
+	
+	
+	
+}
 
 
-
-
+	
 int			int_length(int n)
 {
 	int length;
@@ -390,11 +443,11 @@ void	print_int(va_list valist, t_parse *p)
 	}
 }
 
-void	print_float(va_list valist, t_parse *p)
-{
-	(void) valist;
-	(void) p;
-}
+// void	print_float(va_list valist, t_parse *p)
+// {
+// 	(void) valist;
+// 	(void) p;
+// }
 
 /*
 **	prints one argument
@@ -413,7 +466,10 @@ void	print_arg(t_parse *p, va_list valist)
 	else if ('%' == p->type)
 		ft_putchar('%');
 	else if (ft_strchr("fFgG", p->type))
+	{
+		p->E = -23;
 		print_float(valist, p);
+	}
 }
 
 /*
