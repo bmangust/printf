@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/19 16:12:42 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/22 15:49:13 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,13 +246,12 @@ void	print_str(char *temp, t_parse *p)
 
 
 
-int		float_base(double x, t_parse *p)
+long long int		float_base(double x, t_parse *p)
 {
-	float	rest;
+	double	rest;
 	int		E;
 	int		e;			// counter of power of 2		
-	//(void) 	p;
-	int		base;
+	long long int		base;
 
 	E = p->E;
 	e = 0;
@@ -287,9 +286,9 @@ int		float_base(double x, t_parse *p)
 
 void	print_float(va_list valist, t_parse *p)
 {
-	float	x;
-	int		integer;
-	int		fract;
+	double	x;
+	long long int		integer;
+	long long int		fract;
 	//char	sign;
 
 	x = va_arg(valist, double);
@@ -299,8 +298,8 @@ void	print_float(va_list valist, t_parse *p)
 	
 	
 	printf("x: %f\n", x);
-	printf("INTEGER: %d\n", integer);
-	printf("FRACTIONAL: %d\n", fract);
+	printf("INTEGER: %lld\n", integer);
+	printf("FRACTIONAL: %lld\n", fract);
 	
 	
 	
@@ -467,7 +466,7 @@ void	print_arg(t_parse *p, va_list valist)
 		ft_putchar('%');
 	else if (ft_strchr("fFgG", p->type))
 	{
-		p->E = -23;
+		p->E = -52;
 		print_float(valist, p);
 	}
 }
