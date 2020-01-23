@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static int	count_digits(int n)
+static int	count_digits(long long int n)
 {
 	int cnt;
 
@@ -28,7 +28,7 @@ static int	count_digits(int n)
 	return (cnt);
 }
 
-static void	ft_itoa_alg(int n, char *s, int slen)
+static void	ft_itoa_alg(long long int n, char *s, int slen)
 {
 	int i;
 	int cutter;
@@ -49,13 +49,12 @@ static void	ft_itoa_alg(int n, char *s, int slen)
 	s[i] = '\0';
 }
 
-char		*ft_ltoa(double n)
+char		*ft_ltoa(long long int n)
 {
-	int		slen_int;
-	int		slen_frac;
+	int		slen;
 	char	*s;
 
-	slen_int = count_digits((int) n);
+	slen = count_digits((int) n);
 	s = (char *)malloc((slen + 1) * sizeof(char));
 	if (s)
 	{
@@ -64,7 +63,3 @@ char		*ft_ltoa(double n)
 	}
 	return (NULL);
 }
-
-
-23.346008
-

@@ -62,12 +62,13 @@ int main(int ac, char **av)
 		// ft_printf("%s    %s\n", split[0], split[1]);
 		// ft_printf("%d\n", ft_atoi(split[0]));
 		// ft_printf("%d\n", ft_atoi(split[1]));
-		ft_printf("%.16f\n", 123456789.12345678977777);
-		printf("l: %.16f\n", 123456789.12345678977777);
+//		ft_printf("%.9f\n", 123456789.123);
+//		printf("l: %.9f\n", 123456789.123);
 
-		
+
 		// test = ft_atoi("12.34568");
-		// ft_printf("%d\n", test);
+		ft_printf(">%x<\n", 0);
+		printf(">%x<\n", 0);
 		// //ft_printf("%5.2s is a string", "this");
 		//ft_printf("%s %s\n", NULL, "string");
 		//ft_printf("%s\n", NULL);
