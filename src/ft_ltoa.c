@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/18 17:46:22 by jbloodax          #+#    #+#             */
-/*   Updated: 2020/01/23 19:26:41 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/23 20:19:51 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ char		*ft_ltoa(long long base, int sign)
 {
 	int		slen;
 	char	*s;
-
 
 	slen = count_digits(base);
 	//printf("sign in ltoa: %d\n", sign);

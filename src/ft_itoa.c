@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 00:05:16 by akraig            #+#    #+#             */
-/*   Updated: 2019/09/19 18:51:20 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/22 20:36:25 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,60 @@ char		*ft_itoa(int n)
 		return (s);
 	}
 	return (NULL);
+}
+
+char	*ft_itoa_base(int value, int base)
+{
+	char *snum;
+	char *s;
+	int val;
+	size_t cnt;
+
+	val = value;
+	cnt = 0;
+	s = "0123456789abcdef";
+	if (value == 0)
+		return ("0");
+	while(value)
+	{
+		value /= base;
+		cnt++;
+	}
+	if (!(snum = (char*)malloc((cnt + 1) * sizeof(char))))
+		return (NULL);
+	snum[cnt--] = '\0';
+	while(val)
+	{
+		snum[cnt--] = s[val % base];
+		val /= base;
+	}
+	return snum;
+}
+
+char	*ft_itoa_baseu(int value, int base)
+{
+	char *snum;
+	char *s;
+	int val;
+	size_t cnt;
+
+	val = value;
+	cnt = 0;
+	s = "0123456789ABCDEF";
+	if (value == 0)
+		return ("0");
+	while(value)
+	{
+		value /= base;
+		cnt++;
+	}
+	if (!(snum = (char*)malloc((cnt + 1) * sizeof(char))))
+		return (NULL);
+	snum[cnt--] = '\0';
+	while(val)
+	{
+		snum[cnt--] = s[val % base];
+		val /= base;
+	}
+	return snum;
 }

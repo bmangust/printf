@@ -64,7 +64,6 @@ int main(int ac, char **av)
 	 ft_printf("RES: ->%-1f<-\n", 126.375);
 		printf("LIB: ->%-1f<-\n", 126.375);		
 
-
 	}
 	return (0);
 }

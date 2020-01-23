@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/16 23:38:01 by akraig            #+#    #+#             */
-/*   Updated: 2019/09/22 13:01:39 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/22 16:11:40 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int					ft_isascii(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-int					ft_absint(int n);
+intmax_t			ft_absint(intmax_t n);
 float				ft_absfloat(float n);
 void				*ft_memalloc(size_t size);
 void				ft_memdel(void **ap);
@@ -70,14 +70,16 @@ char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strtrim(char const *s);
 char				**ft_strsplit(char const *s, char c);
 char				*ft_itoa(int n);
+char				*ft_itoa_base(int value, int base);
+char				*ft_itoa_baseu(int value, int base);
 void				ft_putchar(char c);
 void				ft_putstr(char const *s);
 void				ft_putendl(char const *s);
-void				ft_putnbr(int n);
+void				ft_putnbr(intmax_t n);
 void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char const *s, int fd);
 void				ft_putendl_fd(char const *s, int fd);
-void				ft_putnbr_fd(int n, int fd);
+void				ft_putnbr_fd(intmax_t n, int fd);
 t_list				*ft_lstnew(void const *content, size_t content_size);
 void				ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
 void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
@@ -85,11 +87,15 @@ void				ft_lstadd(t_list **alst, t_list *new);
 void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 int					ft_isspace(int c);
-long long int		ft_pow(int a, int b);
+int					ft_pow(int a, int b);
 int					ft_wrdcnt(char const *s, char c);
 int					ft_wordlen(const char *s, char c, int start);
 void				ft_lstrev(t_list **head);
 void				ft_lstadd_last(t_list **alst, t_list *new);
+<<<<<<< HEAD
 char				*ft_ltoa(long long base, int sign);
+=======
+int					ft_int_length_base(int value, int base);
+>>>>>>> 0be0342b636a6dca8d7f93a7737726691505938e
 
 #endif
