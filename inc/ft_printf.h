@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 20:55:46 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/23 12:27:16 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #define UNSIGNED (1 << 3)		//unsigned numbers u, o, x, X,
 #define CHAR (1 << 4)			//hh
 #define LONGDOUBLE (1 << 5)		//L for float
+#define FLOAT_POWER 52			//hh
 
 /*
 **	type:
@@ -67,6 +68,7 @@ typedef struct		s_parse
 	char			*flags;
 	int				width;
 	int				precision;
+	int				E;
 	/*
 	Модификатор точности
 	указывает на минимальное количество символов, которое должно появиться при обработке типов d, i, o, u, x, X;

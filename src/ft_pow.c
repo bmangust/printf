@@ -6,15 +6,17 @@
 /*   By: akraig <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 01:30:45 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 20:55:28 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/23 12:27:16 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int		ft_pow(int a, int b)
+long long int	ft_pow(int a, int b)
 {
-	int res;
+	long long int res;
 
 	res = 1;
+	if (b == 0)
+		return (res);
 	if (b < 0)
 		return (-1);
 	while (b > 0)

@@ -6,7 +6,7 @@
 #    By: akraig <akraig@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/17 12:00:21 by akraig            #+#    #+#              #
-#    Updated: 2019/12/21 20:55:28 by akraig           ###   ########.fr        #
+#    Updated: 2020/01/23 12:27:16 by akraig           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,8 @@ ft_strdel.c ft_strdup.c ft_strequ.c ft_striter.c ft_striteri.c ft_strchrn.c \
 ft_strjoin.c ft_strlcat.c ft_strlen.c ft_strmap.c ft_strmapi.c ft_strncat.c \
 ft_strncmp.c ft_strncpy.c ft_strnequ.c ft_strnew.c ft_strnstr.c ft_strrchr.c \
 ft_strsplit.c ft_strstr.c ft_strsub.c ft_strtrim.c ft_tolower.c ft_toupper.c \
-ft_wrdcnt.c ft_lstrev.c ft_itoa_base.c ft_printf.c ft_int_length_base.c
+ft_wrdcnt.c ft_lstrev.c ft_itoa_base.c ft_printf.c ft_int_length_base.c \
+ft_dtoa.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/16 23:38:01 by akraig            #+#    #+#             */
-/*   Updated: 2019/12/21 20:55:24 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/23 16:39:20 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int					ft_isascii(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-intmax_t			ft_absint(intmax_t n);
+intmax_t			ft_absint(int64_t n);
 float				ft_absfloat(float n);
 void				*ft_memalloc(size_t size);
 void				ft_memdel(void **ap);
@@ -71,14 +71,17 @@ char				**ft_strsplit(char const *s, char c);
 char				*ft_itoa(int n);
 char				*ft_itoa_base(int value, int base);
 char				*ft_itoa_baseu(int value, int base);
+char				*ft_dtoa(long double d);
 void				ft_putchar(char c);
 void				ft_putstr(char const *s);
 void				ft_putendl(char const *s);
-void				ft_putnbr(intmax_t n);
+void				ft_putnbr(int64_t n);
+void				ft_unsigned_putnbr(uint64_t n);
 void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char const *s, int fd);
 void				ft_putendl_fd(char const *s, int fd);
-void				ft_putnbr_fd(intmax_t n, int fd);
+void				ft_putnbr_fd(int64_t n, int fd);
+void				ft_unsigned_putnbr_fd(uint64_t nb, int fd);
 t_list				*ft_lstnew(void const *content, size_t content_size);
 void				ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
 void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
@@ -91,6 +94,6 @@ int					ft_wrdcnt(char const *s, char c);
 int					ft_wordlen(const char *s, char c, int start);
 void				ft_lstrev(t_list **head);
 void				ft_lstadd_last(t_list **alst, t_list *new);
-int					ft_int_length_base(int value, int base);
+int					ft_int_length_base(int64_t value, int base);
 
 #endif
