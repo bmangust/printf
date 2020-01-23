@@ -16,6 +16,7 @@
 # include <stdlib.h>
 # include <string.h>
 
+
 typedef struct		s_list
 {
 	void			*content;
@@ -89,5 +90,6 @@ int					ft_wrdcnt(char const *s, char c);
 int					ft_wordlen(const char *s, char c, int start);
 void				ft_lstrev(t_list **head);
 void				ft_lstadd_last(t_list **alst, t_list *new);
+char				*ft_ltoa(long long base, int sign);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/22 15:49:13 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/23 18:52:05 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,15 +245,14 @@ void	print_str(char *temp, t_parse *p)
 
 
 
-
-long long int		float_base(double x, t_parse *p)
+long long int		float_base(double x, t_parse *p)   // DEL p
 {
 	double	rest;
 	int		E;
 	int		e;			// counter of power of 2		
 	long long int		base;
 
-	E = p->E;
+	E = p->E;  // change p->E (FLOAT_POWER)
 	e = 0;
 	rest = 1;
 	base = 0;
@@ -277,11 +276,13 @@ long long int		float_base(double x, t_parse *p)
 	// printf("REST in the end: %f\n", rest);
 	// printf("POWER in the end: %d\n", e);
 	// printf("___________\n");
-	if (e >= 0)
+	//if (e >= 0)
 		base += rest;
 	//printf("BASE: %d\n", base);
 	return (base);
 }
+
+
 
 
 void	print_float(va_list valist, t_parse *p)
@@ -289,17 +290,46 @@ void	print_float(va_list valist, t_parse *p)
 	double	x;
 	long long int		integer;
 	long long int		fract;
-	//char	sign;
+	char				*str_int;
+	char				*str_fract;
+	char				*str;
+	int					sign;
 
+	sign = 0;
+	(ft_strchr(p->flags, '+')) ? sign = 1 : sign; 
+
+	if (!p->precision)
+		p->precision = 6;
 	x = va_arg(valist, double);
 	integer = float_base(x, p);
-	fract = float_base(((x - integer) * ft_pow(10, p->precision)), p);
+	fract = float_base(((x - integer) * ft_pow(10, p->precision + 1)), p);
+	
 	(integer < 0 || x < 0) ? fract *= -1 : fract;
+	if (fract != 0)
+		fract = (fract - 5)/10 + 1;
+	
+	//printf("%d\n", sign);
+	str_int = ft_ltoa(integer, (sign + 1));
+	sign = 0;
+	str_fract = ft_ltoa(fract, sign);
+	str = ft_strcat(str_int, str_fract);
+
 	
 	
-	printf("x: %f\n", x);
-	printf("INTEGER: %lld\n", integer);
-	printf("FRACTIONAL: %lld\n", fract);
+	
+	//printf("IN:  %f\n", x);
+	// printf("INTEGER: %lld\n", integer);
+	// printf("FRACTIONAL:  %lld\n", fract);
+	
+
+	// printf("str int: %s\n", str_int);
+	// printf("str fract: %s\n", str_fract);
+
+	//printf("res: %s\n", str);
+
+	p->precision = 0;
+
+	print_str(str, p);
 	
 	
 	
