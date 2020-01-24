@@ -6,14 +6,14 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/18 17:46:22 by jbloodax          #+#    #+#             */
-/*   Updated: 2020/01/23 20:19:51 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/24 17:31:33 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 //#include <stdio.h>
 
-static int	count_digits(long long n)
+static int	count_digits(long long int n)
 {
 	int cnt;
 
@@ -29,7 +29,7 @@ static int	count_digits(long long n)
 	return (cnt);
 }
 
-static void	ft_itoa_alg(long long base, char *s, int slen, int sign)
+static void	ft_itoa_alg(long long int base, char *s, int slen, int sign)
 {
 	int i;
 	int cutter;
@@ -63,7 +63,7 @@ static void	ft_itoa_alg(long long base, char *s, int slen, int sign)
 **	
 */
 
-char		*ft_ltoa(long long base, int sign)
+char		*ft_ltoa(long long int base, int sign)
 {
 	int		slen;
 	char	*s;

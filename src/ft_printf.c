@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/23 20:23:45 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/24 17:32:13 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,8 @@ void	print_char(va_list valist, t_parse *p)
 	if (p->flags && ft_strchr(p->flags, '-'))
 	{
 		ft_putchar(c);
-		while ((p->width)-- > 0)
+		p->printed++;
+		while ((p->width)-- > 1)
 		{
 			ft_putchar(' ');
 			p->printed++;
@@ -224,18 +225,24 @@ void		print_str(char *temp, t_parse *p)
 			}
 
 		} else {
-			if (p->width < len_str) {
-				while (i < len_str) {
+			if (p->width < len_str) 
+			{
+				while (i < len_str) 
+				{
 					ft_putchar(temp[i++]);
 					p->printed++;
 				}
-			} else {
-				while ((p->width)-- > len_str) {
+			} 
+			else 
+			{
+				while ((p->width)-- > len_str) 
+				{
 					ft_putchar(' ');
 					p->printed++;
 				}
 
-				while (i < len_str) {
+				while (i < len_str) 
+				{
 					ft_putchar(temp[i++]);
 					p->printed++;
 				}
@@ -454,14 +461,14 @@ void print_array(int *arr, int length)
 	printf("\n");
 }
 
-long long int		float_base(double x, t_parse *p)   // DEL p
+long long int		float_base(double x)   // DEL p
 {
 	double	rest;
 	int		E;
 	int		e;			// counter of power of 2
 	long long int		base;
 
-	E = p->E;  // change p->E (FLOAT_POWER)
+	E = -FLOAT_POWER;  // change p->E (FLOAT_POWER)
 	e = 0;
 	rest = 1;
 	base = 0;
@@ -497,64 +504,36 @@ long long int		float_base(double x, t_parse *p)   // DEL p
 void	print_float(va_list valist, t_parse *p)
 {
 	double	x;
-	double	y;
 	long long int		integer;
 	long long int		fract;
 	char				*str_int;
 	char				*str_fract;
-	char				*str;
+	//char				*str;
 	int					sign;
 
 	sign = 0;
 	(ft_strchr(p->flags, '+')) ? sign = 1 : sign; 
-
 	if (!p->precision)
 		p->precision = 6;
 	x = va_arg(valist, double);
-	integer = float_base(x, p);
-	fract = float_base(((x - integer) * ft_pow(10, p->precision + 1)), p);
-	
+	integer = float_base(x);
+	fract = float_base((x - integer) * ft_pow(10, p->precision + 1));
 	(integer < 0 || x < 0) ? fract *= -1 : fract;
 	if (fract != 0)
 		fract = (fract - 5)/10 + 1;
+
+	printf("lld int: %lld\n", integer);
+	printf("lld fract: %lld\n", fract);
 	
-	//printf("%d\n", sign);
 	str_int = ft_ltoa(integer, (sign + 1));
 	sign = 0;
 	str_fract = ft_ltoa(fract, sign);
-	str = ft_strcat(str_int, str_fract);
-
-	
-	
-	
-	//printf("IN:  %f\n", x);
-	// printf("INTEGER: %lld\n", integer);
-	// printf("FRACTIONAL:  %lld\n", fract);
-	
-
-	// printf("str int: %s\n", str_int);
-	// printf("str fract: %s\n", str_fract);
-
-	//printf("res: %s\n", str);
-
+	//str = ft_strcat(str_int, str_fract);
 	p->precision = 0;
-
-	print_str(str, p);
-	
-	
-	
-}
-
-
-//	float x = 0.15625;
-	int *bits;
-
-	printf("%f\n", x);
-
-	bits = get_bits(x);
-	print_array(bits, 32);
-//	printf("%d\n", get_exp(bits));
-
+	//print_str(str, p);
+	printf("str int: %s\n", str_int);
+	printf("str fract: %s\n", str_fract);
+	//printf("str lib: %s\n", str);
 }
 
 /*

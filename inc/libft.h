@@ -92,10 +92,6 @@ int					ft_wrdcnt(char const *s, char c);
 int					ft_wordlen(const char *s, char c, int start);
 void				ft_lstrev(t_list **head);
 void				ft_lstadd_last(t_list **alst, t_list *new);
-<<<<<<< HEAD
 char				*ft_ltoa(long long base, int sign);
-=======
-int					ft_int_length_base(int value, int base);
->>>>>>> 0be0342b636a6dca8d7f93a7737726691505938e
 
 #endif
