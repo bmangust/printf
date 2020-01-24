@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/18 17:46:22 by jbloodax          #+#    #+#             */
-/*   Updated: 2020/01/24 17:31:33 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/24 18:29:47 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	count_digits(long long int n)
 static void	ft_itoa_alg(long long int base, char *s, int slen, int sign)
 {
 	int i;
-	int cutter;
+	long long int cutter;
 
 	i = 0;
 	if (sign > 1)

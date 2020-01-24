@@ -38,7 +38,9 @@
 
 int main(int ac, char **av)
 {
+	double x;
 
+	x = 1234567890.1234567890139;
 	if (ac == 2)
 	{
 		ft_printf(av[1], -4);
@@ -57,8 +59,8 @@ int main(int ac, char **av)
 	else
 	{
 		// Main check //
-		ft_printf("%f\n", -1234567890123456789.1234567890123456789);
-		printf("l: %f\n", -1234567890123456789.1234567890123456789);
+		ft_printf("p: %.16Lf\n", x);
+		printf(	  "l: %.16Lf\n", x);
 	
 	//  ft_printf("RES: ->%f fdnbjs<-\n", 126);
 	// 	printf("LIB: ->%+f<-\n", 126.375);		

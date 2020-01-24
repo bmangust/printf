@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/24 17:32:13 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/24 18:39:50 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -508,7 +508,7 @@ void	print_float(va_list valist, t_parse *p)
 	long long int		fract;
 	char				*str_int;
 	char				*str_fract;
-	//char				*str;
+	char				*str;
 	int					sign;
 
 	sign = 0;
@@ -522,18 +522,20 @@ void	print_float(va_list valist, t_parse *p)
 	if (fract != 0)
 		fract = (fract - 5)/10 + 1;
 
-	printf("lld int: %lld\n", integer);
-	printf("lld fract: %lld\n", fract);
+	
 	
 	str_int = ft_ltoa(integer, (sign + 1));
 	sign = 0;
 	str_fract = ft_ltoa(fract, sign);
-	//str = ft_strcat(str_int, str_fract);
+	str = ft_strcat(str_int, str_fract);
 	p->precision = 0;
-	//print_str(str, p);
-	printf("str int: %s\n", str_int);
-	printf("str fract: %s\n", str_fract);
-	//printf("str lib: %s\n", str);
+	print_str(str, p);
+
+	// printf("\nld int: %lld\n", integer);
+	printf("\nlld fract:    %lld\n", fract);
+	//printf("str int: %s\n", str_int);
+	//printf("str fract: %s\n", str_fract);
+	//printf("str: %s\n", str);
 }
 
 /*
