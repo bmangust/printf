@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/23 21:17:41 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/24 17:37:52 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ t_parse		*new_param(void)
 	new->width = 0;
 	new->precision = 0;
 	new->E = 0;
+	new->skip_zero = 0;
 	new->printed = 0;
 	new->length = 0;
 	new->next = NULL;
@@ -61,6 +62,7 @@ void		clear_param(t_parse *p)
 	p->flags = NULL;
 	p->width = 0;
 	p->E = 0;
+	p->skip_zero = 0;
 	p->precision = 0;
 	p->length = 0;
 	p->next = NULL;
@@ -139,6 +141,7 @@ void	print_char(va_list valist, t_parse *p)
 	if (p->flags && ft_strchr(p->flags, '-'))
 	{
 		ft_putchar(c);
+		p->printed++;
 		while ((p->width)-- > 1)
 		{
 			ft_putchar(' ');
@@ -272,10 +275,6 @@ int		int_length_and_update(int64_t n, t_parse *p)
 		p->length++;
 	if ((n < 0 || ft_strchr(p->flags, '+')) && p->precision)
 		p->precision++;
-	if (n != 0 && p->width == -1)
-		p->width = 0;
-	else if (n != 0 && p->precision == -1)
-		p->precision = 0;
 	return (p->length);
 }
 
@@ -285,6 +284,8 @@ int     is_positive(int64_t n, t_parse *p)
 	{
 		if (p->size == INT)
 			return ((int) n >= 0) ? 1 : 0;
+		if (p->size == CHAR)
+			return ((char) n >= 0) ? 1 : 0;
 		else if (p->size == LONG)
 			return ((long int) n >= 0) ? 1 : 0;
 		else if (p->size == LONGLONG)
@@ -297,30 +298,35 @@ int     is_positive(int64_t n, t_parse *p)
 
 void	put_sign(int64_t n, t_parse *p)
 {
-	if (p->is_signed && (!is_positive(n, p) || ft_strchr(p->flags, '+')))
+	if (n != (-9223372036854775807 - 1))
 	{
-		if (!is_positive(n, p))
-			ft_putchar('-');
-		else if (ft_strchr(p->flags, '+'))
-			ft_putchar('+');
-		p->length -= 1;
-		p->width -= 1;
-		if ((!is_positive(n, p) || ft_strchr(p->flags, '+')) && p->precision)
-			p->precision -= 1;
-	}
-	else if (p->is_signed && ft_strchr(p->flags, ' ') && p->spaces == 0)
-	{
-		ft_putchar(' ');
-		p->printed += 1;
+		if (p->is_signed && (!is_positive(n, p) || ft_strchr(p->flags, '+')))
+		{
+			if (!is_positive(n, p))
+				ft_putchar('-');
+			else if (ft_strchr(p->flags, '+'))
+				ft_putchar('+');
+			p->length -= 1;
+			p->width -= 1;
+			if ((!is_positive(n, p) || ft_strchr(p->flags, '+')) && p->precision)
+				p->precision -= 1;
+		}
+		else if (p->is_signed && ft_strchr(p->flags, ' ') && p->spaces == 0)
+		{
+			ft_putchar(' ');
+			p->printed += 1;
+		}
 	}
 }
 
 void	check_size_and_print_int(int64_t n, t_parse *p)
 {
-	if (p->is_signed && (n != 0 || (p->width != -1 && p->precision != -1)))
+	if (p->is_signed && (n != 0 || p->skip_zero == 0))		//(n != 0 || (p->width != -100 && p->precision != -100))
 	{
 		if (p->size == INT)
 			ft_putnbr(ft_absint((int) n));
+		else if (p->size == CHAR)
+			ft_putnbr(ft_absint((char) n));
 		else if (p->size == LONG)
 			ft_putnbr(ft_absint((long int) n));
 		else if (p->size == LONGLONG)
@@ -328,10 +334,12 @@ void	check_size_and_print_int(int64_t n, t_parse *p)
 		else if (p->size == SHORT)
 			ft_putnbr(ft_absint((short int) n));
 	}
-	else if (n != 0 || (p->width != -1 && p->precision != -1))
+	else if (n != 0 || p->skip_zero == 0)					//(n != 0 || (p->width != -100 && p->precision != -100))
 	{
 		if (p->size == INT)
 			ft_unsigned_putnbr((unsigned int) n);
+		else if (p->size == CHAR)
+			ft_putnbr(ft_absint((unsigned char) n));
 		else if (p->size == LONG)
 			ft_unsigned_putnbr((unsigned long) n);
 		else if (p->size == LONGLONG)
@@ -370,9 +378,9 @@ void	print_left_aligned_int(t_parse *p, int64_t n)
 void	print_int_max_width(long long n, t_parse *p)
 {
 	p->printed += p->width;
-	if (ft_strchr(p->flags, '0') && p->precision != -1) {
+	if (ft_strchr(p->flags, '0') && p->skip_zero == 0) {
 		put_sign(n, p);
-		while (p->width > p->precision)
+		while (p->width > p->precision && p->precision != 0)
 		{
 			p->width--;
 			ft_putchar(' ');
@@ -394,11 +402,15 @@ void	print_int_max_width(long long n, t_parse *p)
         else
             put_sign(n, p);
     }
-	(n == 0 && p->precision == -1) ? ft_putchar(' ') : check_size_and_print_int(n, p);
+	(n == 0 && p->skip_zero == 1) ? ft_putchar(' ') : check_size_and_print_int(n, p);
 }
 
 void	print_s_int(int64_t n, t_parse *p)
 {
+	if (p->size == SHORT)
+		n = (short)n;
+	else if (p->size == CHAR)
+		n = (char)n;
 	int_length_and_update(n, p);
 	if (ft_strchr(p->flags, '-'))
 		print_left_aligned_int(p, n);
@@ -422,6 +434,10 @@ void	print_s_int(int64_t n, t_parse *p)
 
 void	print_us_int(uint64_t n, t_parse *p)
 {
+	if (p->size == SHORT)
+		n = (unsigned short)n;
+	else if (p->size == CHAR)
+		n = (unsigned char)n;
 	int_length_and_update(n, p);
 	if (ft_strchr(p->flags, '-'))
 		print_left_aligned_int(p, n);
@@ -465,22 +481,57 @@ void	print_int(va_list valist, t_parse *p)
 **	printing oct and hex
 */
 
-void	print_base(int value, t_parse *p, int base)
+int64_t	cast_number(int64_t v, t_parse *p)
+{
+	if (p->size == INT)
+		return ((unsigned int)v);
+	else if (p->size == SHORT)
+		return ((unsigned short)v);
+	else if (p->size == CHAR)
+		return ((unsigned char)v);
+	else if (p->size == LONG)
+		return ((unsigned long)v);
+	return ((unsigned long long)v);
+}
+
+char	*prepare_string(t_parse *p, int base, int v)
+{
+	char *s;
+
+	p->length = ft_int_length_base(v, base);
+	if (ft_strchr(p->flags, '#'))
+		p->length += (base == 8) ? 1 : 2;
+	s = (ft_strchr(p->flags, '0') && !p->precision) ? ft_strnew(p->width)
+						: ft_strnew(MAX(p->precision, p->length));
+	if (ft_strchr(p->flags, '#'))
+	{
+		if (base == 8)
+			ft_strcpy(s, "0");
+		else if (v != 0)
+			(p->type == 'X') ? ft_strcat(s, "0X") : ft_strcat(s, "0x");
+	}
+	if (p->precision > p->length)
+		while ((p->precision)-- > p->length)
+			ft_strcat(s, "0");
+	if (!p->precision && !ft_strchr(p->flags, '-') && ft_strchr(p->flags, '0'))
+		while ((p->width)-- > p->length && p->width > p->precision)
+			ft_strcat(s, "0");
+	return (s);
+}
+
+void	print_base(int64_t v, t_parse *p, int base)
 {
 	char	*s;
 	char	*number;
 
-	p->length = ft_int_length_base(value, base);
-	s = ft_strnew(MAX(p->precision, p->length));
-	if (p->precision > p->length)
-	{
-		while ((p->precision)-- > p->length)
-			ft_strcat(s, "0");
-	}
+	v = cast_number(v, p);
+	s = prepare_string(p, base, v);
 	if (base == 8)
-		number = ft_itoa_base(value, 8);
+		number = ft_itoa_base(v, 8);
 	else
-		number = ((p->type == 'x') ? ft_itoa_base(value, 16) : ft_itoa_baseu(value, 16));
+		number = ((p->type == 'x') ? ft_itoa_base(v, 16) : ft_itoa_baseu(v, 16));
+	if (p->skip_zero && v == 0)
+		number[ft_strlen(number) - 1] = '\0';
 	ft_strcat(s, number);
 	free(number);
 	p->precision = 0;
@@ -612,9 +663,9 @@ void	print_arg(t_parse *p, va_list valist)
 	if (ft_strchr("diu", p->type))
 		print_int(valist, p);
 	else if ('o' == p->type)
-		print_base(va_arg(valist, int), p, 8);
+		print_base(va_arg(valist, int64_t), p, 8);
 	else if (ft_strchr("xX", p->type))
-		print_base(va_arg(valist, int), p, 16);
+		print_base(va_arg(valist, int64_t), p, 16);
 	else if ('c' == p->type)
 		print_char(valist, p);
 	else if ('s' == p->type)
@@ -639,16 +690,19 @@ void	check_size(t_parse *p, char *tmp)
 	if (ft_strchr(sizes, *tmp) == ft_strchr(sizes, *(tmp + 1)))
 	{
 		if (index == 0)
-			p->size = CHAR;
+			index = 3;
 		else if (index == 1)
-			p->size = LONGLONG;
-		index++;
+			index = 4;
 	}
-	else if (index == 0)
+	if (index == 0)
 		p->size = SHORT;
 	else if (index == 1)
 		p->size = LONG;
-	p->next = (index == 2) ? tmp + 1 : tmp;
+	else if (index == 2 || index == 4)
+		p->size = LONGLONG;
+	else if (index == 3)
+		p->size = CHAR;
+	p->next = (index == 3 || index == 4) ? tmp + 1 : tmp;
 }
 
 char	*read_flags(char *tmp, t_parse *p)
@@ -684,7 +738,7 @@ char	*check_flag_width_and_prec(char *tmp, t_parse *p, va_list valist)
 		tmp = read_flags(tmp, p);
 	else if (ft_atoi(tmp))    									//width
 	{
-		p->width = (*tmp >= '0' && *tmp  <= '9') ? ft_atoi(tmp) : -1;
+		(*tmp >= '0' && *tmp  <= '9') ? p->width = ft_atoi(tmp) : 0; 	//replaced (p->skip_zero = 1) for 0
 		tmp += ft_int_length_base(p->width, 10) - 1;
 	}
 	else if (*tmp == '*')
@@ -698,11 +752,11 @@ char	*check_flag_width_and_prec(char *tmp, t_parse *p, va_list valist)
 		}
 		else if (*(tmp + 1) >= '0' && *(tmp + 1) <= '9')
 		{
-			p->precision = (ft_atoi(tmp + 1) == 0) ? -1 : ft_atoi(tmp + 1);
+			(ft_atoi(tmp + 1) == 0) ? (p->skip_zero = 1) : (p->precision = ft_atoi(tmp + 1));
 			tmp += ft_int_length_base(p->precision, 10);
 		}
 		else
-			p->precision = -1;
+			p->skip_zero = 1;
 	}
 //	else
 //		return (NULL);			//ERROR PARSING
@@ -711,10 +765,10 @@ char	*check_flag_width_and_prec(char *tmp, t_parse *p, va_list valist)
 
 t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 {
-	int		stop;
-
-	stop = 0;
-	while (!stop && *tmp)
+//	int		stop;
+//
+//	stop = 0;
+	while (*tmp)
 	{
 		tmp = check_flag_width_and_prec(tmp, p, valist);
 		if (ft_strchr("hlLzjt", *tmp))			//size
@@ -728,7 +782,8 @@ t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 				p->is_signed = 1;
 			p->type = *tmp;
 			p->next = tmp;
-			stop = 1;
+			break;
+//			stop = 1;
 		}
 		else
 		{
@@ -768,35 +823,3 @@ int		ft_printf(const char *restrict s, ...)
 	del_param(p);
 	return (printed);
 }
-
-//int		ft_printf(const char *restrict s, ...)
-//{
-//	va_list	valist;
-//	t_parse	*p;
-//	char	*tmp;
-//	int		printed;
-//
-//	tmp = (char*)s;
-//	va_start(valist, s);
-//	p = new_param();
-//	while (*tmp)
-//	{
-//		if (*tmp != '%')
-//		{
-//			ft_putchar(*tmp);
-//			p->printed++;
-//		}
-//		else
-//		{
-//			tmp++;
-//			parse_string(tmp, p, valist);
-//			tmp = p->next;
-//			print_arg(p, valist);
-//			clear_param(p);
-//		}
-//		tmp++;
-//	}
-//	printed = p->printed;
-//	del_param(p);
-//	return (printed);
-//}

@@ -6,13 +6,13 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 00:05:16 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/23 12:27:16 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/24 15:04:40 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	count_digits(int n)
+static int	count_digits(int64_t n)
 {
 	int cnt;
 
@@ -28,7 +28,7 @@ static int	count_digits(int n)
 	return (cnt);
 }
 
-static void	ft_itoa_alg(int n, char *s, int slen)
+static void	ft_itoa_alg(int64_t n, char *s, int slen)
 {
 	int i;
 	int cutter;
@@ -49,7 +49,7 @@ static void	ft_itoa_alg(int n, char *s, int slen)
 	s[i] = '\0';
 }
 
-char		*ft_itoa(int n)
+char		*ft_itoa(int64_t n)
 {
 	int		slen;
 	char	*s;
@@ -60,7 +60,7 @@ char		*ft_itoa(int n)
 		return (ft_strcpy(s, "-2147483648"));
 	}
 	slen = count_digits(n);
-	s = (char *)malloc((slen + 1) * sizeof(char));
+	s = ft_strnew(slen);
 	if (s)
 	{
 		ft_itoa_alg(n, s, slen);
@@ -69,57 +69,57 @@ char		*ft_itoa(int n)
 	return (NULL);
 }
 
-char	*ft_itoa_base(int value, int base)
+char	*ft_itoa_base(int64_t value, int base)
 {
 	char *snum;
 	char *s;
-	int val;
+	int64_t val;
 	size_t cnt;
 
 	val = value;
 	cnt = 0;
 	s = "0123456789abcdef";
 	if (value == 0)
-		return ("0");
+		return (ft_strdup("0"));
 	while(value)
 	{
 		value /= base;
 		cnt++;
 	}
-	if (!(snum = (char*)malloc((cnt + 1) * sizeof(char))))
+	if (!(snum = ft_strnew(cnt)))
 		return (NULL);
 	snum[cnt--] = '\0';
 	while(val)
 	{
-		snum[cnt--] = s[val % base];
+		snum[cnt--] = val < 0 ? s[-val % base] : s[val % base];
 		val /= base;
 	}
 	return snum;
 }
 
-char	*ft_itoa_baseu(int value, int base)
+char	*ft_itoa_baseu(int64_t value, int base)
 {
 	char *snum;
 	char *s;
-	int val;
+	int64_t val;
 	size_t cnt;
 
 	val = value;
 	cnt = 0;
 	s = "0123456789ABCDEF";
 	if (value == 0)
-		return ("0");
+		return (ft_strdup("0"));
 	while(value)
 	{
 		value /= base;
 		cnt++;
 	}
-	if (!(snum = (char*)malloc((cnt + 1) * sizeof(char))))
+	if (!(snum = ft_strnew(cnt)))
 		return (NULL);
 	snum[cnt--] = '\0';
 	while(val)
 	{
-		snum[cnt--] = s[val % base];
+		snum[cnt--] = val < 0 ? s[-val % base] : s[val % base];
 		val /= base;
 	}
 	return snum;

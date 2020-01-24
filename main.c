@@ -261,28 +261,58 @@ int main(int ac, char **av)
 //			ft_printf("printed %d symbols in 1st line\n", n);
 //			ft_printf("printed %d symbols in 2st line\n\n", p);
 //		}
-		ft_printf("---25---\n");
-		n = ft_printf(">%lld<\n", -9223372036854775808);
-		p = printf(">%lld<\n", -9223372036854775808);
+//		ft_printf("---25---\n");
+//		n = ft_printf(">%+d<\n", 0);
+//		p = printf(">%+d<\n", 0);
+//		if (n == p) printf("SUCCESS\n");
+//		else
+//		{
+//			printf("FAIL\n");
+//			ft_printf("printed %d symbols in 1st line\n", n);
+//			ft_printf("printed %d symbols in 2st line\n\n", p);
+//		}
+//		ft_printf("---26---\n");
+//		n = ft_printf(">%05d<\n", 0);
+//		p = printf(">%05d<\n", 0);
+//		if (n == p) printf("SUCCESS\n");
+//		else
+//		{
+//			printf("FAIL\n");
+//			ft_printf("printed %d symbols in 1st line\n", n);
+//			ft_printf("printed %d symbols in 2st line\n\n", p);
+//		}
+//		ft_printf("---27---\n");
+//		n = ft_printf(">%#.o %#.0o<\n", 0, 0);
+//		p = printf(">%#.o %#.0o<\n", 0, 0);
+//		if (n == p) printf("SUCCESS\n");
+//		else
+//		{
+//			printf("FAIL\n");
+//			ft_printf("printed %d symbols in 1st line\n", n);
+//			ft_printf("printed %d symbols in 2st line\n\n", p);
+//		}
+		ft_printf("---27---\n");
+		p = printf(">%025.25lld<\n", -9223372036854775808);
+		n = ft_printf(">%025.25lld<\n", -9223372036854775808);
 		if (n == p) printf("SUCCESS\n");
 		else
 		{
 			printf("FAIL\n");
-			ft_printf("printed %d symbols in 1st line\n", n);
-			ft_printf("printed %d symbols in 2st line\n\n", p);
+			ft_printf("printed %d symbols in 1st line\n", p);
+			ft_printf("printed %d symbols in 2st line\n\n", n);
 		}
 
 
 
-//		uint64_t	tasks[] = {-9223372036854775807, 1844674407370955161, 0, 0, 0, 0, 1, 0};
-//		char 		*exprs[] = {">%lu<\n", ">%llu<\n", ">%5.d<\n", ">%5.0d<\n", ">%02d<\n", ">%02.0d<\n", ">%03.2d<\n", ">%03.2d<\n"};
+//		uint64_t	tasks[] = {2, 2, 0, 0, -9223372036854775807, 1844674407370955161, 0, 0, 0, 0, 1, 0};
+//		char 		*exprs[] = {">%#.o<\n",  ">%#.0o<\n", ">%5.o<\n",  ">%5.0o<\n", ">%lu<\n", ">%llu<\n", ">%5.d<\n", ">%5.0d<\n", ">%02d<\n", ">%02.0d<\n", ">%03.2d<\n", ">%03.2d<\n"};
 //
 //
 //		for (int i = 0; i < sizeof(tasks) / 8; i++)
 //		{
 //			ft_printf("---%02d---\n", i);
-//			n = ft_printf(exprs[i], tasks[i]);
 //			p = printf(exprs[i], tasks[i]);
+//			n = ft_printf(exprs[i], tasks[i]);
 //			if (n == p) printf("SUCCESS\n");
 //		}
 //		if (n == p) printf("SUCCESS\n");

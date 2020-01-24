@@ -69,6 +69,7 @@ typedef struct		s_parse
 	int				width;
 	int				precision;
 	int				E;
+	int				skip_zero;
 	/*
 	Модификатор точности
 	указывает на минимальное количество символов, которое должно появиться при обработке типов d, i, o, u, x, X;
