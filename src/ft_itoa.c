@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 00:05:16 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/24 15:04:40 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/25 17:09:02 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,7 @@ char		*ft_itoa(int64_t n)
 	char	*s;
 
 	if (n == -2147483648)
-	{
-		s = (char *)malloc(12 * sizeof(char));
-		return (ft_strcpy(s, "-2147483648"));
-	}
+		return (ft_strdup("-2147483648"));
 	slen = count_digits(n);
 	s = ft_strnew(slen);
 	if (s)
@@ -69,7 +66,7 @@ char		*ft_itoa(int64_t n)
 	return (NULL);
 }
 
-char	*ft_itoa_base(int64_t value, int base)
+char	*ft_itoa_base(uint64_t value, int base)
 {
 	char *snum;
 	char *s;
@@ -97,7 +94,7 @@ char	*ft_itoa_base(int64_t value, int base)
 	return snum;
 }
 
-char	*ft_itoa_baseu(int64_t value, int base)
+char	*ft_itoa_baseu(uint64_t value, int base)
 {
 	char *snum;
 	char *s;

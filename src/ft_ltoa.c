@@ -28,7 +28,7 @@ static int	count_digits(long long int n)
 	return (cnt);
 }
 
-static void	ft_itoa_alg(long long int n, char *s, int slen)
+static void	ft_ltoa_alg(long long int n, char *s, int slen)
 {
 	int i;
 	int cutter;
@@ -58,7 +58,7 @@ char		*ft_ltoa(long long int n)
 	s = (char *)malloc((slen + 1) * sizeof(char));
 	if (s)
 	{
-		ft_itoa_alg(n, s, slen);
+		ft_ltoa_alg(n, s, slen);
 		return (s);
 	}
 	return (NULL);

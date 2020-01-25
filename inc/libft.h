@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/16 23:38:01 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/23 16:39:20 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/25 17:09:02 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strtrim(char const *s);
 char				**ft_strsplit(char const *s, char c);
 char				*ft_itoa(int64_t n);
-char				*ft_itoa_base(int64_t value, int base);
-char				*ft_itoa_baseu(int64_t value, int base);
+char				*ft_itoa_base(uint64_t value, int base);
+char				*ft_itoa_baseu(uint64_t value, int base);
 char				*ft_dtoa(long double d);
 void				ft_putchar(char c);
 void				ft_putstr(char const *s);
@@ -95,5 +95,6 @@ int					ft_wordlen(const char *s, char c, int start);
 void				ft_lstrev(t_list **head);
 void				ft_lstadd_last(t_list **alst, t_list *new);
 int					ft_int_length_base(int64_t value, int base);
+int                 ft_uint_length_base(uint64_t value, int base);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/24 17:37:52 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/25 21:17:31 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,11 @@ void		clear_param(t_parse *p)
 {
 	if (!p)
 		return ;
-	free(p->flags);
 	p->type = 0;
 	p->size = 0;
 	p->is_signed = 0;
 	p->spaces = 0;
+	p->flags ? free(p->flags) : 0;
 	p->flags = NULL;
 	p->width = 0;
 	p->E = 0;
@@ -68,12 +68,13 @@ void		clear_param(t_parse *p)
 	p->next = NULL;
 }
 
-void		del_param(t_parse *p)
+void		del_param(t_parse *p, va_list valist)
 {
 	if (!p)
 		return ;
 	free(p->flags);
 	free(p);
+	va_end(valist);
 }
 
 t_node		*add_last_piece(t_node **head, t_node *new)
@@ -95,41 +96,6 @@ t_node		*add_last_piece(t_node **head, t_node *new)
 		return (new);
 	}
 	return (NULL);
-}
-
-
-int ft_int_length_base(int64_t value, int base)
-{
-	int cnt;
-
-	cnt = 0;
-	if (value <= 0) {
-		if (base == 10)
-			cnt++;
-	}
-//	if (!value)
-//		cnt++;
-	while (value) {
-		value /= base;
-		cnt++;
-	}
-	return (cnt);
-}
-
-int ft_uint_length_base(uint64_t value, int base)
-{
-	int cnt;
-
-	cnt = 0;
-	if (value <= 0) {
-		if (base == 10)
-			cnt++;
-	}
-	while (value) {
-		value /= base;
-		cnt++;
-	}
-	return (cnt);
 }
 
 
@@ -298,8 +264,8 @@ int     is_positive(int64_t n, t_parse *p)
 
 void	put_sign(int64_t n, t_parse *p)
 {
-	if (n != (-9223372036854775807 - 1))
-	{
+//	if (n != (-9223372036854775808))
+//	{
 		if (p->is_signed && (!is_positive(n, p) || ft_strchr(p->flags, '+')))
 		{
 			if (!is_positive(n, p))
@@ -316,7 +282,7 @@ void	put_sign(int64_t n, t_parse *p)
 			ft_putchar(' ');
 			p->printed += 1;
 		}
-	}
+//	}
 }
 
 void	check_size_and_print_int(int64_t n, t_parse *p)
@@ -371,8 +337,8 @@ void	print_left_aligned_int(t_parse *p, int64_t n)
 		ft_putchar('0');
 	}
 	check_size_and_print_int(n, p);
-    while ((p->width)-- > 0)
-        ft_putchar(' ');
+	while ((p->width)-- > 0)
+		ft_putchar(' ');
 }
 
 void	print_int_max_width(long long n, t_parse *p)
@@ -393,15 +359,15 @@ void	print_int_max_width(long long n, t_parse *p)
 		while (p->width-- > (MAX(p->length, p->precision)))
 			ft_putchar(' ');
 		p->spaces = 1;
-        if (p->precision > 0)
-        {
-            put_sign(n, p);
-            while (p->precision-- > p->length)
-                ft_putchar('0');
-        }
-        else
-            put_sign(n, p);
-    }
+		if (p->precision > 0)
+		{
+			put_sign(n, p);
+			while (p->precision-- > p->length)
+				ft_putchar('0');
+		}
+		else
+			put_sign(n, p);
+	}
 	(n == 0 && p->skip_zero == 1) ? ft_putchar(' ') : check_size_and_print_int(n, p);
 }
 
@@ -483,6 +449,8 @@ void	print_int(va_list valist, t_parse *p)
 
 int64_t	cast_number(int64_t v, t_parse *p)
 {
+	if (p->type == 'p')
+		return ((int64_t) v);
 	if (p->size == INT)
 		return ((unsigned int)v);
 	else if (p->size == SHORT)
@@ -499,11 +467,11 @@ char	*prepare_string(t_parse *p, int base, int v)
 	char *s;
 
 	p->length = ft_int_length_base(v, base);
-	if (ft_strchr(p->flags, '#'))
+	if (p->type == 'p' || ft_strchr(p->flags, '#'))
 		p->length += (base == 8) ? 1 : 2;
 	s = (ft_strchr(p->flags, '0') && !p->precision) ? ft_strnew(p->width)
 						: ft_strnew(MAX(p->precision, p->length));
-	if (ft_strchr(p->flags, '#'))
+	if (p->type == 'p' || ft_strchr(p->flags, '#'))
 	{
 		if (base == 8)
 			ft_strcpy(s, "0");
@@ -519,7 +487,7 @@ char	*prepare_string(t_parse *p, int base, int v)
 	return (s);
 }
 
-void	print_base(int64_t v, t_parse *p, int base)
+void	print_base(uint64_t v, t_parse *p, int base)
 {
 	char	*s;
 	char	*number;
@@ -529,7 +497,7 @@ void	print_base(int64_t v, t_parse *p, int base)
 	if (base == 8)
 		number = ft_itoa_base(v, 8);
 	else
-		number = ((p->type == 'x') ? ft_itoa_base(v, 16) : ft_itoa_baseu(v, 16));
+		number = ((p->type == 'X') ? ft_itoa_baseu(v, 16) : ft_itoa_base(v, 16));
 	if (p->skip_zero && v == 0)
 		number[ft_strlen(number) - 1] = '\0';
 	ft_strcat(s, number);
@@ -574,16 +542,6 @@ int *get_bits(float f)
 	}
 	return (bits);
 }
-
-void print_array(int *arr, int length)
-{
-	while (--length >= 0)
-	{
-		printf("%d", arr[length]);
-	}
-	printf("\n");
-}
-
 
 long long int		float_base(double x)
 {
@@ -647,8 +605,6 @@ void	print_float(va_list valist, t_parse *p)
 
 	printf("%f\n", x);
 
-	bits = get_bits(x);
-	print_array(bits, 32);
 //	printf("%d\n", get_exp(bits));
 
 }
@@ -663,9 +619,9 @@ void	print_arg(t_parse *p, va_list valist)
 	if (ft_strchr("diu", p->type))
 		print_int(valist, p);
 	else if ('o' == p->type)
-		print_base(va_arg(valist, int64_t), p, 8);
-	else if (ft_strchr("xX", p->type))
-		print_base(va_arg(valist, int64_t), p, 16);
+		print_base(va_arg(valist, uint64_t), p, 8);
+	else if (ft_strchr("pxX", p->type))
+		print_base(va_arg(valist, uint64_t), p, 16);
 	else if ('c' == p->type)
 		print_char(valist, p);
 	else if ('s' == p->type)
@@ -685,24 +641,24 @@ void	check_size(t_parse *p, char *tmp)
 	char	*sizes;
 	int		index;
 
-	sizes = "hlL";
-	index = ft_strchrn(sizes, *tmp);
+	sizes = "hlLzt";
+	index = ft_strchr(sizes, *tmp);
 	if (ft_strchr(sizes, *tmp) == ft_strchr(sizes, *(tmp + 1)))
 	{
 		if (index == 0)
-			index = 3;
+			index = 5;
 		else if (index == 1)
-			index = 4;
+			index = 6;
 	}
 	if (index == 0)
 		p->size = SHORT;
 	else if (index == 1)
 		p->size = LONG;
-	else if (index == 2 || index == 4)
+	else if (index == 2 || index == 3 || index == 4 || index == 6)
 		p->size = LONGLONG;
-	else if (index == 3)
+	else if (index == 5)
 		p->size = CHAR;
-	p->next = (index == 3 || index == 4) ? tmp + 1 : tmp;
+	p->next = (index == 5 || index == 6) ? tmp + 2 : tmp + 1;
 }
 
 char	*read_flags(char *tmp, t_parse *p)
@@ -716,7 +672,7 @@ char	*read_flags(char *tmp, t_parse *p)
 		if ((*(ft_strchr("-+ 0#", *tmp)) == '0') &&
 			(ft_strchr("-+ 0#", *(tmp + 1)) == NULL) &&
 			(ft_strchr(p->flags, '0') != NULL))
-			return (--tmp);
+			return (tmp);
 		if (!ft_strchr(p->flags, *tmp))
 		{
 			*f = *tmp;
@@ -724,7 +680,7 @@ char	*read_flags(char *tmp, t_parse *p)
 		}
 		tmp++;
 	}
-	return (--tmp);
+	return (tmp);
 }
 
 /*
@@ -736,14 +692,15 @@ char	*check_flag_width_and_prec(char *tmp, t_parse *p, va_list valist)
 {
 	if (!p->flags && ft_strchr("-+ 0#", *tmp))				//flag
 		tmp = read_flags(tmp, p);
-	else if (ft_atoi(tmp))    									//width
+	if (*tmp >= '0' && *tmp  <= '9')    									//width
 	{
 		(*tmp >= '0' && *tmp  <= '9') ? p->width = ft_atoi(tmp) : 0; 	//replaced (p->skip_zero = 1) for 0
-		tmp += ft_int_length_base(p->width, 10) - 1;
+		tmp += *tmp >= '0' ? ft_int_length_base(p->width, 10) + 1
+					: ft_int_length_base(p->width, 10);
 	}
 	else if (*tmp == '*')
 		p->width = va_arg(valist, int);
-	else if (*tmp == '.')                        				//precision
+	if (*tmp == '.')                        				//precision
 	{
 		if (*(tmp + 1) == '*')
 		{
@@ -752,45 +709,36 @@ char	*check_flag_width_and_prec(char *tmp, t_parse *p, va_list valist)
 		}
 		else if (*(tmp + 1) >= '0' && *(tmp + 1) <= '9')
 		{
-			(ft_atoi(tmp + 1) == 0) ? (p->skip_zero = 1) : (p->precision = ft_atoi(tmp + 1));
-			tmp += ft_int_length_base(p->precision, 10);
+			(ft_atoi(tmp + 1) == 0) ? (p->skip_zero = 1)
+			        : (p->precision = ft_atoi(tmp + 1));
+			tmp += ft_int_length_base(p->precision, 10) + 1;
 		}
 		else
 			p->skip_zero = 1;
 	}
-//	else
-//		return (NULL);			//ERROR PARSING
 	return (tmp);
 }
 
 t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 {
-//	int		stop;
-//
-//	stop = 0;
-	while (*tmp)
-	{
-		tmp = check_flag_width_and_prec(tmp, p, valist);
-		if (ft_strchr("hlLzjt", *tmp))			//size
-		{
-			check_size(p, tmp);
-			tmp = p->next;
-		}
-		else if (ft_strchr("%diufFeEgGxXoscpaAn", *tmp))		//type
-		{
-			if (ft_strchr("%difFeExXo", *tmp))
-				p->is_signed = 1;
-			p->type = *tmp;
-			p->next = tmp;
-			break;
-//			stop = 1;
-		}
-		else
-		{
-			//ERROR PARSING
-		}
-		++tmp;
-	}
+    tmp = check_flag_width_and_prec(tmp, p, valist);
+    if (ft_strchr("hlLzjt", *tmp))			//size
+    {
+        check_size(p, tmp);
+        tmp = p->next;
+    }
+    if (ft_strchr("%diufFxXoscp", *tmp))		//type diufFeEgGxXoscpaAn
+    {
+        if ((*tmp == 'd' || *tmp == 'i') && !ft_strchr("tz", p->size))              //difFeExXo
+            p->is_signed = 1;
+        p->type = *tmp;
+        p->next = tmp;
+    }
+    else
+    {
+        clear_param(p);
+        return (NULL);
+    }
 	return (p);
 }
 
@@ -813,6 +761,8 @@ int		ft_printf(const char *restrict s, ...)
 		{
 			s++;
 			parse_string((char *)s, p, valist);
+			if (!p->next)
+			    return (-1);
 			s = p->next;
 			print_arg(p, valist);
 			clear_param(p);
@@ -820,6 +770,6 @@ int		ft_printf(const char *restrict s, ...)
 		s++;
 	}
 	printed = p->printed;
-	del_param(p);
+	del_param(p, valist);
 	return (printed);
 }

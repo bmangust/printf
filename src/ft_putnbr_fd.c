@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/17 01:22:26 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/24 17:37:23 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/25 17:45:04 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ void		ft_putnbr_fd(int64_t nb, int fd)
 	if (nb < 0)
 	{
 		nb = -nb;
-		ft_putchar_fd('-', fd);
+		if (!lower_f)
+		    ft_putchar_fd('-', fd);
 	}
 	ft_cycles(nb, lower_f, fd);
 }

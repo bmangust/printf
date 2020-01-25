@@ -291,9 +291,12 @@ int main(int ac, char **av)
 //			ft_printf("printed %d symbols in 1st line\n", n);
 //			ft_printf("printed %d symbols in 2st line\n\n", p);
 //		}
+        char *a;
+        int *b = 42;
+        a = ft_strnew(1);
 		ft_printf("---27---\n");
-		p = printf(">%025.25lld<\n", -9223372036854775808);
-		n = ft_printf(">%025.25lld<\n", -9223372036854775808);
+		p = printf(">%zd<\n", 42);
+		n = ft_printf(">%zd<\n", 42);
 		if (n == p) printf("SUCCESS\n");
 		else
 		{
