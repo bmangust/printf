@@ -292,12 +292,11 @@ int main(int ac, char **av)
 //			ft_printf("printed %d symbols in 2st line\n\n", p);
 //		}
         char *a;
-        int *b = 42;
-        a = ft_strnew(1);
+        a = "123545745.58";
 		ft_printf("---27---\n");
-		p = printf(">%zd<\n", 42);
-		n = ft_printf(">%zd<\n", 42);
-		if (n == p) printf("SUCCESS\n");
+		p = printf(">% 05d<\n", 42);
+		n = ft_printf(">% 05d<\n", 42);
+		if (n == p) printf("\nSUCCESS\n");
 		else
 		{
 			printf("FAIL\n");

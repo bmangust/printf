@@ -19,11 +19,11 @@ int		ft_strchrn(const char *s, int c)
 
 	slen = ft_strlen(s);
 	i = 0;
-	while (i <= slen)
+	while (i < slen)
 	{
 		if (s[i] == (char)c)
 			return (i);
 		i++;
 	}
-	return (0);
+	return (-1);
 }

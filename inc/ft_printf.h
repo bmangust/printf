@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/23 12:27:16 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/26 16:59:25 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,18 +68,24 @@ typedef struct		s_parse
 	char			*flags;
 	int				width;
 	int				precision;
-	int				E;
 	int				skip_zero;
+	int 			skip_0_flag;
+	int				E;
 	/*
 	Модификатор точности
 	указывает на минимальное количество символов, которое должно появиться при обработке типов d, i, o, u, x, X;
-	указывает на минимальное количество символов, которое должно появиться после десятичной запятой (точки) при обработке типов a, A, e, E, f, F;
+	указывает на количество символов, которое должно появиться после десятичной запятой (точки) при обработке типов a, A, e, E, f, F;
 	максимальное количество значащих символов для типов g и G;
 	максимальное число символов, которые будут выведены для типа s;
 	*/
 	int				printed;
 	int				length;
 	char			*next;
+	char			*buf;
+	/* arguments */
+	int64_t 		arg_i;
+	double			arg_d;
+	char			*arg_s;
 }					t_parse;
 
 /*
@@ -117,7 +123,7 @@ typedef struct		s_lst
 }					t_node;
 
 int		ft_printf(const char *restrict s, ...);
-int		ft_sum(int num, ...);
 t_parse	*parse_string(char *s, t_parse *params, va_list valist);
+void	buffer(t_parse *p, char *s, int freeable);
 
 #endif
