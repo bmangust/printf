@@ -40,7 +40,8 @@ int main(int ac, char **av)
 {
 	double x;
 
-	x = 1234567890.1234567890139;
+	x = 1234567890123456789.1234567890139;
+	//x = 12.0;
 	if (ac == 2)
 	{
 		ft_printf(av[1], -4);
@@ -59,12 +60,19 @@ int main(int ac, char **av)
 	else
 	{
 		// Main check //
-		ft_printf("p: %.16Lf\n", x);
-		printf(	  "l: %.16Lf\n", x);
+		ft_printf("p: %f\n", x);
+		printf(	  "l: %f\n", x);
 	
-	//  ft_printf("RES: ->%f fdnbjs<-\n", 126);
-	// 	printf("LIB: ->%+f<-\n", 126.375);		
+	//   ft_printf("RES: ->%+f<-\n", 126.375);
+	//  	printf("LIB: ->%+f<-\n", 126.375);	
 
+		//ft_printf("->%s<-\n", "");
+		// ft_printf("->%.2s is a string<-", "");
+		// printf("->%.2s is a string<-", "");
+
+		//ft_printf("%d\n", NULL);			//input 156 -- без точки выводит 0.000000
+		//printf(	  "%f\n", NULL);
 	}
 	return (0);
 }
+

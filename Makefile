@@ -33,7 +33,8 @@ ft_strdel.c ft_strdup.c ft_strequ.c ft_striter.c ft_striteri.c ft_strchrn.c \
 ft_strjoin.c ft_strlcat.c ft_strlen.c ft_strmap.c ft_strmapi.c ft_strncat.c \
 ft_strncmp.c ft_strncpy.c ft_strnequ.c ft_strnew.c ft_strnstr.c ft_strrchr.c \
 ft_strsplit.c ft_strstr.c ft_strsub.c ft_strtrim.c ft_tolower.c ft_toupper.c \
-ft_wrdcnt.c ft_lstrev.c ft_printf.c ft_ltoa.c
+ft_wrdcnt.c ft_lstrev.c ft_printf.c ft_ltoa.c ft_print_str.c ft_print_char.c \
+ft_print_float.c
 
 OBJ = $(SRC:.c=.o)
 

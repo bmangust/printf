@@ -6,12 +6,11 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/18 17:46:22 by jbloodax          #+#    #+#             */
-/*   Updated: 2020/01/24 18:29:47 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/25 17:55:30 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-//#include <stdio.h>
 
 static int	count_digits(long long int n)
 {
@@ -31,8 +30,8 @@ static int	count_digits(long long int n)
 
 static void	ft_itoa_alg(long long int base, char *s, int slen, int sign)
 {
-	int i;
-	long long int cutter;
+	int				i;
+	long long int	cutter;
 
 	i = 0;
 	if (sign > 1)
@@ -59,19 +58,12 @@ static void	ft_itoa_alg(long long int base, char *s, int slen, int sign)
 	}
 }
 
-/*
-**	
-*/
-
 char		*ft_ltoa(long long int base, int sign)
 {
 	int		slen;
 	char	*s;
 
 	slen = count_digits(base);
-	//printf("sign in ltoa: %d\n", sign);
-	//printf("%d\n", slen);
-	//sign > 0 ? sign = 
 	s = ft_strnew((size_t) slen + sign);
 	if (s)
 	{

@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/24 18:39:50 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/25 20:15:32 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,146 +114,6 @@ int ft_int_length_base(int value, int base)
 	return (cnt);
 }
 
-
-void	print_char(va_list valist, t_parse *p)
-{
-	char	c;
-
-	c = (char)va_arg(valist, int);
-	if (p->flags && ft_strchr(p->flags, '-'))
-	{
-		ft_putchar(c);
-		p->printed++;
-		while ((p->width)-- > 1)
-		{
-			ft_putchar(' ');
-			p->printed++;
-		}
-	}
-	else
-	{
-		while ((p->width)-- > 1)
-		{
-			ft_putchar(' ');
-			p->printed++;
-		}
-		ft_putchar(c);
-		p->printed++;
-	}
-}
-
-void		print_str(char *temp, t_parse *p)
-{
-	int		len_str;
-	int		i;
-	int		precision;
-
-	if (!temp)
-	{
-		write(1, "(null)", 6);
-		p->printed += 6;
-		return ;
-	}
-
-
-	len_str = ft_strlen(temp);
-	i = 0;
-	precision = p->precision;
-
-	// printf("FLAGS: %s\n", p->flags);
-	// printf("WIDTH: %d\n", p->width);
-	// printf("PRECISION: %d\n", p->precision);
-	// printf("LEN STR %d", len_str);
-
-
-
-	if (ft_strchr(p->flags, '-'))
-	{
-
-		if (p->precision != 0 && p->precision <= len_str)
-		{
-			while ((precision)-- > 0)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-			while ((p->width)-- > p->precision)
-			{
-				ft_putchar(' ');
-				p->printed++;
-			}
-		}
-		else
-		{
-			if (p->width < len_str)
-			{
-				while (i < len_str)
-				{
-					ft_putchar(temp[i++]);
-					p->printed++;
-				}
-			}
-			else
-			{
-				while (i < len_str)
-				{
-					ft_putchar(temp[i++]);
-					p->printed++;
-				}
-				while (i++ < p->width)
-				{
-					ft_putchar(' ');
-					p->printed++;
-				}
-			}
-		}
-
-	}
-	else
-	{
-		if (p->precision != 0 && p->precision <= len_str)
-		{
-			while ((p->width)-- > p->precision)
-			{
-				ft_putchar(' ');
-				p->printed++;
-			}
-			while ((precision)-- > 0)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-
-		} else {
-			if (p->width < len_str) 
-			{
-				while (i < len_str) 
-				{
-					ft_putchar(temp[i++]);
-					p->printed++;
-				}
-			} 
-			else 
-			{
-				while ((p->width)-- > len_str) 
-				{
-					ft_putchar(' ');
-					p->printed++;
-				}
-
-				while (i < len_str) 
-				{
-					ft_putchar(temp[i++]);
-					p->printed++;
-				}
-			}
-		}
-	}
-}
-
-/*
-**	printing int
-*/
 
 int		int_length_and_update(intmax_t n, t_parse *p)
 {
@@ -461,86 +321,6 @@ void print_array(int *arr, int length)
 	printf("\n");
 }
 
-long long int		float_base(double x)   // DEL p
-{
-	double	rest;
-	int		E;
-	int		e;			// counter of power of 2
-	long long int		base;
-
-	E = -FLOAT_POWER;  // change p->E (FLOAT_POWER)
-	e = 0;
-	rest = 1;
-	base = 0;
-	while (E++ < FLOAT_POWER)
-	{
-		rest = x / ft_pow(2, E);
-		if (rest >= 1 && rest < 2)
-		{
-			e = E + 1;
-			break ;
-		}
-	}
-	rest = x;
-	while (rest > 0 && e-- > 0)
-	{
-		//printf("* rest: %f\n* base: %d\n* power: %d\n", rest, base, e);
-		base += ft_pow(2, e);
-		rest = x - base;
-		//printf("____________\n");
-	}
-	// printf("REST in the end: %f\n", rest);
-	// printf("POWER in the end: %d\n", e);
-	// printf("___________\n");
-	//if (e >= 0)
-		base += rest;
-	//printf("BASE: %d\n", base);
-	return (base);
-}
-
-
-
-
-void	print_float(va_list valist, t_parse *p)
-{
-	double	x;
-	long long int		integer;
-	long long int		fract;
-	char				*str_int;
-	char				*str_fract;
-	char				*str;
-	int					sign;
-
-	sign = 0;
-	(ft_strchr(p->flags, '+')) ? sign = 1 : sign; 
-	if (!p->precision)
-		p->precision = 6;
-	x = va_arg(valist, double);
-	integer = float_base(x);
-	fract = float_base((x - integer) * ft_pow(10, p->precision + 1));
-	(integer < 0 || x < 0) ? fract *= -1 : fract;
-	if (fract != 0)
-		fract = (fract - 5)/10 + 1;
-
-	
-	
-	str_int = ft_ltoa(integer, (sign + 1));
-	sign = 0;
-	str_fract = ft_ltoa(fract, sign);
-	str = ft_strcat(str_int, str_fract);
-	p->precision = 0;
-	print_str(str, p);
-
-	// printf("\nld int: %lld\n", integer);
-	printf("\nlld fract:    %lld\n", fract);
-	//printf("str int: %s\n", str_int);
-	//printf("str fract: %s\n", str_fract);
-	//printf("str: %s\n", str);
-}
-
-/*
-**	prints one argument
-*/
 
 void	print_arg(t_parse *p, va_list valist)
 {
@@ -560,7 +340,7 @@ void	print_arg(t_parse *p, va_list valist)
 		print_percentage(p);
 	}
 	else if (ft_strchr("fFgG", p->type))
-		print_float(valist, p);
+		print_float(va_arg(valist, double), p);
 }
 
 /*

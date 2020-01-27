@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/23 20:21:07 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/25 20:15:31 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,11 @@ typedef struct		s_lst
 	struct s_lst	*prev;
 }					t_node;
 
-int		ft_printf(const char *restrict s, ...);
-int		ft_sum(int num, ...);
-t_parse	*parse_string(char *s, t_parse *params, va_list valist);
+int			ft_printf(const char *restrict s, ...);
+int			ft_sum(int num, ...);
+t_parse		*parse_string(char *s, t_parse *params, va_list valist);
+void		print_str(char *temp, t_parse *p);
+void		print_char(va_list valist, t_parse *p);
+void		print_float(double valist, t_parse *p);
 
 #endif
