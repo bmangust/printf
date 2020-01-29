@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/18 17:46:22 by jbloodax          #+#    #+#             */
-/*   Updated: 2020/01/18 21:27:11 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/29 16:41:59 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,37 +28,45 @@ static int	count_digits(long long int n)
 	return (cnt);
 }
 
-static void	ft_ltoa_alg(long long int n, char *s, int slen)
+static void	ft_itoa_alg(long long int base, char *s, int slen, int sign)
 {
-	int i;
-	int cutter;
+	int				i;
+	long long int	cutter;
 
 	i = 0;
-	if (n < 0)
+	if (sign > 1)
+		s[i++] = '+';
+	if (base < 0)
 	{
 		s[i++] = '-';
-		n = -n;
+		base = -base;
 	}
-	while (i < slen)
+	while (i < slen + sign)
 	{
-		cutter = ft_pow(10, (slen - 1 - i));
-		s[i] = n / cutter + '0';
-		n = n % cutter;
+		if (sign == 2)
+			cutter = ft_pow(10, (slen - i  - 0));
+		else
+			cutter = ft_pow(10, (slen - i  - 1));
+		s[i] = base / cutter + '0';
+		base = base % cutter;
 		i++;
 	}
-	s[i] = '\0';
+	if (sign > 0)
+	{
+		s[--i] = '.';
+	}
 }
 
-char		*ft_ltoa(long long int n)
+char		*ft_ltoa(long long int base, int sign)
 {
 	int		slen;
 	char	*s;
 
-	slen = count_digits((int) n);
-	s = (char *)malloc((slen + 1) * sizeof(char));
+	slen = count_digits(base);
+	s = ft_strnew((size_t)slen + sign);
 	if (s)
 	{
-		ft_ltoa_alg(n, s, slen);
+		ft_itoa_alg(base, s, slen, sign);
 		return (s);
 	}
 	return (NULL);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/26 20:54:05 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/29 17:59:02 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,135 +112,6 @@ t_node		*add_last_piece(t_node **head, t_node *new)
 }
 
 
-void	print_char(int arg, t_parse *p)
-{
-	char	c;
-
-	c = (char)arg;
-	if (p->flags && ft_strchr(p->flags, '-'))
-	{
-		ft_putchar(c);
-		p->printed++;
-		while ((p->width)-- > 1)
-		{
-			ft_putchar(' ');
-			p->printed++;
-		}
-	}
-	else
-	{
-		while ((p->width)-- > 1)
-		{
-			ft_putchar(' ');
-			p->printed++;
-		}
-		ft_putchar(c);
-		p->printed++;
-	}
-}
-
-void		print_str(char *temp, t_parse *p)
-{
-	int		len_str;
-	int		i;
-	int		precision;
-
-	if (!temp)
-	{
-		write(1, "(null)", 6);
-		p->printed += 6;
-		return ;
-	}
-
-
-	len_str = ft_strlen(temp);
-	i = 0;
-	precision = p->precision;
-
-	// printf("FLAGS: %s\n", p->flags);
-	// printf("WIDTH: %d\n", p->width);
-	// printf("PRECISION: %d\n", p->precision);
-	// printf("LEN STR %d", len_str);
-
-
-
-	if (ft_strchr(p->flags, '-'))
-	{
-
-		if (p->precision != 0 && p->precision <= len_str)
-		{
-			while ((precision)-- > 0)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-			while ((p->width)-- > p->precision)
-			{
-				ft_putchar(' ');
-				p->printed++;
-			}
-		}
-		else
-		{
-			if (p->width < len_str)
-			{
-				while (i < len_str)
-				{
-					ft_putchar(temp[i++]);
-					p->printed++;
-				}
-			}
-			else
-			{
-				while (i < len_str)
-				{
-					ft_putchar(temp[i++]);
-					p->printed++;
-				}
-				while (i++ < p->width)
-				{
-					ft_putchar(' ');
-					p->printed++;
-				}
-			}
-		}
-
-	}
-	else
-	{
-		if (p->precision != 0 && p->precision <= len_str)
-		{
-			while ((p->width)-- > p->precision)
-			{
-				ft_putchar(' ');
-				p->printed++;
-			}
-			while ((precision)-- > 0)
-			{
-				ft_putchar(temp[i++]);
-				p->printed++;
-			}
-
-		} else {
-			if (p->width < len_str) {
-				while (i < len_str) {
-					ft_putchar(temp[i++]);
-					p->printed++;
-				}
-			} else {
-				while ((p->width)-- > len_str) {
-					ft_putchar(' ');
-					p->printed++;
-				}
-
-				while (i < len_str) {
-					ft_putchar(temp[i++]);
-					p->printed++;
-				}
-			}
-		}
-	}
-}
 
 /*
 **	printing int
@@ -474,66 +345,8 @@ int *get_bits(float f)
 	return (bits);
 }
 
-long long int		float_base(double x)
-{
-	double	rest;
-	int		E;
-	int		e;			// counter of power of 2
-	long long int		base;
-
-	E = -FLOAT_POWER;
-	e = 0;
-	base = 0;
-	while (E++ < FLOAT_POWER)
-	{
-		rest = x / ft_pow(2, E);
-		if (rest >= 1 && rest < 2)
-		{
-			e = E + 1;
-			break ;
-		}
-	}
-	rest = x;
-	while (rest > 0 && e-- > 0)
-	{
-		//printf("* rest: %f\n* base: %d\n* power: %d\n", rest, base, e);
-		base += ft_pow(2, e);
-		rest = x - base;
-		//printf("____________\n");
-	}
-	// printf("REST in the end: %f\n", rest);
-	// printf("POWER in the end: %d\n", e);
-	// printf("___________\n");
-	base += rest;
-	//printf("BASE: %d\n", base);
-	return (base);
-}
 
 
-void	print_float(double	x, t_parse *p)
-{
-	double	y;
-	long long int		integer;
-	long long int		fract;
-	//char	sign;
-
-	integer = float_base(x);
-	y = ((x - (double) integer) * (double) ft_pow(10, p->precision));
-	printf("y = %f\n", y);
-	fract = float_base(y);
-	(integer < 0 || x < 0) ? fract *= -1 : fract;
-
-
-	printf("x: %f\n", x);
-	printf("INTEGER: %lld\n", integer);
-	printf("FRACTIONAL: %lld\n", fract);
-
-
-//	float x = 0.15625;
-	printf("%f\n", x);
-//	printf("%d\n", get_exp(bits));
-
-}
 
 /*
 **	prints one argument

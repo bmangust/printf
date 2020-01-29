@@ -96,5 +96,6 @@ void				ft_lstrev(t_list **head);
 void				ft_lstadd_last(t_list **alst, t_list *new);
 int					ft_int_length_base(int64_t value, int base);
 int                 ft_uint_length_base(uint64_t value, int base);
+char		*ft_ltoa(long long int base, int sign);
 
 #endif

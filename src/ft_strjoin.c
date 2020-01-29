@@ -35,7 +35,11 @@ char		*ft_strjoin(char const *s1, char const *s2)
 	char	*s;
 
 	i = 0;
-	if (s1 != 0 && s2 != 0)
+	if (!s1 && s2)
+		return (ft_strdup(s2));
+	else if (!s2 && s1)
+		return (ft_strdup(s1));
+	else if (s1 && s2)
 	{
 		len = ft_strlen(s1) + ft_strlen(s2);
 		s = (char*)malloc((len + 1) * sizeof(char));
@@ -47,5 +51,5 @@ char		*ft_strjoin(char const *s1, char const *s2)
 			return (s);
 		}
 	}
-	return (NULL);
+	return (ft_strdup(""));
 }
