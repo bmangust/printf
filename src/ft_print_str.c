@@ -18,7 +18,7 @@ char	*ft_charstr(int size, char n)
 	char	*s;
 
 	i = 0;
-	if (n <= 0)
+	if (size <= 0)
 		return (NULL);
 	s = (char*)malloc((size + 1) * sizeof(char));
 	if (s)

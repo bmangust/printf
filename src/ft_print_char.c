@@ -16,20 +16,18 @@ void	print_char(char c, t_parse *p)
 {
 	if (p->flags && ft_strchr(p->flags, '-'))
 	{
-		if (c != 0) 
-		{
-			printf("1\n");
+		if (c != 0)
 			buffer(p, (char*)&c, 0);
-		}
+		else
+			p->printed++;
 		buffer(p, ft_charstr(p->width - 1, ' '), 1);
 	}
 	else
 	{
 		buffer(p, ft_charstr(p->width - 1, ' '), 1);
 		if (c != 0)
-		{
-			printf("2\n");
 			buffer(p, (char*)&c, 0);
-		}
+		else
+			p->printed++;
 	}
 }

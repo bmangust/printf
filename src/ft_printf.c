@@ -59,9 +59,9 @@ void		clear_param(t_parse *p)
 {
 	if (!p)
 		return ;
-	p->type = 0;
+//	p->type = 0;
 	p->size = 0;
-	p->is_signed = 0;
+//	p->is_signed = 0;
 	p->spaces = 0;
 	p->flags ? free(p->flags) : 0;
 	p->flags = NULL;
@@ -72,10 +72,9 @@ void		clear_param(t_parse *p)
 	p->skip_0_flag = 0;
 	p->E = 0;
 	p->next = NULL;
-//	p->buf = NULL;
-	p->arg_i = 0;
-	p->arg_d = 0;
-	p->arg_s = NULL;
+//	p->arg_i = 0;
+//	p->arg_d = 0;
+//	p->arg_s = NULL;
 }
 
 void		del_param(t_parse *p, va_list valist)
@@ -160,31 +159,32 @@ void	check_size_and_print_int(int64_t n, t_parse *p)
 		buffer(p, ft_itoa(ft_absint(n)), 1);
 }
 
-void	fill_width(t_parse *p, char **num, char sign)
+char    *fill_width(t_parse *p, char *num, char sign)
 {
 	char	*spaces;
 	char	*tmp;
 	int		num_of_spaces;
 	if (p->width > p->length)
 	{
-		num_of_spaces = sign ? p->width - p->length + 1 : p->width - p->length;
+		num_of_spaces = (sign && !ft_strchr(p->flags, '-'))
+		        ? p->width - p->length + 1 : p->width - p->length;
 		spaces = ft_strnew(num_of_spaces);
-		if (p->skip_0_flag == 0 && !ft_strchr(p->flags, '-') && ft_strchr(p->flags, '0'))
-			ft_memset(spaces, '0', num_of_spaces);
-		else
-			ft_memset(spaces, ' ', num_of_spaces);
-		if (sign && spaces[0] == ' ')
+		(p->skip_0_flag == 0 && !ft_strchr(p->flags, '-')
+        && ft_strchr(p->flags, '0')) ? ft_memset(spaces, '0', num_of_spaces)
+                                : ft_memset(spaces, ' ', num_of_spaces);
+		if (sign && spaces[0] == ' ' && !ft_strchr(p->flags, '-'))
 			spaces[p->width - p->length] = sign;
-		else if (sign)
+		else if (sign && !ft_strchr(p->flags, '-'))
 			spaces[0] = sign;
-		tmp = ft_strdup(*num);
 		if (ft_strchr(p->flags, '-'))
-			*num = ft_strjoin(*num, spaces);
+			tmp = ft_strjoin(num, spaces);
 		else
-			*num = ft_strjoin(spaces, *num);
-		free(tmp);
+			tmp = ft_strjoin(spaces, num);
+		free(num);
 		free(spaces);
+		return (tmp);
 	}
+	return (num);
 }
 
 
@@ -222,13 +222,11 @@ void	print_s_int(int64_t n, t_parse *p)
 	num = get_int(p, n);
 	if (num[0] ==  '-' || num[0] == '+' || num[0] == ' ')
 		sign = num[0];
-	tmp = sign ? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);
+	tmp = sign && !ft_strchr(p->flags, '-')
+	        ? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);
 	free(num);
-	fill_width(p, &tmp, sign);
-//	num = sign ? ft_strjoin(sign, tmp) : ft_strdup(tmp);
-//	sign ? free(sign) : 0;
-	free(tmp);
-	buffer(p, num, 1);
+	tmp = fill_width(p, tmp, sign);
+	buffer(p, tmp, 1);
 }
 
 void	print_int(int64_t n, t_parse *p)
@@ -322,7 +320,7 @@ void	print_base(uint64_t v, t_parse *p, int base)
 	free(number);
 	p->length = ft_strlen(s);
 	p->precision = 0;
-	fill_width(p, &s, 0);
+	s = fill_width(p, s, 0);
 	buffer(p, s, 1);
 }
 
@@ -384,6 +382,21 @@ void	print_arg(t_parse *p)
 **	checks size of a type, uses flags in p node
 */
 
+char    *read_width(t_parse *p, char *tmp, va_list valist)
+{
+    if (*tmp >= '0' && *tmp  <= '9')    										//width
+    {
+        (*tmp >= '0' && *tmp  <= '9') ? p->width = ft_atoi(tmp) : 0;
+        tmp += ft_int_length_base(p->width, 10);
+    }
+    else if (*tmp == '*')
+    {
+        p->width = va_arg(valist, int);
+        tmp++;
+    }
+    return (tmp);
+}
+
 char	*read_size(t_parse *p, char *tmp)
 {
 	char	*sizes;
@@ -411,10 +424,10 @@ char	*read_size(t_parse *p, char *tmp)
 
 char	*read_flags(char *tmp, t_parse *p)
 {
-	char *f;
+	int i;
 
 	p->flags = ft_strnew(5);
-	f = p->flags;
+	i = 0;
 	while (ft_strchr("-+ 0#", *tmp))
 	{
 		if ((*(ft_strchr("-+ 0#", *tmp)) == '0') &&
@@ -422,10 +435,7 @@ char	*read_flags(char *tmp, t_parse *p)
 			(ft_strchr(p->flags, '0') != NULL))
 			return (tmp);
 		if (!ft_strchr(p->flags, *tmp))
-		{
-			*f = *tmp;
-			f++;
-		}
+		    p->flags[i++] = *tmp;
 		tmp++;
 	}
 	ft_strchr(p->flags, '-') ? p->skip_0_flag = 1 : 0;
@@ -438,7 +448,7 @@ char	*read_precision(char *tmp, t_parse *p, va_list valist)
 	if (*(tmp + 1) == '*')
 	{
 		p->precision = va_arg(valist, int);
-		tmp++;
+		tmp += 2;
 	}
 	else if (*(tmp + 1) >= '0' && *(tmp + 1) <= '9')
 	{
@@ -456,10 +466,22 @@ char	*read_precision(char *tmp, t_parse *p, va_list valist)
 
 void	read_type(char *tmp, t_parse *p)
 {
-	if ((*tmp == 'd' || *tmp == 'i') && !ft_strchr("tz", p->size))			//difFeExXo
-		p->is_signed = 1;
-	p->type = *tmp;
-	p->next = tmp;
+    p->is_signed = 0;
+    p->type = *tmp;
+    p->next = tmp;
+    if ((*tmp == 'd' || *tmp == 'i') && !ft_strchr("tz", p->size))			//difFeExXo
+        p->is_signed = 1;
+}
+
+void    get_and_print_arg(va_list valist, t_parse *p)
+{
+    if (p->type == 's')
+        p->arg_s = va_arg(valist, char*);
+    else if (p->type == 'f' || p->type == 'F')
+        p->arg_d = va_arg(valist, double);
+    else
+        p->arg_i = va_arg(valist, int64_t);
+    print_arg(p);
 }
 
 /*
@@ -469,31 +491,18 @@ void	read_type(char *tmp, t_parse *p)
 
 t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 {
-	tmp++;
 	if (!p->flags && ft_strchr("-+ 0#", *tmp))								//flag
 		tmp = read_flags(tmp, p);
-	if (*tmp >= '0' && *tmp  <= '9')    										//width
-	{
-		(*tmp >= '0' && *tmp  <= '9') ? p->width = ft_atoi(tmp) : 0; 			//replaced (p->skip_zero = 1) for 0
-		tmp += ft_int_length_base(p->width, 10);
-	}
-	else if (*tmp == '*')
-		p->width = va_arg(valist, int);
+    tmp = read_width(p, tmp, valist);
 	if (*tmp == '.')                        									//precision
 		tmp = read_precision(tmp, p, valist);
     if (ft_strchr("hlLzjt", *tmp))											//size
 		tmp = read_size(p, tmp);
-    if (ft_strchr("%diufFxXoscp", *tmp))										//type diufFeEgGxXoscpaAn
+    if (ft_strchr("%diufFxXoscp", *tmp))									//type diufFeEgGxXoscpaAn
 		read_type(tmp, p);
     else
     	p->next = tmp - 1;
-    if (p->type == 's')
-    	p->arg_s = va_arg(valist, char*);
-    else if (p->type == 'f' || p->type == 'F')
-		p->arg_d = va_arg(valist, double);
-	else
-		p->arg_i = va_arg(valist, int64_t);
-	print_arg(p);
+    get_and_print_arg(valist, p);
 	return (p);
 }
 
@@ -552,7 +561,7 @@ int		ft_printf(const char *restrict s, ...)
 			s = read_line(p, (char *)s);
 		else
 		{
-			parse_string((char *)s, p, valist);
+			parse_string((char *)++s, p, valist);
 			if (!p->next)
 			    return (-1);
 			s = p->next;

@@ -15,6 +15,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+# include <stdint.h>
 
 typedef struct		s_list
 {
@@ -51,7 +52,7 @@ int					ft_isascii(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-intmax_t			ft_absint(int64_t n);
+int64_t 			ft_absint(int64_t n);
 float				ft_absfloat(float n);
 void				*ft_memalloc(size_t size);
 void				ft_memdel(void **ap);
