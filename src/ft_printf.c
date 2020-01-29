@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/29 17:59:02 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/29 20:30:55 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,22 +132,22 @@ int     is_positive(int64_t n, t_parse *p)
 	return (1);
 }
 
-void	add_sign(int64_t n, t_parse *p, char **number)
+void	add_sign(int64_t n, t_parse *p, char **num)
 {
 	char *tmp;
 
-	tmp = *number;
+	tmp = *num;
 	if (p->is_signed && (!is_positive(n, p) || ft_strchr(p->flags, '+')))
 	{
 		if (!is_positive(n, p))
-			*number = ft_strjoin("-", *number);
+			*num = ft_strjoin("-", *num);
 		else if (ft_strchr(p->flags, '+'))
-			*number = ft_strjoin("+", *number);
+			*num = ft_strjoin("+", *num);
 		free(tmp);
 	}
 	else if (p->is_signed && ft_strchr(p->flags, ' ') && p->spaces == 0)
 	{
-		*number = ft_strjoin(" ", *number);
+		*num = ft_strjoin(" ", *num);
 		free(tmp);
 	}
 }
@@ -160,25 +160,28 @@ void	check_size_and_print_int(int64_t n, t_parse *p)
 		buffer(p, ft_itoa(ft_absint(n)), 1);
 }
 
-void	fill_width(t_parse *p, char **number)
+void	fill_width(t_parse *p, char **num, char sign)
 {
 	char	*spaces;
 	char	*tmp;
 	int		num_of_spaces;
-
 	if (p->width > p->length)
 	{
-		num_of_spaces = p->width - p->length;
+		num_of_spaces = sign ? p->width - p->length + 1 : p->width - p->length;
 		spaces = ft_strnew(num_of_spaces);
 		if (p->skip_0_flag == 0 && !ft_strchr(p->flags, '-') && ft_strchr(p->flags, '0'))
-			ft_memset(spaces, '0', p->width - p->length);
+			ft_memset(spaces, '0', num_of_spaces);
 		else
-			ft_memset(spaces, ' ', p->width - p->length);
-		tmp = *number;
+			ft_memset(spaces, ' ', num_of_spaces);
+		if (sign && spaces[0] == ' ')
+			spaces[p->width - p->length] = sign;
+		else if (sign)
+			spaces[0] = sign;
+		tmp = ft_strdup(*num);
 		if (ft_strchr(p->flags, '-'))
-			*number = ft_strjoin(*number, spaces);
+			*num = ft_strjoin(*num, spaces);
 		else
-			*number = ft_strjoin(spaces, *number);
+			*num = ft_strjoin(spaces, *num);
 		free(tmp);
 		free(spaces);
 	}
@@ -210,11 +213,21 @@ char	*get_int(t_parse *p, int64_t n)
 
 void	print_s_int(int64_t n, t_parse *p)
 {
-	char *num;
+	char	*num;
+	char	sign;
+	char	*tmp;
 
+	sign = 0;
 	int_length_and_update(n, p);
 	num = get_int(p, n);
-	fill_width(p, &num);
+	if (num[0] ==  '-' || num[0] == '+' || num[0] == ' ')
+		sign = num[0];
+	tmp = sign ? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);
+	free(num);
+	fill_width(p, &tmp, sign);
+//	num = sign ? ft_strjoin(sign, tmp) : ft_strdup(tmp);
+//	sign ? free(sign) : 0;
+	free(tmp);
 	buffer(p, num, 1);
 }
 
@@ -252,7 +265,7 @@ void	print_int(int64_t n, t_parse *p)
 **	printing oct and hex
 */
 
-char	*prepare_string(t_parse *p, int base, int v)
+char	*prepare_string(t_parse *p, int base, int64_t v)
 {
 	char *s;
 
@@ -309,7 +322,7 @@ void	print_base(uint64_t v, t_parse *p, int base)
 	free(number);
 	p->length = ft_strlen(s);
 	p->precision = 0;
-	fill_width(p, &s);
+	fill_width(p, &s, 0);
 	buffer(p, s, 1);
 }
 
@@ -319,13 +332,13 @@ void	print_percentage(t_parse *p)
 
 	s = ft_strnew(p->width > 0 ? p->width : 1);
 	ft_memset(s, ' ', p->width > 0 ? p->width : 1);
+	;
 	if (ft_strchr(p->flags, '-'))
 		s[0] = '%';
 	else
-		s[p->width - 1] = '%';
+		s[p->width == 0 ? 0 : p->width - 1] = '%';
 	buffer(p, s, 1);
 }
-
 
 /*
 **	printing float
@@ -345,9 +358,6 @@ int *get_bits(float f)
 	return (bits);
 }
 
-
-
-
 /*
 **	prints one argument
 */
@@ -361,7 +371,7 @@ void	print_arg(t_parse *p)
 	else if (ft_strchr("pxX", p->type))
 		print_base((uint64_t)p->arg_i, p, 16);
 	else if ('c' == p->type)
-		print_char((int64_t)p->arg_i, p);
+		print_char((char)p->arg_i, p);
 	else if ('s' == p->type)
 		print_str(p->arg_s, p);
 	else if ('%' == p->type)
@@ -443,6 +453,7 @@ char	*read_precision(char *tmp, t_parse *p, va_list valist)
 	}
 	return (tmp);
 }
+
 void	read_type(char *tmp, t_parse *p)
 {
 	if ((*tmp == 'd' || *tmp == 'i') && !ft_strchr("tz", p->size))			//difFeExXo
@@ -505,7 +516,6 @@ void	buffer(t_parse *p, char *s, int freeable)
 	free(tmp);
 	if (freeable)
 		free(s);
-//	printf("\n=== buffer: ===%s===\n", p->buf);
 }
 
 char	*read_line(t_parse *p, char *s)

@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-void	print_char(int64_t c, t_parse *p)
+void	print_char(char c, t_parse *p)
 {
 	if (p->flags && ft_strchr(p->flags, '-'))
 	{
