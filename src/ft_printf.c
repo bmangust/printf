@@ -343,24 +343,6 @@ void	print_percentage(t_parse *p)
 }
 
 /*
-**	printing float
-*/
-
-int *get_bits(float f)
-{
-	int d = *((int*)&f);
-	int *bits;
-	int i = 32;
-	bits = (int*)malloc(sizeof(int)*32);
-
-	while(--i >= 0)
-	{
-		bits[i] = ((d >> i) & 1);
-	}
-	return (bits);
-}
-
-/*
 **	prints one argument
 */
 

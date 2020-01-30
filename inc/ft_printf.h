@@ -110,6 +110,14 @@ typedef struct		s_parse
 **              помещено количество символов, записанных на данный момент
 */
 
+typedef struct      s_double
+{
+	int   is_double;
+	char *sign;
+	char *exp;
+	char *mant;
+}                   t_double;
+
 typedef struct		s_lst
 {
 	char			type;
