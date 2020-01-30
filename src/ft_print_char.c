@@ -14,20 +14,20 @@
 
 void	print_char(char c, t_parse *p)
 {
+	char *s;
+
+	s = ft_strnew(1);
+	s[0] = c;
+	if (c == 0)
+		p->printed++;
 	if (p->flags && ft_strchr(p->flags, '-'))
 	{
-		if (c != 0)
-			buffer(p, (char*)&c, 0);
-		else
-			p->printed++;
+		buffer(p, s, 1);
 		buffer(p, ft_charstr(p->width - 1, ' '), 1);
 	}
 	else
 	{
 		buffer(p, ft_charstr(p->width - 1, ' '), 1);
-		if (c != 0)
-			buffer(p, (char*)&c, 0);
-		else
-			p->printed++;
+		buffer(p, s, 1);
 	}
 }

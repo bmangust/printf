@@ -164,6 +164,7 @@ char    *fill_width(t_parse *p, char *num, char sign)
 	char	*spaces;
 	char	*tmp;
 	int		num_of_spaces;
+
 	if (p->width > p->length)
 	{
 		num_of_spaces = (sign && !ft_strchr(p->flags, '-'))
@@ -222,10 +223,15 @@ void	print_s_int(int64_t n, t_parse *p)
 	num = get_int(p, n);
 	if (num[0] ==  '-' || num[0] == '+' || num[0] == ' ')
 		sign = num[0];
-	tmp = sign && !ft_strchr(p->flags, '-')
-	        ? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);
-	free(num);
-	tmp = fill_width(p, tmp, sign);
+	if (p->width > MAX(p->precision, p->length))
+	{
+		tmp = sign && !ft_strchr(p->flags, '-')
+			  ? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);
+		free(num);
+		tmp = fill_width(p, tmp, sign);
+	}
+	else
+		tmp = fill_width(p, num, sign);
 	buffer(p, tmp, 1);
 }
 
@@ -530,14 +536,16 @@ void	buffer(t_parse *p, char *s, int freeable)
 char	*read_line(t_parse *p, char *s)
 {
 	char	*tmp;
-	int 	index;
+	int 	index[2];
 
-	index = ft_strchrn(s, '%');
+	index[0] = ft_strchrn(s, '%');
+	index[1] = ft_strchrn(s, '{');
+//	if (index[0] != -1 || index[1] != -1)
 	if (index != -1)
 	{
 		tmp = ft_strsub(s, 0, index);
 		buffer(p, tmp, 1);
-		s += index - 1;
+		s += index[0] - 1;
 	}
 	else
 	{
@@ -557,8 +565,10 @@ int		ft_printf(const char *restrict s, ...)
 	p = new_param();
 	while (*s)
 	{
-		if (*s != '%')
+		if (*s != '%' && *s != '{')
 			s = read_line(p, (char *)s);
+		else if (*s == '{')
+			s = parse_color(s, p);
 		else
 		{
 			parse_string((char *)++s, p, valist);
