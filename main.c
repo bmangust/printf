@@ -294,8 +294,8 @@ int main(int ac, char **av)
         char *a;
         a = "123545745.58";
 		ft_printf("---27---\n");
-		p = printf("%%0-3.15j%%\n", 123456789);
-		n = ft_printf("%%0-3.15j%%\n", 123456789);
+		p = printf("=%#15X=\n", -123456789);
+		n = ft_printf("=%#15X=\n", -123456789);
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{

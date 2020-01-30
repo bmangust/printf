@@ -294,27 +294,11 @@ char	*prepare_string(t_parse *p, int base, int64_t v)
 	return (s);
 }
 
-int64_t	cast_number(int64_t v, t_parse *p)
-{
-	if (p->type == 'p')
-		return ((int64_t) v);
-	if (p->size == INT)
-		return ((unsigned int)v);
-	else if (p->size == SHORT)
-		return ((unsigned short)v);
-	else if (p->size == CHAR)
-		return ((unsigned char)v);
-	else if (p->size == LONG)
-		return ((unsigned long)v);
-	return ((unsigned long long)v);
-}
-
-void	print_base(uint64_t v, t_parse *p, int base)
+void	print_base_u(uint64_t v, t_parse *p, int base)
 {
 	char	*s;
 	char	*number;
 
-	v = cast_number(v, p);
 	s = prepare_string(p, base, v);
 	if (base == 8)
 		number = ft_itoa_base(v, 8);
@@ -330,13 +314,27 @@ void	print_base(uint64_t v, t_parse *p, int base)
 	buffer(p, s, 1);
 }
 
+int64_t	print_base(int64_t v, t_parse *p, int base)
+{
+	if (p->type == 'p')
+		print_base_u((int64_t) v, p, base);
+	if (p->size == INT)
+		print_base_u((unsigned int)v, p, base);
+	else if (p->size == SHORT)
+		print_base_u((unsigned short)v, p, base);
+	else if (p->size == CHAR)
+		print_base_u((unsigned char)v, p, base);
+	else if (p->size == LONG)
+		print_base_u((unsigned long)v, p, base);
+	return ((unsigned long long)v);
+}
+
 void	print_percentage(t_parse *p)
 {
 	char *s;
 
 	s = ft_strnew(p->width > 0 ? p->width : 1);
 	ft_memset(s, ' ', p->width > 0 ? p->width : 1);
-	;
 	if (ft_strchr(p->flags, '-'))
 		s[0] = '%';
 	else
@@ -390,7 +388,7 @@ void	print_arg(t_parse *p)
 
 char    *read_width(t_parse *p, char *tmp, va_list valist)
 {
-    if (*tmp >= '0' && *tmp  <= '9')    										//width
+    if (*tmp >= '0' && *tmp  <= '9')
     {
         (*tmp >= '0' && *tmp  <= '9') ? p->width = ft_atoi(tmp) : 0;
         tmp += ft_int_length_base(p->width, 10);
@@ -475,7 +473,7 @@ void	read_type(char *tmp, t_parse *p)
     p->is_signed = 0;
     p->type = *tmp;
     p->next = tmp;
-    if ((*tmp == 'd' || *tmp == 'i') && !ft_strchr("tz", p->size))			//difFeExXo
+    if ((*tmp == 'd' || *tmp == 'i') && !ft_strchr("tz", p->size))
         p->is_signed = 1;
 }
 
@@ -497,14 +495,14 @@ void    get_and_print_arg(va_list valist, t_parse *p)
 
 t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 {
-	if (!p->flags && ft_strchr("-+ 0#", *tmp))								//flag
+	if (!p->flags && ft_strchr("-+ 0#", *tmp))
 		tmp = read_flags(tmp, p);
     tmp = read_width(p, tmp, valist);
-	if (*tmp == '.')                        									//precision
+	if (*tmp == '.')
 		tmp = read_precision(tmp, p, valist);
-    if (ft_strchr("hlLzjt", *tmp))											//size
+    if (ft_strchr("hlLzjt", *tmp))
 		tmp = read_size(p, tmp);
-    if (ft_strchr("%diufFxXoscp", *tmp))									//type diufFeEgGxXoscpaAn
+    if (ft_strchr("%diufFxXoscp", *tmp))
 		read_type(tmp, p);
     else
     	p->next = tmp - 1;
@@ -536,14 +534,17 @@ void	buffer(t_parse *p, char *s, int freeable)
 char	*read_line(t_parse *p, char *s)
 {
 	char	*tmp;
-	int 	index[2];
+	int 	index[3];
 
-	index[0] = ft_strchrn(s, '%');
-	index[1] = ft_strchrn(s, '{');
-//	if (index[0] != -1 || index[1] != -1)
-	if (index != -1)
+	index[1] = ft_strchrn(s, '%');
+	index[2] = ft_strchrn(s, '{');
+	if (index[1] != -1 && index[2] != -1)
+		index[0] = index[1] < index[2] ? index[1] : index[2];
+	else
+		index[0] = index[1] == -1 ? index[2] : index[1];
+	if (index[1] != -1 || index[2] != -1)
 	{
-		tmp = ft_strsub(s, 0, index);
+		tmp = ft_strsub(s, 0, index[0]);
 		buffer(p, tmp, 1);
 		s += index[0] - 1;
 	}
@@ -552,6 +553,28 @@ char	*read_line(t_parse *p, char *s)
 		buffer(p, s, 0);
 		s += ft_strlen(s) - 1;
 	}
+	return (s);
+}
+
+char	*read_color(t_parse *p, char *s)
+{
+	int	found;
+
+	found = 42;
+	if ((found = ft_strncmp("{RED}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else if ((found = ft_strncmp("{BLUE}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else if ((found = ft_strncmp("{BLACK}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else if ((found = ft_strncmp("{RED}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else if ((found = ft_strncmp("{RED}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else
+		buffer(p, "{", 0);
+	if (found == 0)
+		s = ft_strchr(s, '}');
 	return (s);
 }
 
@@ -568,7 +591,7 @@ int		ft_printf(const char *restrict s, ...)
 		if (*s != '%' && *s != '{')
 			s = read_line(p, (char *)s);
 		else if (*s == '{')
-			s = parse_color(s, p);
+			s = read_color(p, (char *)s);
 		else
 		{
 			parse_string((char *)++s, p, valist);
