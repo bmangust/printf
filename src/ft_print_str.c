@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/29 17:55:05 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/30 15:28:10 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_charstr(int size, char n)
 	char	*s;
 
 	i = 0;
-	if (n <= 0)
+	if (size <= 0)
 		return (NULL);
 	s = (char*)malloc((size + 1) * sizeof(char));
 	if (s)

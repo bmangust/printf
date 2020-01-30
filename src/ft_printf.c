@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/29 17:59:02 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/30 17:52:18 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -361,7 +361,7 @@ void	print_arg(t_parse *p)
 	else if (ft_strchr("pxX", p->type))
 		print_base((uint64_t)p->arg_i, p, 16);
 	else if ('c' == p->type)
-		print_char((int64_t)p->arg_i, p);
+		print_char((char)p->arg_i, p);
 	else if ('s' == p->type)
 		print_str(p->arg_s, p);
 	else if ('%' == p->type)
@@ -486,6 +486,8 @@ t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 	return (p);
 }
 
+
+
 /*
 **	weird behavior, can't concatenate string with hex number
 **	sometimes catches segfault. With debugger everything is great
@@ -511,20 +513,49 @@ void	buffer(t_parse *p, char *s, int freeable)
 char	*read_line(t_parse *p, char *s)
 {
 	char	*tmp;
-	int 	index;
+	int 	index[3];
 
-	index = ft_strchrn(s, '%');
-	if (index != -1)
+	index[1] = ft_strchrn(s, '%');
+	index[2] = ft_strchrn(s, '{');
+	if (index[1] != -1 && index[2] != -1)
+		index[0] = index[1] < index[2] ? index[1] : index[2];
+	else
+		index[0] = index[1] == -1 ? index[2] : index[1];
+	if (index[1] != -1 || index[2] != -1)
 	{
-		tmp = ft_strsub(s, 0, index);
+		tmp = ft_strsub(s, 0, index[0]);
 		buffer(p, tmp, 1);
-		s += index - 1;
+		s += index[0] - 1;
 	}
 	else
 	{
 		buffer(p, s, 0);
 		s += ft_strlen(s) - 1;
 	}
+	return (s);
+}
+
+char	*read_color(t_parse *p, char *s)
+{
+	int	found;
+
+	found = 42;
+	if ((found = ft_strncmp("{RED}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else if ((found = ft_strncmp("{BLUE}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else if ((found = ft_strncmp("{BLACK}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else if ((found = ft_strncmp("{RED}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else if ((found = ft_strncmp("{RED}", s, 5)) == 0)
+		buffer(p, "\033[41m", 0);
+	else
+		buffer(p, "{", 0);
+	if (found == 0)
+		s = ft_strchr(s, '}');
+	else
+		s++;
 	return (s);
 }
 
@@ -538,8 +569,10 @@ int		ft_printf(const char *restrict s, ...)
 	p = new_param();
 	while (*s)
 	{
-		if (*s != '%')
+		if (*s != '%' && *s != '{')
 			s = read_line(p, (char *)s);
+		else if (*s == '{')
+			s = read_color(p, (char *)s);
 		else
 		{
 			parse_string((char *)s, p, valist);

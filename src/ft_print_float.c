@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/25 18:06:01 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/29 18:13:51 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static long long int	float_base(double x)
 	return (base);
 }
 
-static void		lld_to_str(long long int integer, long long int	fract, t_parse *p)
+static void		lld_to_str(long long int integer, 
+					long long int	fract, t_parse *p)
 {
 	char	*str_int;
 	char	*str_fract;
@@ -77,6 +78,6 @@ void	print_float(double valist, t_parse *p)
 	fract = float_base((valist - integer) * ft_pow(10, p->precision + 1));
 	(integer < 0 || valist < 0) ? fract *= -1 : fract;
 	if (fract != 0)
-		fract = (fract - 5)/10 + 1;
-	lld_to_str(integer, fract, p);	
+		fract = (fract - 5) / 10 + 1;
+	lld_to_str(integer, fract, p);
 }

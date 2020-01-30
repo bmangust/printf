@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/29 16:31:35 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/01/30 17:48:01 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,16 @@
 #define CHAR (1 << 4)			//hh
 #define LONGDOUBLE (1 << 5)		//L for float
 #define FLOAT_POWER 52			//hh
+// #define BLACK 1
+// #define RED 2
+// #define GREEN 3
+// #define YELLOW 4
+// #define BLUE 5
+// #define BLACK_COLOR "\033[40m"
+// #define RED_COLOR "\033[41m"
+// #define GREEN_COLOR "\033[42m"
+// #define YELLOW_COLOR "\033[43m"
+// #define BLUE_COLOR "\033[44m"
 
 /*
 **	type:
@@ -125,7 +135,7 @@ typedef struct		s_lst
 int		ft_printf(const char *restrict s, ...);
 t_parse	*parse_string(char *s, t_parse *params, va_list valist);
 void	buffer(t_parse *p, char *s, int freeable);
-void				print_char(int64_t c, t_parse *p);
+void				print_char(char c, t_parse *p);
 void				print_float(double d, t_parse *p);
 void				print_str(char *str, t_parse *p);
 char				*ft_charstr(int size, char n);
