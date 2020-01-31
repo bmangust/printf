@@ -1,93 +1,21 @@
 #include "ft_printf.h"
-#include "libft.h"
-
-
-
-typedef struct      s_double
-{
-	int   is_double;
-	char *sign;
-	char *exp;
-	char *mant;
-}                   t_double;
-
-t_double *new_double(int is_double)
-{
-	t_double *num = (t_double*)malloc(sizeof(t_double));
-
-	num->is_double = is_double;
-	if (is_double)
-	{
-		num->sign = ft_strnew(1);
-		num->exp = ft_strnew(11);
-		num->mant = ft_strnew(52);
-	}
-	else
-	{
-		num->sign = ft_strnew(1);
-		num->exp = ft_strnew(8);
-		num->mant = ft_strnew(23);
-	}
-	return (num);
-}
-
-t_double *get_bits(double f, int is_double)
-{
-	long long d = *((long long*)&f);
-	int i;
-	t_double *num = new_double(is_double);
-	int bit;
-
-	i = is_double ? 64 : 32;
-	bit = ((d >> i) & 1);
-	num->sign[--i - 63] = bit + '0';
-	while(--i >= 52)
-	{
-		bit = ((d >> i) & 1);
-		num->exp[i - 52] = bit + '0';
-	}
-	if (is_double)
-	{
-		while(--i >= 0)
-		{
-			bit = ((d >> i) & 1);
-			num->mant[i] = bit + '0';
-		}
-	}
-	else
-	{
-		while(--i >= 0)
-		{
-			bit = ((d >> i) & 1);
-			num->mant[i] = bit + '0';
-		}
-	}
-
-//	i = is_double ? 64 : 32;
-//	num->sign[i - 63] = ((d >> i) & 1) + '0';
-//	if (is_double)
-//		while(--i >= 52)
-//			num->exp[i - 52] = ((d >> i) & 1) + '0';
-//	else
-//		while(--i >= 23)
-//			num->exp[i - 23] = ((d >> i) & 1) + '0';
-//	while(--i >= 0)
-//		num->mant[i] = ((d >> i) & 1) + '0';
-	return (num);
-}
-
 
 int main(int ac, char **av)
 {
-	double d = 0.15625;
-	t_double *num = get_bits(d, 1);
-	long long *ptr = (void *)&d;
-	printf("%Li\n", *ptr);
+	double d = 2120.156250001;
+	double f = 2120.156250001;
+	t_double *num = get_bits(d, 0, new_double(1));
+	t_double *num2 = get_bits(0, f, new_double(0));
 	printf("%s\n", num->mant);
 	printf("%s\n", num->exp);
-	printf("%s\n", num->sign);
+	printf("%s\n\n", num->sign);
+
+	printf("%s\n", num2->mant);
+	printf("%s\n", num2->exp);
+	printf("%s\n\n", num2->sign);
 	return (0);
 }
+
 
 /*
 int main(int ac, char **av)

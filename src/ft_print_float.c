@@ -12,6 +12,48 @@
 
 #include "ft_printf.h"
 
+t_double *new_double(int is_double)
+{
+	t_double *num = (t_double*)malloc(sizeof(t_double));
+
+	num->is_double = is_double;
+	num->sign = ft_strnew(1);
+	num->exp = NULL;
+	num->mant = NULL;
+	return (num);
+}
+
+t_double *get_bits(double d, float f, t_double *num)
+{
+	long long dl;
+	int di;
+	char *bits;
+	int i;
+
+	dl = *((long long*)&d);
+	di = *((int*)&f);
+	i = -1;
+	bits = ft_strnew(64);
+	if (num->is_double)
+		while (++i < 64)
+			bits[i] = ((dl >> (63 - i)) & 1) + '0';
+	else
+		while (++i < 32)
+			bits[i] = ((di >> (31 - i)) & 1) + '0';
+	num->sign[0] = bits[0];
+	num->exp = ft_strsub(bits, 1, (num->is_double) ? 11 : 8);
+	num->mant = (num->is_double) ? ft_strsub(bits, 12, 52)
+								 : ft_strsub(bits, 9, 23);
+	return (num);
+}
+
+
+
+
+
+
+/*
+
 static long long int	float_base(double x)
 {
 	double			rest;
@@ -80,5 +122,4 @@ void	print_float(double valist, t_parse *p)
 		fract = (fract - 5)/10 + 1;
 	lld_to_str(integer, fract, p);	
 }
-
-
+*/

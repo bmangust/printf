@@ -136,5 +136,7 @@ void	buffer(t_parse *p, char *s, int freeable);
 void				print_char(char c, t_parse *p);
 void				print_float(double d, t_parse *p);
 void				print_str(char *str, t_parse *p);
+t_double			*new_double(int is_double);
+t_double 			*get_bits(double d, float f, t_double *num);
 
 #endif
