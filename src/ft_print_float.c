@@ -25,10 +25,11 @@ t_double *new_double(int is_double)
 
 t_double *get_bits(double d, float f, t_double *num)
 {
-	long long dl;
-	int di;
-	char *bits;
-	int i;
+	int64_t	dl;
+	int		di;
+	char	*bits;
+	char	*tmp;
+	int		i;
 
 	dl = *((long long*)&d);
 	di = *((int*)&f);
@@ -42,9 +43,114 @@ t_double *get_bits(double d, float f, t_double *num)
 			bits[i] = ((di >> (31 - i)) & 1) + '0';
 	num->sign[0] = bits[0];
 	num->exp = ft_strsub(bits, 1, (num->is_double) ? 11 : 8);
-	num->mant = (num->is_double) ? ft_strsub(bits, 12, 52)
-								 : ft_strsub(bits, 9, 23);
+	tmp = (num->is_double) ? ft_strsub(bits, 12, 52)
+						   : ft_strsub(bits, 9, 23);
+	num->mant = ft_strjoin("1", tmp);
+	free(tmp);
 	return (num);
+}
+
+int 	bin_to_dec(char *bin)
+{
+	int i;
+	int len;
+	int dec;
+
+	len = ft_strlen(bin);
+	i = len--;
+	dec = 0;
+	while (--i >= 0)
+		if (bin[i] == '1')
+			dec += ft_pow(2, len - i);
+	return (dec);
+}
+
+int		count_exp(t_double num)
+{
+	int exp;
+	int diff;
+
+	exp = bin_to_dec(num.exp);
+	diff = (num.is_double) ? 1023 : 127;
+	return (exp - diff);
+}
+
+int		find_last_digit(char *mant)
+{
+	int i;
+
+	i = (int)ft_strlen(mant) - 1;
+	while (i >= 0 && mant[i] != '1')
+		i--;
+	return (i);
+}
+
+char 	*get_five_power(char *five_power, int power)
+{
+	char	*new;
+	int		i;
+	int 	carry;
+	int 	len;
+
+	i = -1;
+	len = five_power ? ft_strlen(five_power) : 1;
+	if (power == 1)
+		return (ft_strdup("5"));
+	new = ft_charstr(len + 1, '0');
+	while (++i < len)
+	{
+		if (five_power[i] != '0')
+		{
+			//fix this!!!!
+			carry = (five_power[i] - '0') % 2;
+			new[i] = (five_power[i] - '0' + carry) / 2 + '0';
+		}
+	}
+	free(five_power);
+	return (new);
+}
+
+void	sum(char *summ, char *add)
+{
+	int i;
+	int carry;
+	int sum;
+
+	i = ft_strlen(add);
+	carry = 0;
+	while (--i >= 0)
+	{
+		if (add[i] == '0' && carry == 0)
+			continue ;
+		sum = summ[i] + add[i] + carry - 96;
+		if (sum > 9)
+			carry = sum / 10;
+		summ[i] = sum % 10 + '0';
+	}
+}
+
+char	*get_fractional(t_double num)
+{
+	int		exp;
+	char	*fract_bin;
+	char	*fract;
+	char	*five_power;
+	int 	i;
+	int 	fract_len;
+
+	i = -1;
+	exp = count_exp(num);
+	fract_bin = ft_strsub(num.mant, exp + 1, 64);
+	fract_len = find_last_digit(fract_bin);
+	fract = ft_charstr(fract_len, '0');
+	five_power = NULL;
+	while (i++ < fract_len)
+	{
+		five_power = get_five_power(five_power, i + 1);
+		if (fract_bin[i] == '1')
+			sum(fract, five_power);
+	}
+	return (fract);
 }
 
 
@@ -52,7 +158,7 @@ t_double *get_bits(double d, float f, t_double *num)
 
 
 
-/*
+
 
 static long long int	float_base(double x)
 {
@@ -108,18 +214,20 @@ static void		lld_to_str(long long int integer, long long int	fract, t_parse *p)
 	free(str);
 }
 
-void	print_float(double valist, t_parse *p)
+
+
+void	print_float(double d, t_parse *p)
 {
 	long long int	integer;
 	long long int	fract;
 
 	if (!p->precision)
 		p->precision = 6;
-	integer = float_base(valist);
-	fract = float_base((valist - integer) * ft_pow(10, p->precision + 1));
-	(integer < 0 || valist < 0) ? fract *= -1 : fract;
+	integer = float_base(d);
+	fract = float_base((d - integer) * ft_pow(10, p->precision + 1));
+	(integer < 0 || d < 0) ? fract *= -1 : fract;
 	if (fract != 0)
 		fract = (fract - 5)/10 + 1;
 	lld_to_str(integer, fract, p);	
 }
-*/
+
