@@ -1,29 +1,30 @@
 #include "ft_printf.h"
+//
+//int main(int ac, char **av)
+//{
+//	double d = 2120.156250001;
+//	float f = 2120.156250001;
+//	char *fract;
+//
+//	t_double *num = get_bits(d, 0, new_double(1));
+//	t_double *num2 = get_bits(0, f, new_double(0));
+//	printf("%s\n", num->mant);
+//	printf("%s\n", num->exp);
+//	printf("%s\n\n", num->sign);
+//
+////	printf("%s\n", num2->mant);
+////	printf("%s\n", num2->exp);
+////	printf("%s\n\n", num2->sign);
+//
+//
+//	printf("%d\n\n", bin_to_dec(num2->exp));
+//	fract = get_fractional(*num);
+//	printf("2120.%s\n", fract);
+//	printf("%.50lf\n", d);
+//	return (0);
+//}
 
-int main(int ac, char **av)
-{
-	double d = 2120.156250001;
-	double f = 2120.156250001;
-	char *fract;
 
-	t_double *num = get_bits(d, 0, new_double(1));
-	t_double *num2 = get_bits(0, f, new_double(0));
-	printf("%s\n", num->mant);
-	printf("%s\n", num->exp);
-	printf("%s\n\n", num->sign);
-
-//	printf("%s\n", num2->mant);
-//	printf("%s\n", num2->exp);
-//	printf("%s\n\n", num2->sign);
-
-
-	printf("%d\n\n", bin_to_dec(num2->exp));
-	fract = get_fractional(*num);
-	return (0);
-}
-
-
-/*
 int main(int ac, char **av)
 {
 	// printf("=%4.3d=\tprintf\n", 42);
@@ -317,8 +318,8 @@ int main(int ac, char **av)
         char *a;
         a = "123545745.58";
 		ft_printf("---27---\n");
-		p = printf("=%#15X=\n", -123456789);
-		n = ft_printf("=%#15X=\n", -123456789);
+		p = printf("=%.41lf=\n", 2120.156250001);
+		n = ft_printf("=%lf=\n", 2120.156250001);
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{
@@ -349,4 +350,4 @@ int main(int ac, char **av)
 //		}
 	}
 	return (0);
-}*/
+}

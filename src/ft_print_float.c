@@ -12,17 +12,6 @@
 
 #include "ft_printf.h"
 
-t_double *new_double(int is_double)
-{
-	t_double *num = (t_double*)malloc(sizeof(t_double));
-
-	num->is_double = is_double;
-	num->sign = ft_strnew(1);
-	num->exp = NULL;
-	num->mant = NULL;
-	return (num);
-}
-
 t_double *get_bits(double d, float f, t_double *num)
 {
 	int64_t	dl;
@@ -50,7 +39,27 @@ t_double *get_bits(double d, float f, t_double *num)
 	return (num);
 }
 
-int 	bin_to_dec(char *bin)
+t_double *new_double(double d, float f, int is_double)
+{
+	t_double *num = (t_double*)malloc(sizeof(t_double));
+
+	num->is_double = is_double;
+	num->sign = ft_strnew(1);
+	num->exp = NULL;
+	num->mant = NULL;
+	num = is_double ? get_bits(d, 0, num) : get_bits(0, f, num);
+	return (num);
+}
+
+void	free_double(t_double *num)
+{
+	free(num->sign);
+	free(num->exp);
+	free(num->mant);
+	free(num);
+}
+
+int64_t		bin_to_dec(char *bin)
 {
 	int i;
 	int len;
@@ -97,15 +106,15 @@ char 	*get_five_power(char *five_power, int power)
 	if (power == 1)
 		return (ft_strdup("5"));
 	new = ft_charstr(len + 1, '0');
-	while (++i < len)
-	{
-		if (five_power[i] != '0')
+	carry = 0;
+	while (++i < len + 1)
+		if (five_power[i] && (five_power[i] != '0' || carry))
 		{
-			//fix this!!!!
-			carry = (five_power[i] - '0') % 2;
 			new[i] = (five_power[i] - '0' + carry) / 2 + '0';
+			carry = (five_power[i] - '0') % 2 * 10;
 		}
-	}
+		else if (!five_power[i])
+			new[i] = '5';
 	free(five_power);
 	return (new);
 }
@@ -123,15 +132,13 @@ void	sum(char *summ, char *add)
 		if (add[i] == '0' && carry == 0)
 			continue ;
 		sum = summ[i] + add[i] + carry - 96;
-		if (sum > 9)
-			carry = sum / 10;
+		carry = (sum > 9) ? 1 : 0;
 		summ[i] = sum % 10 + '0';
 	}
 }
 
-char	*get_fractional(t_double num)
+char	*get_fractional(t_double num, t_parse *p)
 {
-	int		exp;
 	char	*fract_bin;
 	char	*fract;
 	char	*five_power;
@@ -139,9 +146,8 @@ char	*get_fractional(t_double num)
 	int 	fract_len;
 
 	i = -1;
-	exp = count_exp(num);
-	fract_bin = ft_strsub(num.mant, exp + 1, 64);
-	fract_len = find_last_digit(fract_bin);
+	fract_bin = ft_strsub(num.mant, count_exp(num) + 1, 64);
+	fract_len = find_last_digit(fract_bin) + 1;
 	fract = ft_charstr(fract_len, '0');
 	five_power = NULL;
 	while (i++ < fract_len)
@@ -152,9 +158,6 @@ char	*get_fractional(t_double num)
 	}
 	return (fract);
 }
-
-
-
 
 
 
@@ -218,16 +221,18 @@ static void		lld_to_str(long long int integer, long long int	fract, t_parse *p)
 
 void	print_float(double d, t_parse *p)
 {
-	long long int	integer;
-	long long int	fract;
+	char		*integer;
+	char		*fract;
+	t_double	*num;
 
 	if (!p->precision)
 		p->precision = 6;
-	integer = float_base(d);
-	fract = float_base((d - integer) * ft_pow(10, p->precision + 1));
-	(integer < 0 || d < 0) ? fract *= -1 : fract;
-	if (fract != 0)
-		fract = (fract - 5)/10 + 1;
-	lld_to_str(integer, fract, p);	
+	num = new_double(d, 0, 1);
+	integer = ft_itoa(float_base(d));
+	fract = get_fractional(*num, p);
+	buffer(p, integer, 1);
+	buffer(p, ".", 0);
+	buffer(p, fract, 1);
+	free_double(num);
 }
 
