@@ -6,7 +6,7 @@
 /*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/16 23:38:01 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/25 17:09:02 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/29 18:39:35 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+# include <stdint.h>
 
 typedef struct		s_list
 {
@@ -51,11 +52,12 @@ int					ft_isascii(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-intmax_t			ft_absint(int64_t n);
+int64_t 			ft_absint(int64_t n);
 float				ft_absfloat(float n);
 void				*ft_memalloc(size_t size);
 void				ft_memdel(void **ap);
 char				*ft_strnew(size_t size);
+char				*ft_strrev(char *str);
 void				ft_strdel(char **as);
 void				ft_strclr(char *s);
 void				ft_striter(char *s, void (*f)(char *));
@@ -96,6 +98,7 @@ void				ft_lstrev(t_list **head);
 void				ft_lstadd_last(t_list **alst, t_list *new);
 int					ft_int_length_base(int64_t value, int base);
 int                 ft_uint_length_base(uint64_t value, int base);
-char		*ft_ltoa(long long int base, int sign);
+char				*ft_ltoa(long long int base, int sign);
+char				*ft_charstr(int size, char n);
 
 #endif

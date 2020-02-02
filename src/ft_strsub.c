@@ -15,8 +15,12 @@
 char	*ft_strsub(char const *s, unsigned int start, size_t len)
 {
 	char	*sub;
+	size_t	s_len;
 
-	if (!s || !(sub = (char*)malloc(sizeof(char) * (len + 1))))
+	s_len = ft_strlen(s);
+	if (s && start >= s_len)
+		return (ft_strnew(0));
+	if (!s || !(sub = ft_strnew(len)))
 		return (NULL);
 	sub = ft_strncpy(sub, (char*)s + start, len);
 	sub[len] = '\0';

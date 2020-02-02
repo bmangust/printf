@@ -30,16 +30,6 @@
 #define CHAR (1 << 4)			//hh
 #define LONGDOUBLE (1 << 5)		//L for float
 #define FLOAT_POWER 52			//hh
-// #define BLACK 1
-// #define RED 2
-// #define GREEN 3
-// #define YELLOW 4
-// #define BLUE 5
-// #define BLACK_COLOR "\033[40m"
-// #define RED_COLOR "\033[41m"
-// #define GREEN_COLOR "\033[42m"
-// #define YELLOW_COLOR "\033[43m"
-// #define BLUE_COLOR "\033[44m"
 
 /*
 **	type:
@@ -77,8 +67,8 @@ typedef struct		s_parse
 	int				spaces;
 	char			*flags;
 	int				width;
-	int				precision;
-	int				skip_zero;
+	int				prec;
+	int				zero_prec;
 	int 			skip_0_flag;
 	int				E;
 	/*
@@ -120,6 +110,14 @@ typedef struct		s_parse
 **              помещено количество символов, записанных на данный момент
 */
 
+typedef struct      s_double
+{
+	int   is_double;
+	char *sign;
+	char *exp;
+	char *mant;
+}                   t_double;
+
 typedef struct		s_lst
 {
 	char			type;
@@ -132,12 +130,16 @@ typedef struct		s_lst
 	struct s_lst	*prev;
 }					t_node;
 
-int		ft_printf(const char *restrict s, ...);
-t_parse	*parse_string(char *s, t_parse *params, va_list valist);
-void	buffer(t_parse *p, char *s, int freeable);
+int					ft_printf(const char *restrict s, ...);
+t_parse				*parse_string(char *s, t_parse *params, va_list valist);
+void				buffer(t_parse *p, char *s, int freeable);
 void				print_char(char c, t_parse *p);
 void				print_float(double d, t_parse *p);
 void				print_str(char *str, t_parse *p);
-char				*ft_charstr(int size, char n);
+t_double			*new_double(double d, float f, int is_double);
+t_double 			*get_bits(double d, float f, t_double *num);
+int64_t				bin_to_dec(char *bin);
+char				*get_fractional(t_double num, t_parse *p);
+char				*add_symbols(char *s, char c, size_t n, int is_after);
 
 #endif
