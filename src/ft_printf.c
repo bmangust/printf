@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/29 20:30:55 by akraig           ###   ########.fr       */
+/*   Updated: 2020/01/31 16:14:34 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -512,27 +512,151 @@ char	*read_line(t_parse *p, char *s)
 	return (s);
 }
 
-char	*read_color(t_parse *p, char *s)
-{
-	int	found;
 
-	found = 42;
-	if ((found = ft_strncmp("{RED}", s, 5)) == 0)
-		buffer(p, "\033[41m", 0);
-	else if ((found = ft_strncmp("{BLUE}", s, 5)) == 0)
-		buffer(p, "\033[41m", 0);
-	else if ((found = ft_strncmp("{BLACK}", s, 5)) == 0)
-		buffer(p, "\033[41m", 0);
-	else if ((found = ft_strncmp("{RED}", s, 5)) == 0)
-		buffer(p, "\033[41m", 0);
-	else if ((found = ft_strncmp("{RED}", s, 5)) == 0)
-		buffer(p, "\033[41m", 0);
+// /*WORKING*/
+
+
+// char	*read_other(t_parse *p, char *s, int found)
+// {
+// 	if ((found = ft_strncmp("{DEFAULT}", s, 9)) == 0)
+// 		buffer(p, "\033[0m", 0);
+// 	else if ((found = ft_strncmp("{BOLDFACE}", s, 10)) == 0)
+// 		buffer(p, "\033[1m", 0);
+// 	else if ((found = ft_strncmp("{SEMIBRIGHT}", s, 12)) == 0)
+// 		buffer(p, "\033[2m", 0);
+// 	else if ((found = ft_strncmp("{INDERLINE}", s, 11)) == 0)
+// 		buffer(p, "\033[4m", 0);
+// 	else if ((found = ft_strncmp("{BLINK}", s, 7)) == 0)
+// 		buffer(p, "\033[5m", 0);
+// 	else
+// 		buffer(p, "{", 0);
+// 	if (found == 0)
+// 		s = ft_strchr(s, '}');
+// 	return (s);
+// }
+
+// char	*read_bg(t_parse *p, char *s, int found)
+// {
+// 	if ((found = ft_strncmp("{BLACK_BG}", s, 10)) == 0)
+// 		buffer(p, "\033[40m", 0);
+// 	else if ((found = ft_strncmp("{RED_BG}", s, 8)) == 0)
+// 		buffer(p, "\033[41m", 0);
+// 	else if ((found = ft_strncmp("{GREEN_BG}", s, 10)) == 0)
+// 		buffer(p, "\033[42m", 0);
+// 	else if ((found = ft_strncmp("{YELLOW_BG}", s, 11)) == 0)
+// 		buffer(p, "\033[43m", 0);
+// 	else if ((found = ft_strncmp("{BLUE_BG}", s, 9)) == 0)
+// 		buffer(p, "\033[44m", 0);
+// 	else if ((found = ft_strncmp("{MAGENTA_BG}", s, 12)) == 0)
+// 		buffer(p, "\033[45m", 0);
+// 	else if ((found = ft_strncmp("{CYAN_BG}", s, 9)) == 0)
+// 		buffer(p, "\033[46m", 0);
+// 	else if ((found = ft_strncmp("{GREY_BG}", s, 9)) == 0)
+// 		buffer(p, "\033[47m", 0);
+// 	else if (found != 0)
+// 		s = read_other(p, s, found);
+// 	if (found == 0)
+// 		s = ft_strchr(s, '}');
+// 	return (s);
+// }
+
+// char	*read_color(t_parse *p, char *s)
+// {
+// 	int	found;
+
+// 	found = 42;
+// 	if ((found = ft_strncmp("{BLACK}", s, 7)) == 0)
+// 		buffer(p, "\033[30m", 0);
+// 	else if ((found = ft_strncmp("{RED}", s, 5)) == 0)
+// 		buffer(p, "\033[31m", 0);
+// 	else if ((found = ft_strncmp("{GREEN}", s, 7)) == 0)
+// 		buffer(p, "\033[32m", 0);
+// 	else if ((found = ft_strncmp("{YELLOW}", s, 8)) == 0)
+// 		buffer(p, "\033[33m", 0);
+// 	else if ((found = ft_strncmp("{BLUE}", s, 6)) == 0)
+// 		buffer(p, "\033[34m", 0);
+// 	else if ((found = ft_strncmp("{MAGENTA}", s, 9)) == 0)
+// 		buffer(p, "\033[35m", 0);
+// 	else if ((found = ft_strncmp("{CYAN}", s, 6)) == 0)
+// 		buffer(p, "\033[36m", 0);
+// 	else if ((found = ft_strncmp("{GREY}", s, 6)) == 0)
+// 		buffer(p, "\033[37m", 0);
+// 	else if (found != 0)
+// 		s = read_bg(p, s, found);
+// 	if (found == 0)
+// 		s = ft_strchr(s, '}');
+// 	return (s);
+// }
+
+
+
+
+
+
+
+
+
+char	*read_other(t_parse *p, char *s, int found)
+{
+	if ((found = ft_strncmp("{DEFAULT}", s, 9)) == 0)
+		buffer(p, "\033[0m", 0);
+	else if ((found = ft_strncmp("{BOLDFACE}", s, 10)) == 0)
+		buffer(p, "\033[1m", 0);
+	else if ((found = ft_strncmp("{SEMIBRIGHT}", s, 12)) == 0)
+		buffer(p, "\033[2m", 0);
+	else if ((found = ft_strncmp("{ITALIC}", s, 8)) == 0)
+		buffer(p, "\033[3m", 0);
+	else if ((found = ft_strncmp("{INDERLINE}", s, 11)) == 0)
+		buffer(p, "\033[4m", 0);
+	else if ((found = ft_strncmp("{BLINK}", s, 7)) == 0)
+		buffer(p, "\033[5m", 0);
 	else
 		buffer(p, "{", 0);
 	if (found == 0)
 		s = ft_strchr(s, '}');
 	return (s);
 }
+
+char	**split_color(void)
+{
+	char	**ar;
+	char	*ident;
+
+	ident = "{BLACK,{RED,{GREEN,{YELLOW,{BLUE,{MAGENTA,{CYAN,{GREY";
+	ar = ft_strsplit(ident, ',');
+	return (ar);
+}
+
+char	*read_color(t_parse *p, char *s, char *code)
+{
+	int		found;
+	char	**ar;
+	int		i;
+
+	ar = split_color();
+	found = 42;
+	i = -1;
+	while (ar[++i] && found)
+		found = ft_strncmp(ar[i], s, ft_strlen(ar[i]));
+	if (!found && --i)
+	{
+		if (*(s + (ft_strlen(ar[i]))) == '}')
+			code[3] = i + '0';
+		else if ((found = ft_strncmp("_BG}", (s + (ft_strlen(ar[i]))), 4)) == 0)
+		{
+			code[2] = 4 + '0';
+			code[3] = i + '0';
+		}
+		buffer(p, code, 1);
+		s = ft_strchr(s, '}');
+	}
+	else if (found != 0)
+ 		s = read_other(p, s, found);
+	return (s);
+}
+
+
+
 
 int		ft_printf(const char *restrict s, ...)
 {
@@ -547,7 +671,7 @@ int		ft_printf(const char *restrict s, ...)
 		if (*s != '%' && *s != '{')
 			s = read_line(p, (char *)s);
 		else if (*s == '{')
-			s = read_color(p, (char *)s);
+			s = read_color(p, (char *)s, ft_strdup("\033[30m"));
 		else
 		{
 			parse_string((char *)++s, p, valist);
