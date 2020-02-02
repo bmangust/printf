@@ -41,8 +41,8 @@ t_parse		*new_param(void)
 	new->spaces = 0;
 	new->flags = NULL;
 	new->width = 0;
-	new->precision = 0;
-	new->skip_zero = 0;
+	new->prec = 0;
+	new->zero_prec = 0;
 	new->printed = 0;
 	new->length = 0;
 	new->skip_0_flag = 0;
@@ -66,8 +66,8 @@ void		clear_param(t_parse *p)
 	p->flags ? free(p->flags) : 0;
 	p->flags = NULL;
 	p->width = 0;
-	p->skip_zero = 0;
-	p->precision = 0;
+	p->prec = 0;
+	p->zero_prec = 0;
 	p->length = 0;
 	p->skip_0_flag = 0;
 	p->E = 0;
@@ -151,39 +151,24 @@ void	add_sign(int64_t n, t_parse *p, char **num)
 	}
 }
 
-void	check_size_and_print_int(int64_t n, t_parse *p)
-{
-	if (n == 0 && p->skip_zero == 1)
-		p->printed--;															//not sure
-	else
-		buffer(p, ft_itoa(ft_absint(n)), 1);
-}
-
 char    *fill_width(t_parse *p, char *num, char sign)
 {
-	char	*spaces;
-	char	*tmp;
+	char	symbol;
+	int		is_after;
 	int		num_of_spaces;
 
 	if (p->width > p->length)
 	{
 		num_of_spaces = (sign && !ft_strchr(p->flags, '-'))
 		        ? p->width - p->length + 1 : p->width - p->length;
-		spaces = ft_strnew(num_of_spaces);
-		(p->skip_0_flag == 0 && !ft_strchr(p->flags, '-')
-        && ft_strchr(p->flags, '0')) ? ft_memset(spaces, '0', num_of_spaces)
-                                : ft_memset(spaces, ' ', num_of_spaces);
-		if (sign && spaces[0] == ' ' && !ft_strchr(p->flags, '-'))
-			spaces[p->width - p->length] = sign;
+		symbol = (p->skip_0_flag == 0 && !ft_strchr(p->flags, '-')
+				  && ft_strchr(p->flags, '0')) ? '0' : ' ';
+		is_after = ft_strchr(p->flags, '-') ? 1 : 0;
+		num = add_symbols(num, symbol, num_of_spaces, is_after);
+		if (sign && symbol == ' ' && !ft_strchr(p->flags, '-'))
+			num[p->width - p->length] = sign;
 		else if (sign && !ft_strchr(p->flags, '-'))
-			spaces[0] = sign;
-		if (ft_strchr(p->flags, '-'))
-			tmp = ft_strjoin(num, spaces);
-		else
-			tmp = ft_strjoin(spaces, num);
-		free(num);
-		free(spaces);
-		return (tmp);
+			num[0] = sign;
 	}
 	return (num);
 }
@@ -191,22 +176,13 @@ char    *fill_width(t_parse *p, char *num, char sign)
 
 char	*get_int(t_parse *p, int64_t n)
 {
-	char *zeroes;
-	char *tmp;
 	char *num;
 
-	if (n == 0 && p->skip_zero == 1)
+	if (n == 0 && p->zero_prec == 1)
 		return (ft_strdup(""));
 	num = ft_itoa(ft_absint(n));
-	if (p->precision > p->length)
-	{
-		zeroes = ft_strnew(ft_absint(p->precision - p->length));
-		ft_memset(zeroes, '0', p->precision - p->length);
-		tmp = num;
-		num = ft_strjoin(zeroes, num);
-		free(tmp);
-		free(zeroes);
-	}
+	if (p->prec > p->length)
+		num = add_symbols(num, '0', ft_absint(p->prec - p->length), 0);
 	add_sign(n, p, &num);
 	p->length = ft_strlen(num);
 	return (num);
@@ -223,7 +199,7 @@ void	print_s_int(int64_t n, t_parse *p)
 	num = get_int(p, n);
 	if (num[0] ==  '-' || num[0] == '+' || num[0] == ' ')
 		sign = num[0];
-	if (p->width > MAX(p->precision, p->length))
+	if (p->width > MAX(p->prec, p->length))
 	{
 		tmp = sign && !ft_strchr(p->flags, '-')
 			  ? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);
@@ -276,8 +252,8 @@ char	*prepare_string(t_parse *p, int base, int64_t v)
 	p->length = ft_int_length_base(v, base);
 	if (p->type == 'p' || ft_strchr(p->flags, '#'))
 		p->length += (base == 8) ? 1 : 2;
-	s = (ft_strchr(p->flags, '0') && !p->precision) ? ft_strnew(p->width)
-						: ft_strnew(MAX(p->precision, p->length));
+	s = (ft_strchr(p->flags, '0') && !p->prec) ? ft_strnew(p->width)
+						: ft_strnew(MAX(p->prec, p->length));
 	if (p->type == 'p' || ft_strchr(p->flags, '#'))
 	{
 		if (base == 8)
@@ -285,11 +261,11 @@ char	*prepare_string(t_parse *p, int base, int64_t v)
 		else if (v != 0)
 			(p->type == 'X') ? ft_strcat(s, "0X") : ft_strcat(s, "0x");
 	}
-	if (p->precision > p->length)
-		while ((p->precision)-- > p->length)
+	if (p->prec > p->length)
+		while ((p->prec)-- > p->length)
 			ft_strcat(s, "0");
-	if (!p->precision && !ft_strchr(p->flags, '-') && ft_strchr(p->flags, '0'))
-		while ((p->width)-- > p->length && p->width > p->precision)
+	if (!p->prec && !ft_strchr(p->flags, '-') && ft_strchr(p->flags, '0'))
+		while ((p->width)-- > p->length && p->width > p->prec)
 			ft_strcat(s, "0");
 	return (s);
 }
@@ -304,12 +280,12 @@ void	print_base_u(uint64_t v, t_parse *p, int base)
 		number = ft_itoa_base(v, 8);
 	else
 		number = ((p->type == 'X') ? ft_itoa_baseu(v, 16) : ft_itoa_base(v, 16));
-	if (p->skip_zero && v == 0)
+	if (p->zero_prec && v == 0)
 		number[ft_strlen(number) - 1] = '\0';
 	ft_strcat(s, number);
 	free(number);
 	p->length = ft_strlen(s);
-	p->precision = 0;
+	p->prec = 0;
 	s = fill_width(p, s, 0);
 	buffer(p, s, 1);
 }
@@ -428,25 +404,23 @@ char	*read_flags(char *tmp, t_parse *p)
 	return (tmp);
 }
 
-char	*read_precision(char *tmp, t_parse *p, va_list valist)
+char	*read_prec(char *tmp, t_parse *p, va_list valist)
 {
 	p->skip_0_flag = 1;
-	if (*(tmp + 1) == '*')
+	if (*tmp == '*')
 	{
-		p->precision = va_arg(valist, int);
-		tmp += 2;
-	}
-	else if (*(tmp + 1) >= '0' && *(tmp + 1) <= '9')
-	{
-		(ft_atoi(tmp + 1) == 0) ? (p->skip_zero = 1)
-								: (p->precision = ft_atoi(tmp + 1));
-		tmp += ft_int_length_base(p->precision, 10) + 1;
-	}
-	else
-	{
-		p->skip_zero = 1;
+		p->prec = va_arg(valist, int);
 		tmp++;
 	}
+	else if (*tmp >= '0' && *tmp <= '9')
+	{
+		(ft_atoi(tmp) == 0) ? (p->zero_prec = 1)
+								: (p->prec = ft_atoi(tmp));
+		while (*tmp >= '0' && *tmp <= '9')
+			tmp++;
+	}
+	else
+		p->zero_prec = 1;
 	return (tmp);
 }
 
@@ -481,7 +455,7 @@ t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 		tmp = read_flags(tmp, p);
     tmp = read_width(p, tmp, valist);
 	if (*tmp == '.')
-		tmp = read_precision(tmp, p, valist);
+		tmp = read_prec(tmp + 1, p, valist);
     if (ft_strchr("hlLzjt", *tmp))
 		tmp = read_size(p, tmp);
     if (ft_strchr("%diufFxXoscp", *tmp))

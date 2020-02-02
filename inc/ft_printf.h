@@ -67,8 +67,8 @@ typedef struct		s_parse
 	int				spaces;
 	char			*flags;
 	int				width;
-	int				precision;
-	int				skip_zero;
+	int				prec;
+	int				zero_prec;
 	int 			skip_0_flag;
 	int				E;
 	/*
@@ -140,5 +140,6 @@ t_double			*new_double(double d, float f, int is_double);
 t_double 			*get_bits(double d, float f, t_double *num);
 int64_t				bin_to_dec(char *bin);
 char				*get_fractional(t_double num, t_parse *p);
+char				*add_symbols(char *s, char c, size_t n, int is_after);
 
 #endif

@@ -1,5 +1,7 @@
 #include "ft_printf.h"
-//
+#include <limits.h>
+#include <float.h>
+
 //int main(int ac, char **av)
 //{
 //	double d = 2120.156250001;
@@ -318,8 +320,8 @@ int main(int ac, char **av)
         char *a;
         a = "123545745.58";
 		ft_printf("---27---\n");
-		p = printf("=%.41lf=\n", 2120.156250001);
-		n = ft_printf("=%lf=\n", 2120.156250001);
+		p = printf("=%.50lf=\n", 321.123);
+		n = ft_printf("=%.50lf=\n", 321.123);
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{
