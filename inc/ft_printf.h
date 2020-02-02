@@ -139,7 +139,7 @@ void				print_str(char *str, t_parse *p);
 t_double			*new_double(double d, float f, int is_double);
 t_double 			*get_bits(double d, float f, t_double *num);
 int64_t				bin_to_dec(char *bin);
-char				*get_fractional(t_double num, t_parse *p);
+char				*get_fractional(t_double *num, t_parse *p);
 char				*add_symbols(char *s, char c, size_t n, int is_after);
 
 #endif

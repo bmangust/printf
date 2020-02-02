@@ -317,11 +317,11 @@ int main(int ac, char **av)
 //			ft_printf("printed %d symbols in 1st line\n", n);
 //			ft_printf("printed %d symbols in 2st line\n\n", p);
 //		}
-        char *a;
-        a = "123545745.58";
-		ft_printf("---27---\n");
-		p = printf("=%.50lf=\n", 321.123);
-		n = ft_printf("=%.50lf=\n", 321.123);
+//        char *a;
+//        a = "123545745.58";
+//		ft_printf("---27---\n");
+		p = printf("=%-+60.10lf=\n", 123456789012345678990123456789012345678990.123456789);
+		n = ft_printf("=%-+60.10lf=\n", 123456789012345678990123456789012345678990.123456789);
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{
@@ -329,6 +329,11 @@ int main(int ac, char **av)
 			ft_printf("printed %d symbols in 1st line\n", p);
 			ft_printf("printed %d symbols in 2st line\n\n", n);
 		}
+//		ft_printf("%lf\n", 123456789012345678990.123456789);
+//		for (double i = 0; i < 500; i+=1)
+//		{
+//			ft_printf("%lf\n", 0.12345678 + i);
+//		}
 
 
 

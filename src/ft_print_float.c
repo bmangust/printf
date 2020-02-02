@@ -151,6 +151,28 @@ void	sum(char *summ, char *add)
 	}
 }
 
+void	sum2(char *summ, char *add)
+{
+	int i;
+	int len;
+	int carry;
+	int sum;
+
+	len = ft_strlen(add);
+	i = -1;
+	carry = 0;
+	while (++i < len)
+	{
+		if (add[i] == '0' && carry == 0)
+			continue ;
+		sum = summ[i] + add[i] + carry - 96;
+		carry = (sum > 9) ? 1 : 0;
+		summ[i] = sum % 10 + '0';
+	}
+	if (carry)
+		summ[i] = '1';
+}
+
 char	*add_symbols(char *s, char c, size_t n, int is_after)
 {
 	char	*tmp;
@@ -194,26 +216,36 @@ char	*round_fractional(char *fract, t_parse *p)
 **	is_integer may be 1 for integer or -1 for fractional
 */
 
-char	*count_exp(t_double num, int is_integer)
+char	*count_exp(t_double *num, int is_integer)
 {
 	int		exp;
 	int		diff;
 	char	*bin;
 
-	exp = bin_to_dec(num.exp);
-	diff = (num.is_double) ? 1023 : 127;
+	exp = bin_to_dec(num->exp);
+	diff = (num->is_double) ? 1023 : 127;
 	exp -= diff;
 	if (exp >= 0 && exp < 53)
-		bin = (is_integer == 1) ? ft_strsub(num.mant, 0, exp + 1)
-								: ft_strsub(num.mant, exp + 1, 64);
-	else if (exp > 52)
-		bin = add_symbols(bin, '0', exp - 52, 1);
+		return ((is_integer) ? ft_strsub(num->mant, 0, exp + 1)
+								  : ft_strsub(num->mant, exp + 1, 53));
+	if (exp > 52 && is_integer)
+	{
+		bin = add_symbols(num->mant, '0', exp - 52, 1);
+		num->mant = ft_strdup("0");
+	}
+	else if (is_integer)
+		bin = ft_strdup("0");
+	else if (exp < 0)
+	{
+		bin = add_symbols(num->mant, '0', -exp - 1, 0);
+		num->mant = NULL;
+	}
 	else
-		bin = add_symbols(bin, '0', -exp - 1, 0);
+		bin = ft_strdup(num->mant);
 	return (bin);
 }
 
-char	*get_fractional(t_double num, t_parse *p)
+char	*get_fractional(t_double *num, t_parse *p)
 {
 	char	*fract;
 	char	*five_power;
@@ -222,7 +254,7 @@ char	*get_fractional(t_double num, t_parse *p)
 	int 	fract_len;
 
 	i = -1;
-	fract_bin = count_exp(num, -1);
+	fract_bin = count_exp(num, 0);
 	fract_len = find_last_digit(fract_bin) + 1;
 	fract = ft_charstr(fract_len, '0');
 	five_power = NULL;
@@ -238,7 +270,7 @@ char	*get_fractional(t_double num, t_parse *p)
 	return (fract);
 }
 
-char	*get_integer(t_double num, t_parse *p)
+char	*get_integer(t_double *num, t_parse *p)
 {
 	char	*intg;
 	char	*two_power;
@@ -248,86 +280,32 @@ char	*get_integer(t_double num, t_parse *p)
 
 	i = -1;
 	integer_bin = ft_strrev(count_exp(num, 1));
-	integer_len = find_last_digit(integer_bin) + 1;
-	intg = ft_charstr(find_last_digit(integer_bin) + 1, '0');
+	p->E = find_last_digit(integer_bin);
+	integer_len = p->E ? p->E / 3 + 1 : 1;
+	intg = ft_charstr(integer_len, '0');
 	two_power = NULL;
-	while (i++ < integer_len)
+	while (++i <= p->E)
 	{
 		two_power = get_two_power(two_power, i);
 		if (integer_bin[i] == '1')
-			sum(intg, two_power);
+			sum2(intg, two_power);
 	}
-	intg = ft_strrev(intg);
+	while (integer_len > 1 && intg[ft_strlen(intg) - 1] == '0')
+		intg[ft_strlen(intg) - 1] = '\0';
 	free (integer_bin);
 	free (two_power);
-	if (ft_strchr(p->flags, '+') || num.sign[0] != '0')
-	{
-		two_power = intg;
-		intg = num.sign ? ft_strjoin("-", intg) : ft_strjoin("+", intg);
-		free(two_power);
-	}
 	return (intg);
 
 }
 
-//static long long int	float_base(double x)
-//{
-//	double			rest;
-//	int				e;
-//	long long int	base;
-//
-//	e = -FLOAT_POWER;
-//	base = 0;
-//	while (e++ < FLOAT_POWER)
-//	{
-//		rest = x / ft_pow(2, e);
-//		if (rest >= 1 && rest < 2)
-//		{
-//			e += 1;
-//			break ;
-//		}
-//	}
-//	rest = x;
-//	while (rest > 0 && e-- > 0)
-//	{
-//		base += ft_pow(2, e);
-//		rest = x - base;
-//	}
-//	base += rest;
-//	return (base);
-//}
-
-//static void		lld_to_str(long long int integer, long long int	fract, t_parse *p)
-//{
-//	char	*str_int;
-//	char	*str_fract;
-//	char	*str;
-//	int		sign;
-//
-//	sign = 0;
-//	(ft_strchr(p->flags, '+')) ? sign = 1 : sign;
-//	str_int = ft_ltoa(integer, (sign + 1));
-//	sign = 0;
-//	if (fract == 0 && p->prec != 0)
-//	{
-//		str_fract = ft_strnew((size_t) p->prec);
-//		while (p->prec-- > 0)
-//			str_fract[sign++] = '0';
-//	}
-//	else
-//		str_fract = ft_ltoa(fract, sign);
-//	str = ft_strjoin(str_int, str_fract);
-//	p->prec = 0;
-//	print_str(str, p);
-//	free(str_int);
-//	free(str_fract);
-//	free(str);
-//}
-
-//int 	is_special_double(t_double num)
-//{
-//
-//}
+int 	is_special_double(t_double num, t_parse *p)
+{
+	if (num.is_double)
+	{
+		if (!ft_strcmp(num.exp, "11111111111") && !ft_strchr(num.mant, '1'))
+			num.sign[0] == '0' ? buffer(p, "nan", 0) : buffer(p, "nan", 0);
+	}
+}
 
 char	*concat_parts(char *integer, char *fract, t_parse *p)
 {
@@ -355,8 +333,11 @@ void	print_float(double d, t_parse *p)
 	if (!p->prec)
 		p->prec = 6;
 	num = new_double(d, 0, 1);
-	integer = get_integer(*num, p);
-	fract = (p->zero_prec) ? NULL : get_fractional(*num, p);
+	integer = ft_strrev(get_integer(num, p));
+	num->sign[0] == '1' ? integer = add_symbols(integer, '-', 1, 0) : 0;
+	(num->sign[0] == '0' && ft_strchr(p->flags, '+')) ?
+			integer = add_symbols(integer, '+', 1, 0) : 0;
+	fract = (p->zero_prec) ? NULL : get_fractional(num, p);
 	integer = concat_parts(integer, fract, p);
 	print_str(integer, p);
 	free_double(num);
