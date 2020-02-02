@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/30 17:48:01 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/02 14:04:59 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ typedef struct		s_parse
 	char			*flags;
 	int				width;
 	int				precision;
+	int				precision_zero;
 	int				skip_zero;
 	int 			skip_0_flag;
 	int				E;
@@ -120,6 +121,14 @@ typedef struct		s_parse
 **              помещено количество символов, записанных на данный момент
 */
 
+typedef struct      s_double
+{
+	int   is_double;
+	char *sign;
+	char *exp;
+	char *mant;
+}                   t_double;
+
 typedef struct		s_lst
 {
 	char			type;
@@ -139,5 +148,10 @@ void				print_char(char c, t_parse *p);
 void				print_float(double d, t_parse *p);
 void				print_str(char *str, t_parse *p);
 char				*ft_charstr(int size, char n);
+t_double 			*new_double(int is_double);
+t_double			*get_bits(double d, float f, t_double *num);
+long long int		bin_to_dec(char	*str);
+char				*integer_fl_d(t_double *d);
+long long int	float_base(double x);
 
 #endif

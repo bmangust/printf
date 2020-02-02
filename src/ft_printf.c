@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/31 16:14:34 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/01 21:01:31 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ t_parse		*new_param(void)
 	new->skip_zero = 0;
 	new->printed = 0;
 	new->length = 0;
+	new->precision_zero = 0;
 	new->skip_0_flag = 0;
 	new->E = 0;
 	new->next = NULL;
@@ -69,6 +70,7 @@ void		clear_param(t_parse *p)
 	p->skip_zero = 0;
 	p->precision = 0;
 	p->length = 0;
+	p->precision_zero = 0;
 	p->skip_0_flag = 0;
 	p->E = 0;
 	p->next = NULL;
@@ -183,6 +185,7 @@ void	fill_width(t_parse *p, char **number)
 		free(spaces);
 	}
 }
+
 
 
 char	*get_int(t_parse *p, int64_t n)
@@ -328,27 +331,6 @@ void	print_percentage(t_parse *p)
 
 
 /*
-**	printing float
-*/
-
-int *get_bits(float f)
-{
-	int d = *((int*)&f);
-	int *bits;
-	int i = 32;
-	bits = (int*)malloc(sizeof(int)*32);
-
-	while(--i >= 0)
-	{
-		bits[i] = ((d >> i) & 1);
-	}
-	return (bits);
-}
-
-
-
-
-/*
 **	prints one argument
 */
 
@@ -434,6 +416,8 @@ char	*read_precision(char *tmp, t_parse *p, va_list valist)
 	{
 		(ft_atoi(tmp + 1) == 0) ? (p->skip_zero = 1)
 								: (p->precision = ft_atoi(tmp + 1));
+		if (*(tmp + 1) == '0' && ft_atoi((tmp + 1)) == 0)
+			p->precision_zero = 1;
 		tmp += ft_int_length_base(p->precision, 10) + 1;
 	}
 	else
@@ -710,3 +694,5 @@ int		ft_printf(const char *restrict s, ...)
 	del_param(p, valist);
 	return (printed);
 }
+
+
