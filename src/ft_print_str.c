@@ -68,7 +68,7 @@ void	print_str(char *str, t_parse *p)
 	temp_space = NULL;
 	len_str = ft_strlen(str);
 	temp_str = ft_strdup(str);
-	if (p->prec != 0 && p->prec < len_str)
+	if (p->type == 's' && p->prec != 0 && p->prec < len_str)
 	{
 		free(temp_str);
 		temp_str = ft_strnew((size_t)p->prec);
@@ -83,4 +83,5 @@ void	print_str(char *str, t_parse *p)
 		temp_space = ft_charstr((p->width - len_str), ' ');
 	out = print_str2(str, p, temp_str, temp_space);
 	buffer(p, out, 1);
+	free(str);
 }

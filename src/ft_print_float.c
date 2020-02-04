@@ -12,6 +12,28 @@
 
 #include "ft_printf.h"
 
+char	*is_special_double(t_double num, char *mant)
+{
+	char *s;
+
+	s = NULL;
+	if (num.is_double)
+	{
+		if (!ft_strcmp(num.exp, "11111111111") && !ft_strchr(mant, '1'))
+			s = num.sign[0] == '0' ? ft_strdup("inf") : ft_strdup("-inf");
+		else if (!ft_strcmp(num.exp, "11111111111"))
+			s = ft_strdup("nan");
+	}
+	else
+	{
+		if (!ft_strcmp(num.exp, "11111111") && !ft_strchr(mant, '1'))
+			s = num.sign[0] == '0' ? ft_strdup("inf") : ft_strdup("-inf");
+		else if (!ft_strcmp(num.exp, "11111111"))
+			s = ft_strdup("nan");
+	}
+	return (s);
+}
+
 t_double *get_bits(double d, float f, t_double *num)
 {
 	int64_t	dl;
@@ -34,6 +56,7 @@ t_double *get_bits(double d, float f, t_double *num)
 	num->exp = ft_strsub(bits, 1, (num->is_double) ? 11 : 8);
 	tmp = (num->is_double) ? ft_strsub(bits, 12, 52)
 						   : ft_strsub(bits, 9, 23);
+	num->special = is_special_double(*num, tmp);
 	num->mant = ft_strjoin("1", tmp);
 	free(tmp);
 	return (num);
@@ -73,6 +96,7 @@ int64_t		bin_to_dec(char *bin)
 			dec += ft_pow(2, len - i);
 	return (dec);
 }
+
 int		find_last_digit(char *mant)
 {
 	int i;
@@ -295,16 +319,6 @@ char	*get_integer(t_double *num, t_parse *p)
 	free (integer_bin);
 	free (two_power);
 	return (intg);
-
-}
-
-int 	is_special_double(t_double num, t_parse *p)
-{
-	if (num.is_double)
-	{
-		if (!ft_strcmp(num.exp, "11111111111") && !ft_strchr(num.mant, '1'))
-			num.sign[0] == '0' ? buffer(p, "nan", 0) : buffer(p, "nan", 0);
-	}
 }
 
 char	*concat_parts(char *integer, char *fract, t_parse *p)
@@ -312,9 +326,8 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 	char *tmp;
 
 	tmp = integer;
-	if (!p->zero_prec)
+	if (!p->zero_prec || ft_strchr("eEgG", p->type))
 	{
-		p->prec += ((int)ft_strlen(integer) + 1);
 		integer = ft_strjoin(integer, ".");
 		free(tmp);
 		tmp = integer;
@@ -324,22 +337,39 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 	return (integer);
 }
 
-void	print_float(double d, t_parse *p)
+char	*print_float_internal(double d, t_parse *p)
 {
 	char		*integer;
 	char		*fract;
 	t_double	*num;
 
-	if (!p->prec)
-		p->prec = 6;
 	num = new_double(d, 0, 1);
-	integer = ft_strrev(get_integer(num, p));
-	num->sign[0] == '1' ? integer = add_symbols(integer, '-', 1, 0) : 0;
-	(num->sign[0] == '0' && ft_strchr(p->flags, '+')) ?
-			integer = add_symbols(integer, '+', 1, 0) : 0;
-	fract = (p->zero_prec) ? NULL : get_fractional(num, p);
-	integer = concat_parts(integer, fract, p);
-	print_str(integer, p);
+	if (num->special && (p->type == 'F' || p->type == 'G' || p->type == 'E'))
+		integer = ft_strtoupper(num->special, 1);
+	else if (num->special)
+		integer = ft_strdup(num->special);
+	if (num->special == NULL)
+	{
+		if (!p->zero_prec && !p->prec)
+			p->prec = 6;
+		integer = ft_strrev(get_integer(num, p));
+		fract = (p->zero_prec) ? NULL : get_fractional(num, p);
+		integer = concat_parts(integer, fract, p);
+		num->sign[0] == '1' ? integer = add_symbols(integer, '-', 1, 0) : 0;
+		(num->sign[0] == '0' && ft_strchr(p->flags, '+')) ?
+				integer = add_symbols(integer, '+', 1, 0) : 0;
+		(num->sign[0] == '0' && ft_strchr(p->flags, ' ')) ?
+				integer = add_symbols(integer, ' ', 1, 0) : 0;
+	}
 	free_double(num);
+	return (integer);
+}
+
+char	*print_float(double d, t_parse *p)
+{
+	if (p->size == LONGLONG || p->size == LONG)
+		return (print_float_internal((double)d, p));
+	else
+		return (print_float_internal((float)d, p));
 }
 

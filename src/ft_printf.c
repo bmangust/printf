@@ -336,8 +336,8 @@ void	print_arg(t_parse *p)
 		print_str(p->arg_s, p);
 	else if ('%' == p->type)
 		print_percentage(p);
-	else if (ft_strchr("fFgG", p->type))
-		print_float(p->arg_d, p);
+	else if (ft_strchr("fFgGeE", p->type))
+		print_str(print_float(p->arg_d, p), p);
 }
 
 /*
@@ -437,7 +437,7 @@ void    get_and_print_arg(va_list valist, t_parse *p)
 {
     if (p->type == 's')
         p->arg_s = va_arg(valist, char*);
-    else if (p->type == 'f' || p->type == 'F')
+    else if (ft_strchr("fFgGeE", p->type))
         p->arg_d = va_arg(valist, double);
     else
         p->arg_i = va_arg(valist, int64_t);
@@ -458,7 +458,7 @@ t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 		tmp = read_prec(tmp + 1, p, valist);
     if (ft_strchr("hlLzjt", *tmp))
 		tmp = read_size(p, tmp);
-    if (ft_strchr("%diufFxXoscp", *tmp))
+    if (ft_strchr("%diufFxXoscpgGeE", *tmp))
 		read_type(tmp, p);
     else
     	p->next = tmp - 1;
