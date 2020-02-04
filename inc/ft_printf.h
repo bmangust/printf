@@ -134,7 +134,7 @@ int					ft_printf(const char *restrict s, ...);
 t_parse				*parse_string(char *s, t_parse *params, va_list valist);
 void				buffer(t_parse *p, char *s, int freeable);
 void				print_char(char c, t_parse *p);
-void				print_float(double d, t_parse *p);
+char				*print_float(double d, t_parse *p);
 void				print_str(char *str, t_parse *p);
 t_double			*new_double(double d, float f, int is_double);
 t_double 			*get_bits(double d, float f, t_double *num);

@@ -213,7 +213,7 @@ char	*round_fractional(char *fract, t_parse *p)
 }
 
 /*
-**	is_integer may be 1 for integer or -1 for fractional
+**	is_integer may be 1 for conv_float or -1 for fractional
 */
 
 char	*count_exp(t_double *num, int is_integer)
@@ -264,7 +264,8 @@ char	*get_fractional(t_double *num, t_parse *p)
 		if (fract_bin[i] == '1')
 			sum(fract, five_power);
 	}
-	fract = round_fractional(fract, p);
+	if (p->type == 'f' || p->type == 'F')
+		fract = round_fractional(fract, p);
 	free (fract_bin);
 	free (five_power);
 	return (fract);
@@ -298,23 +299,14 @@ char	*get_integer(t_double *num, t_parse *p)
 
 }
 
-int 	is_special_double(t_double num, t_parse *p)
-{
-	if (num.is_double)
-	{
-		if (!ft_strcmp(num.exp, "11111111111") && !ft_strchr(num.mant, '1'))
-			num.sign[0] == '0' ? buffer(p, "nan", 0) : buffer(p, "nan", 0);
-	}
-}
 
 char	*concat_parts(char *integer, char *fract, t_parse *p)
 {
 	char *tmp;
 
-	tmp = integer;
-	if (!p->zero_prec)
+	if (!p->zero_prec || ft_strchr("eEgG", p->type))
 	{
-		p->prec += ((int)ft_strlen(integer) + 1);
+		tmp = integer;
 		integer = ft_strjoin(integer, ".");
 		free(tmp);
 		tmp = integer;
@@ -324,22 +316,88 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 	return (integer);
 }
 
-void	print_float(double d, t_parse *p)
+
+char 	*float_e_2(char *intg, int e, int prec)
+{
+	char 	*conv_float;
+	char 	*exp;
+
+	if ((e <= 10 && e >= 0) || (e > -9 && e < 0))
+		exp = (e <= 10 && e > 0) ? ft_strjoin("e+0", ft_itoa(e - 1 )) :
+			  ft_strjoin("e-0", ft_itoa(-e + 1));
+	else if (e > 10 || e <= -9)
+		exp = (e > 10) ? ft_strjoin("e+", ft_itoa(e - 1)) :
+			  ft_strjoin("e-", ft_itoa(-e + 1));
+	if (prec)
+	{
+		if (intg[prec + 2] > '5') {
+			intg[prec + 1] = (((intg[prec + 1] + '0') + 1)) - '0';
+			if (intg[prec + 1] == ':')
+			{
+				intg[prec + 1] = '0';
+				intg[prec] = (((intg[prec] - '0') + 1)) + '0';
+			}
+		}
+		intg[prec + 2] = '\0';
+	}
+	if (prec == 0)
+		intg[1] = '\0';
+	conv_float = ft_strjoin(intg, exp);
+	return (conv_float);
+}
+
+char 	*float_e(char *intg, int prec)
+{
+	int 	i;
+	int 	e;
+	char 	*conv_float;
+
+	i = 0;
+	e = 0;
+	if (intg[0] > '0')
+	{
+		while (intg[i++] != '.')
+			e++;
+		while (i-- > 1)
+			intg[i] = intg[i - 1];
+		intg[i + 1] = '.';
+	}
+	else if (intg[0] == '0')
+	{
+		i = 2;
+		while (intg[i++] == '0')
+			e--;
+		intg = ft_strsub(intg, i - 2, ft_strlen(intg));
+		intg[0] = intg[1];
+		intg[1] = '.';
+	}
+	conv_float = float_e_2(intg, e, prec);
+	return(conv_float);
+}
+
+
+
+
+char	*print_float(double d, t_parse *p)
 {
 	char		*integer;
 	char		*fract;
 	t_double	*num;
+	//int 		precision;
 
-	if (!p->prec)
+	if (!p->zero_prec && !p->prec)
 		p->prec = 6;
+	//precision = p->prec;
 	num = new_double(d, 0, 1);
 	integer = ft_strrev(get_integer(num, p));
+	fract = (p->zero_prec && !ft_strchr("eEgG", p->type)) ? NULL : get_fractional(num, p);
+	integer = concat_parts(integer, fract, p);
+	if (p->type == 'e' || p->type == 'E')
+		integer = float_e(integer, p->prec);
 	num->sign[0] == '1' ? integer = add_symbols(integer, '-', 1, 0) : 0;
 	(num->sign[0] == '0' && ft_strchr(p->flags, '+')) ?
 			integer = add_symbols(integer, '+', 1, 0) : 0;
-	fract = (p->zero_prec) ? NULL : get_fractional(num, p);
-	integer = concat_parts(integer, fract, p);
-	print_str(integer, p);
 	free_double(num);
+	return (integer);
 }
 
