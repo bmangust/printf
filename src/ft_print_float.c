@@ -436,20 +436,17 @@ char	*print_float_internal(t_parse *p, t_double *num)
 	char		*integer;
 	char		*fract;
 
-	if (num->special == NULL)
-	{
-		if (!p->zero_prec && !p->prec)		 //&& !ft_strchr("gG", p->type)
-			p->prec = 6;
-		integer = ft_strrev(get_integer(num, p));
-		fract = (p->zero_prec && !ft_strchr("gG", p->type)) ?
-				NULL : get_fractional(num, p);
-		if (ft_strchr("fFeE", p->type))
-			integer = concat_parts(integer, fract, p);
-		if (p->type == 'e' || p->type == 'E')
-			integer = float_e(integer, p->prec, p);
-		else if (p->type == 'g' || p->type == 'G')
-			integer = float_g(integer, fract, p);
-	}
+	if (!p->zero_prec && !p->prec)
+		p->prec = 6;
+	integer = ft_strrev(get_integer(num, p));
+	fract = (p->zero_prec && !ft_strchr("gG", p->type)) ?
+			NULL : get_fractional(num, p);
+	if (ft_strchr("fFeE", p->type))
+		integer = concat_parts(integer, fract, p);
+	if (p->type == 'e' || p->type == 'E')
+		integer = float_e(integer, p->prec, p);
+	else if (p->type == 'g' || p->type == 'G')
+		integer = float_g(integer, fract, p);
 	return (integer);
 }
 
