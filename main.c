@@ -320,10 +320,10 @@ int main(int ac, char **av)
 //        char *a;
 //        a = "123545745.58";
 //		ft_printf("---27---\n");
-		char *s = "=%.1lf=\n";
-		double c = 999999.999999999;
-		p = printf(s, c);
-		n = ft_printf(s, c);
+		char *s = "=%+10.100f=\n";
+		double c = 0.0;
+		p = printf(s, 1 / c);
+		n = ft_printf(s, 1 / c);
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{
@@ -332,9 +332,20 @@ int main(int ac, char **av)
 			ft_printf("printed %d symbols in 2st line\n\n", n);
 		}
 //		ft_printf("%lf\n", 123456789012345678990.123456789);
-//		for (double i = 0; i < 500; i+=1)
+//		for (int i = 0; i < 10; i++)
 //		{
-//			ft_printf("%lf\n", 0.12345678 + i);
+//			char *s = "=%+10.6lg=\n";
+//			s[]
+//			double c = 12310.1234567;
+//			p = printf(s, c);
+//			n = ft_printf(s, c);
+//			if (n == p) printf("\nSUCCESS\n");
+//			else
+//			{
+//				printf("FAIL\n");
+//				ft_printf("printed %d symbols in 1st line\n", p);
+//				ft_printf("printed %d symbols in 2st line\n\n", n);
+//			}
 //		}
 
 

@@ -137,7 +137,7 @@ void				buffer(t_parse *p, char *s, int freeable);
 void				print_char(char c, t_parse *p);
 char				*print_float(double d, t_parse *p);
 void				print_str(char *str, t_parse *p);
-t_double			*new_double(double d, float f, int is_double);
+t_double			*new_double(double d);
 t_double 			*get_bits(double d, float f, t_double *num);
 int64_t				bin_to_dec(char *bin);
 char				*get_fractional(t_double *num, t_parse *p);
