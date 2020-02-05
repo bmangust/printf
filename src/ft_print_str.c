@@ -83,5 +83,5 @@ void	print_str(char *str, t_parse *p)
 		temp_space = ft_charstr((p->width - len_str), ' ');
 	out = print_str2(str, p, temp_str, temp_space);
 	buffer(p, out, 1);
-	free(str);
+//	free(str);
 }

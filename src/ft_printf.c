@@ -300,7 +300,7 @@ int64_t	print_base(int64_t v, t_parse *p, int base)
 		print_base_u((unsigned short)v, p, base);
 	else if (p->size == CHAR)
 		print_base_u((unsigned char)v, p, base);
-	else if (p->size == LONG)
+	else if (p->size == LONG || p->size == LONGLONG)
 		print_base_u((unsigned long)v, p, base);
 	return ((unsigned long long)v);
 }
@@ -324,6 +324,8 @@ void	print_percentage(t_parse *p)
 
 void	print_arg(t_parse *p)
 {
+	char *s;
+
 	if (ft_strchr("diu", p->type))
 		print_int((int64_t)p->arg_i, p);
 	else if ('o' == p->type)
@@ -337,7 +339,11 @@ void	print_arg(t_parse *p)
 	else if ('%' == p->type)
 		print_percentage(p);
 	else if (ft_strchr("fFgGeE", p->type))
-		print_str(print_float(p->arg_d, p), p);
+	{
+		s = print_float(p->arg_d, p);
+		print_str(s, p);
+		free(s);
+	}
 }
 
 /*

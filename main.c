@@ -320,10 +320,11 @@ int main(int ac, char **av)
 //        char *a;
 //        a = "123545745.58";
 //		ft_printf("---27---\n");
-		char *s = "=%+10.100f=\n";
+		char *s = "=%llx=\n";
 		double c = 0.0;
-		p = printf(s, 1 / c);
-		n = ft_printf(s, 1 / c);
+		long long n = 9223372036854775808;
+		p = printf(s, n);
+		n = ft_printf(s, n);
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{
