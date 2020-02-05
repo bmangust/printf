@@ -79,6 +79,7 @@ void	free_double(t_double *num)
 	free(num->sign);
 	free(num->exp);
 	free(num->mant);
+	free(num->special);
 	free(num);
 }
 
@@ -213,29 +214,33 @@ char	*add_symbols(char *s, char c, size_t n, int is_after)
 	return (s);
 }
 
-char	*round_fractional(char *fract, t_parse *p)
+char	*round_fractional(char *fract, int prec, int is_int, t_parse *p)
 {
 	int 	i;
 
-	if (p->prec > (int)ft_strlen(fract))
-		return (add_symbols(fract, '0', p->prec - ft_strlen(fract), 1));
-	i = p->prec;
-	if (fract[i] >= '5' && p->prec > 0)
+	if (prec > (int)ft_strlen(fract))
+		return (add_symbols(fract, '0', prec - ft_strlen(fract), 1));
+	i = prec;
+	if ((fract[i] >= '5' || is_int) && prec > 0)
 	{
-		p->E = (fract[i - 1] - '0' + 1) / 10;
+		p->E = (fract[i - 1] - '0' + p->E) / 10;
 		if (!p->E)
-			fract[p->prec - 1] = (fract[p->prec - 1] - '0' + 1) % 10 + '0';
-		while (p->E == 1 && --i >= 0 && fract[i] == '9')
+			fract[prec - 1] = (fract[prec - 1] - '0' + 1) % 10 + '0';
+		while (p->E == 1 && --i >= 0)
 		{
-			fract[i - 1] = (fract[i - 1] - '0' + p->E) % 10 + '0';
-			fract[i] = '0';
-			p->E = (fract[i - 1] - '0' + 1) / 10;
+			p->E = (fract[i] - '0' + 1) / 10;
+			fract[i] = (fract[i] - '0' + 1) % 10 + '0';
 		}
 	}
-	fract[p->prec] = '\0';
+	if (is_int && p->E)
+		fract = add_symbols(fract, '1', 1, 0);
+	if (!is_int)
+		fract[prec] = '\0';
 	return (fract);
 }
 
+//"999999 9989999963645459502004086971282958984375"
+//      ^
 /*
 **	is_integer may be 1 for integer or -1 for fractional
 */
@@ -288,7 +293,7 @@ char	*get_fractional(t_double *num, t_parse *p)
 		if (fract_bin[i] == '1')
 			sum(fract, five_power);
 	}
-	fract = round_fractional(fract, p);
+	fract = round_fractional(fract, p->prec, 0, p);
 	free (fract_bin);
 	free (five_power);
 	return (fract);
@@ -325,6 +330,8 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 {
 	char *tmp;
 
+	if (p->E)
+		integer = round_fractional(integer, ft_strlen(integer), 1, p);
 	tmp = integer;
 	if (!p->zero_prec || ft_strchr("eEgG", p->type))
 	{
@@ -353,6 +360,7 @@ char	*print_float_internal(double d, t_parse *p)
 		if (!p->zero_prec && !p->prec)
 			p->prec = 6;
 		integer = ft_strrev(get_integer(num, p));
+		p->E = 1;
 		fract = (p->zero_prec) ? NULL : get_fractional(num, p);
 		integer = concat_parts(integer, fract, p);
 		num->sign[0] == '1' ? integer = add_symbols(integer, '-', 1, 0) : 0;
