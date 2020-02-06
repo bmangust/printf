@@ -112,7 +112,6 @@ typedef struct		s_parse
 
 typedef struct      s_double
 {
-	int   is_double;
 	char *special;
 	char *sign;
 	char *exp;
@@ -138,7 +137,6 @@ void				print_char(char c, t_parse *p);
 char				*print_float(double d, t_parse *p);
 void				print_str(char *str, t_parse *p);
 t_double			*new_double(double d);
-t_double 			*get_bits(double d, float f, t_double *num);
 int64_t				bin_to_dec(char *bin);
 char				*get_fractional(t_double *num, t_parse *p);
 char				*add_symbols(char *s, char c, size_t n, int is_after);
@@ -173,7 +171,7 @@ char				*read_line(t_parse *p, char *s);
 char				*is_special_double(t_double num, char *mant);
 char 				*float_e(char *intg, int prec, t_parse *p);
 char 				*float_g(char *intg, char *fract, t_parse *p);
-t_double 			*get_bits(double d, float f, t_double *num);
+t_double 			*get_bits(double d, t_double *num);
 t_double			 *new_double(double d);
 void				free_double(t_double *num);
 int64_t				bin_to_dec(char *bin);

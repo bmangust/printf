@@ -43,7 +43,7 @@ void	print_str(char *str, t_parse *p)
 	if (p->type == 's' && !str)
 		str = "(null)";
 	len_str = ft_strlen(str);
-	if (p->prec == 0 && p->zero_prec)
+	if (p->type == 's' && p->prec == 0 && p->zero_prec)
 	{
 		temp_str = ft_strdup("");
 		len_str = 0;

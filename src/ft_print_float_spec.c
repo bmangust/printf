@@ -17,20 +17,10 @@ char		*is_special_double(t_double num, char *mant)
 	char *s;
 
 	s = NULL;
-	if (num.is_double)
-	{
-		if (!ft_strcmp(num.exp, "11111111111") && !ft_strchr(mant, '1'))
-			s = num.sign[0] == '0' ? ft_strdup("inf") : ft_strdup("-inf");
-		else if (!ft_strcmp(num.exp, "11111111111"))
-			s = ft_strdup("nan");
-	}
-	else
-	{
-		if (!ft_strcmp(num.exp, "11111111") && !ft_strchr(mant, '1'))
-			s = num.sign[0] == '0' ? ft_strdup("inf") : ft_strdup("-inf");
-		else if (!ft_strcmp(num.exp, "11111111"))
-			s = ft_strdup("nan");
-	}
+	if (!ft_strcmp(num.exp, "11111111111") && !ft_strchr(mant, '1'))
+		s = num.sign[0] == '0' ? ft_strdup("inf") : ft_strdup("-inf");
+	else if (!ft_strcmp(num.exp, "11111111111"))
+		s = ft_strdup("nan");
 	return (s);
 }
 

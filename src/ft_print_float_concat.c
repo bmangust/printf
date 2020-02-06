@@ -53,7 +53,7 @@ char	*count_exp(t_double *num, int is_integer)
 	char	*bin;
 
 	exp = bin_to_dec(num->exp);
-	diff = (num->is_double) ? 1023 : 127;
+	diff = 1023;
 	exp -= diff;
 	if (exp >= 0 && exp < 53)
 		return ((is_integer) ? ft_strsub(num->mant, 0, exp + 1)

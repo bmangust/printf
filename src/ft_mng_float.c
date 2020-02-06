@@ -12,28 +12,21 @@
 
 #include "ft_printf.h"
 
-t_double *get_bits(double d, float f, t_double *num)
+t_double *get_bits(double d, t_double *num)
 {
 	int64_t	dl;
-	int		di;
 	char	*bits;
 	char	*tmp;
 	int		i;
 
 	dl = *((long long*)&d);
-	di = *((int*)&f);
 	i = -1;
 	bits = ft_strnew(64);
-	if (num->is_double)
-		while (++i < 64)
-			bits[i] = ((dl >> (63 - i)) & 1) + '0';
-	else
-		while (++i < 32)
-			bits[i] = ((di >> (31 - i)) & 1) + '0';
+	while (++i < 64)
+		bits[i] = ((dl >> (63 - i)) & 1) + '0';
 	num->sign[0] = bits[0];
-	num->exp = ft_strsub(bits, 1, (num->is_double) ? 11 : 8);
-	tmp = (num->is_double) ? ft_strsub(bits, 12, 52)
-						   : ft_strsub(bits, 9, 23);
+	num->exp = ft_strsub(bits, 1, 11);
+	tmp = ft_strsub(bits, 12, 52);
 	num->special = is_special_double(*num, tmp);
 	num->mant = ft_strjoin("1", tmp);
 	free(tmp);
@@ -47,7 +40,7 @@ t_double *new_double(double d)
 	num->sign = ft_strnew(1);
 	num->exp = NULL;
 	num->mant = NULL;
-	num = get_bits(d, 0, num);
+	num = get_bits(d, num);
 	return (num);
 }
 

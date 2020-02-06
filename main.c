@@ -293,7 +293,7 @@ int main(int ac, char **av)
 //        char *a;
 //        a = "123545745.58";
 //		ft_printf("---27---\n");
-		char *s = "=this %f float=\n";
+		char *s = "=this %.f float=\n";
 //		char *c = "hi low\0don't print me lol\0";
 		double c = 1.5;
 		//long long c = 0;
