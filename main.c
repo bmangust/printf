@@ -293,11 +293,11 @@ int main(int ac, char **av)
 //        char *a;
 //        a = "123545745.58";
 //		ft_printf("---27---\n");
-		char *s = "%c\n";
+		//char *s = "%c\n";
 //		double c = 0.0;
-		long long a = 0;
-		p = printf(s, a);
-		n = ft_printf(s, a);
+		//long long a = 0;git pull
+		p = printf("=%3.3s=\n", "hello");
+		n = ft_printf("=%3.3s=\n", "hello");
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{

@@ -42,6 +42,8 @@ char	*print_str2(char *str, t_parse *p, char *temp_str, char *temp_space)
 	len_str = ft_strlen(str);
 	if (!str)
 		return (ft_strdup("(null)"));
+	if (p->zero_prec)
+		return (NULL);
 	if (len_str == 0)
 		out = ft_charstr(p->width, ' ');
 	if (temp_str != 0 && temp_space != 0)
@@ -53,6 +55,8 @@ char	*print_str2(char *str, t_parse *p, char *temp_str, char *temp_space)
 		ft_strdel(&temp_str);
 		ft_strdel(&temp_space);
 	}
+//	if (temp_str && !temp_space )
+//		out = temp_str;
 	else
 		out = ft_strdup(str);
 	return (out);
@@ -68,11 +72,12 @@ void	print_str(char *str, t_parse *p)
 	temp_space = NULL;
 	len_str = ft_strlen(str);
 	temp_str = ft_strdup(str);
-	if (p->type == 's' && p->prec != 0 && p->prec < len_str)
+	if (p->prec != 0 && p->prec < len_str)
 	{
 		free(temp_str);
-		temp_str = ft_strnew((size_t)p->prec);
-		ft_strncpy(temp_str, str, (size_t)p->prec);
+		temp_str = ft_strsub(str, 0, p->prec);
+		//temp_str = ft_strnew((size_t)p->prec);
+		//ft_strncpy(temp_str, str, (size_t)p->prec);
 		len_str = p->prec;
 		if (!p->width)
 			out = temp_str;

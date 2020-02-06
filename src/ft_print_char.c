@@ -30,4 +30,24 @@ void	print_char(char c, t_parse *p)
 		buffer(p, ft_charstr(p->width - 1, ' '), 1);
 		buffer(p, s, 1);
 	}
+//	if (p->flags && ft_strchr(p->flags, '-'))
+//	{
+//		ft_putchar(c);
+//		p->printed++;
+//		while ((p->width)-- > 1)
+//		{
+//			ft_putchar(' ');
+//			p->printed++;
+//		}
+//	}
+//	else
+//	{
+//		while ((p->width)-- > 1)
+//		{
+//			ft_putchar(' ');
+//			p->printed++;
+//		}
+//		ft_putchar(c);
+//		p->printed++;
+//	}
 }
