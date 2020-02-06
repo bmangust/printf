@@ -118,7 +118,9 @@ t_node		*add_last_piece(t_node **head, t_node *new)
 
 int		int_length_and_update(int64_t n, t_parse *p)
 {
-	p->length = ft_int_length_base(n, 10);
+
+	p->length = p->is_signed ?
+			ft_int_length_base(n, 10) : ft_uint_length_base(n, 10);
 	if (n < 0)
 		p->length--;
 	return (p->length);
@@ -178,16 +180,40 @@ char	*get_int(t_parse *p, int64_t n)
 	char *num;
 
 	if (n == 0 && p->zero_prec == 1)
-		return (ft_strdup(""));
-	num = ft_itoa(ft_absint(n));
+		return (p->width ? ft_strdup(" ") : ft_strdup(""));
+	num = p->is_signed ? ft_itoa(ft_absint(n)) : ft_itoa_base(n, 10);
 	if (p->prec > p->length)
 		num = add_symbols(num, '0', ft_absint(p->prec - p->length), 0);
-	add_sign(n, p, &num);
+	if (n != -9223372036854775807 - 1)
+		add_sign(n, p, &num);
 	p->length = ft_strlen(num);
 	return (num);
 }
 
 void	print_s_int(int64_t n, t_parse *p)
+{
+	char	*num;
+	char	sign;
+	char	*tmp;
+
+	sign = 0;
+	int_length_and_update(n, p);
+	num = get_int(p, n);
+	if (num[0] ==  '-' || num[0] == '+' || num[0] == ' ')
+		sign = num[0];
+	if (p->width > MAX(p->prec, p->length))
+	{
+		tmp = sign && !ft_strchr(p->flags, '-')
+			  ? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);
+		free(num);
+		tmp = fill_width(p, tmp, sign);
+	}
+	else
+		tmp = fill_width(p, num, sign);
+	buffer(p, tmp, 1);
+}
+
+void	print_u_int(uint64_t n, t_parse *p)
 {
 	char	*num;
 	char	sign;
@@ -228,15 +254,15 @@ void	print_int(int64_t n, t_parse *p)
 	else
 	{
 		if (p->size == INT)
-			print_s_int((unsigned int) n, p);
+			print_s_int((unsigned int)n, p);
 		else if (p->size == CHAR)
-			print_s_int((unsigned char) n, p);
+			print_s_int((unsigned char)n, p);
 		else if (p->size == LONG)
-			print_s_int((unsigned long) n, p);
+			print_s_int((uint64_t)n, p);
 		else if (p->size == LONGLONG)
-			print_s_int((unsigned long long int) n, p);
+			print_s_int((unsigned long long int)n, p);
 		else if (p->size == SHORT)
-			print_s_int((unsigned short int) n, p);
+			print_s_int((unsigned short int)n, p);
 	}
 }
 
@@ -276,9 +302,10 @@ void	print_base_u(uint64_t v, t_parse *p, int base)
 
 	s = prepare_string(p, base, v);
 	if (base == 8)
-		number = ft_itoa_base(v, 8);
+		number = ft_itoa_baseu(v, 8);
 	else
-		number = ((p->type == 'X') ? ft_itoa_baseu(v, 16) : ft_itoa_base(v, 16));
+		number = ((p->type == 'X') ? ft_itoa_baseu(v, 16) :
+										ft_itoa_base(v, 16));
 	if (p->zero_prec && v == 0)
 		number[ft_strlen(number) - 1] = '\0';
 	ft_strcat(s, number);

@@ -10,9 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-long long int	ft_pow(int a, int b)
+#include "libft.h"
+
+int64_t		ft_pow(int64_t a, int64_t b)
 {
-	long long int res;
+	int64_t	res;
 
 	res = 1;
 	if (b == 0)

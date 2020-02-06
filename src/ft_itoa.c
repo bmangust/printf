@@ -30,8 +30,8 @@ static int	count_digits(int64_t n)
 
 static void	ft_itoa_alg(int64_t n, char *s, int slen)
 {
-	int i;
-	int cutter;
+	int64_t i;
+	int64_t cutter;
 
 	i = 0;
 	if (n < 0)
@@ -54,8 +54,8 @@ char		*ft_itoa(int64_t n)
 	int		slen;
 	char	*s;
 
-	if (n == -2147483648)
-		return (ft_strdup("-2147483648"));
+	if (n == -9223372036854775807 - 1)
+		return (ft_strdup("-9223372036854775808"));
 	slen = count_digits(n);
 	s = ft_strnew(slen);
 	if (s)
@@ -66,11 +66,11 @@ char		*ft_itoa(int64_t n)
 	return (NULL);
 }
 
-char	*ft_itoa_base(uint64_t value, int base)
+char	*ft_itoa_base(uint64_t value, uint64_t base)
 {
 	char *snum;
 	char *s;
-	int64_t val;
+	uint64_t val;
 	size_t cnt;
 
 	val = value;
@@ -88,17 +88,17 @@ char	*ft_itoa_base(uint64_t value, int base)
 	snum[cnt--] = '\0';
 	while(val)
 	{
-		snum[cnt--] = val < 0 ? s[-val % base] : s[val % base];
+		snum[cnt--] = s[val % base];
 		val /= base;
 	}
 	return snum;
 }
 
-char	*ft_itoa_baseu(uint64_t value, int base)
+char	*ft_itoa_baseu(uint64_t value, uint64_t base)
 {
 	char *snum;
 	char *s;
-	int64_t val;
+	uint64_t val;
 	size_t cnt;
 
 	val = value;
@@ -116,7 +116,7 @@ char	*ft_itoa_baseu(uint64_t value, int base)
 	snum[cnt--] = '\0';
 	while(val)
 	{
-		snum[cnt--] = val < 0 ? s[-val % base] : s[val % base];
+		snum[cnt--] = s[val % base];
 		val /= base;
 	}
 	return snum;
