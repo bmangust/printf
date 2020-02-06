@@ -203,13 +203,16 @@ char	*add_symbols(char *s, char c, size_t n, int is_after)
 	char	*symbols;
 
 	tmp = s;
-	symbols = ft_charstr(n, c);
-	if (is_after)
-		s = ft_strjoin(tmp, symbols);
-	else
-		s = ft_strjoin(symbols, tmp);
-	free(tmp);
-	free(symbols);
+	if (n > 0)
+	{
+		symbols = ft_charstr(n, c);
+		if (is_after)
+			s = ft_strjoin(tmp, symbols);
+		else
+			s = ft_strjoin(symbols, tmp);
+		free(tmp);
+		free(symbols);
+	}
 	return (s);
 }
 

@@ -180,7 +180,12 @@ char	*get_int(t_parse *p, int64_t n)
 	char *num;
 
 	if (n == 0 && p->zero_prec == 1)
-		return (p->width ? ft_strdup(" ") : ft_strdup(""));
+	{
+		num = ft_strnew(1);
+		num[0] = ft_strchr(p->flags, '+') ? '+' : ' ';
+//		num[0] = p->width ?
+		return (num);
+	}
 	num = p->is_signed ? ft_itoa(ft_absint(n)) : ft_itoa_base(n, 10);
 	if (p->prec > p->length)
 		num = add_symbols(num, '0', ft_absint(p->prec - p->length), 0);
@@ -260,7 +265,7 @@ void	print_int(int64_t n, t_parse *p)
 		else if (p->size == LONG)
 			print_s_int((uint64_t)n, p);
 		else if (p->size == LONGLONG)
-			print_s_int((unsigned long long int)n, p);
+			print_s_int((uint64_t)n, p);
 		else if (p->size == SHORT)
 			print_s_int((unsigned short int)n, p);
 	}
@@ -334,9 +339,11 @@ int64_t	print_base(int64_t v, t_parse *p, int base)
 void	print_percentage(t_parse *p)
 {
 	char *s;
+	char c;
 
+	c = ft_strchr(p->flags, '0') ? '0' : ' ';
 	s = ft_strnew(p->width > 0 ? p->width : 1);
-	ft_memset(s, ' ', p->width > 0 ? p->width : 1);
+	ft_memset(s, c, p->width > 0 ? p->width : 1);
 	if (ft_strchr(p->flags, '-'))
 		s[0] = '%';
 	else
