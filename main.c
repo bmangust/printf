@@ -1,31 +1,4 @@
 #include "ft_printf.h"
-#include <limits.h>
-#include <float.h>
-
-//int main(int ac, char **av)
-//{
-//	double d = 2120.156250001;
-//	float f = 2120.156250001;
-//	char *fract;
-//
-//	t_double *num = get_bits(d, 0, new_double(1));
-//	t_double *num2 = get_bits(0, f, new_double(0));
-//	printf("%s\n", num->mant);
-//	printf("%s\n", num->exp);
-//	printf("%s\n\n", num->sign);
-//
-////	printf("%s\n", num2->mant);
-////	printf("%s\n", num2->exp);
-////	printf("%s\n\n", num2->sign);
-//
-//
-//	printf("%d\n\n", bin_to_dec(num2->exp));
-//	fract = get_fractional(*num);
-//	printf("2120.%s\n", fract);
-//	printf("%.50lf\n", d);
-//	return (0);
-//}
-
 
 int main(int ac, char **av)
 {

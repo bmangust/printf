@@ -173,7 +173,6 @@ char    *fill_width(t_parse *p, char *num, char sign)
 	return (num);
 }
 
-
 char	*get_int(t_parse *p, int64_t n)
 {
 	char *num;
