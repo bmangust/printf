@@ -142,5 +142,55 @@ t_double 			*get_bits(double d, float f, t_double *num);
 int64_t				bin_to_dec(char *bin);
 char				*get_fractional(t_double *num, t_parse *p);
 char				*add_symbols(char *s, char c, size_t n, int is_after);
+char				*read_color(t_parse *p, char *s, char *code);
+char			    *read_width(t_parse *p, char *tmp, va_list valist);
+char				*read_size(t_parse *p, char *tmp);
+char				*read_flags(char *tmp, t_parse *p);
+char				*read_prec(char *tmp, t_parse *p, va_list valist);
+void				read_type(char *tmp, t_parse *p);
+t_node				*new_piece(char type, int mod);
+t_parse				*new_param(void);
+void				clear_param(t_parse *p);
+void				del_param(t_parse *p, va_list valist);
+t_node				*add_last_piece(t_node **head, t_node *new);
+int					int_length_and_update(int64_t n, t_parse *p);
+int 	    		is_positive(int64_t n, t_parse *p);
+void				add_sign(int64_t n, t_parse *p, char **num);
+char   				*fill_width(t_parse *p, char *num, char sign);
+char				*get_int(t_parse *p, int64_t n);
+void				print_s_int(int64_t n, t_parse *p);
+void				print_u_int(uint64_t n, t_parse *p);
+void				print_int(int64_t n, t_parse *p);
+char				*prepare_string(t_parse *p, int base, int64_t v);
+void				print_base_u(uint64_t v, t_parse *p, int base);
+int64_t				print_base(int64_t v, t_parse *p, int base);
+void				print_percentage(t_parse *p);
+void				print_arg(t_parse *p);
+void			    get_and_print_arg(va_list valist, t_parse *p);
+t_parse				*parse_string(char *tmp, t_parse *p, va_list valist);
+void				buffer(t_parse *p, char *s, int freeable);
+char				*read_line(t_parse *p, char *s);
+char				*is_special_double(t_double num, char *mant);
+char 				*float_e(char *intg, int prec, t_parse *p);
+char 				*float_g(char *intg, char *fract, t_parse *p);
+t_double 			*get_bits(double d, float f, t_double *num);
+t_double			 *new_double(double d);
+void				free_double(t_double *num);
+int64_t				bin_to_dec(char *bin);
+int					find_last_digit(char *mant);
+char 				*get_five_power(char *five_power, int power);
+char 				*get_two_power(char *two_power, int power);
+void				sum(char *summ, char *add);
+void				sum2(char *summ, char *add);
+char				*add_symbols(char *s, char c, size_t n, int is_after);
+char				*round_fractional(char *fract, int prec, int is_int, t_parse *p);
+char				*count_exp(t_double *num, int is_integer);
+char				*get_fractional(t_double *num, t_parse *p);
+char				*get_integer(t_double *num, t_parse *p);
+char				*concat_parts(char *integer, char *fract, t_parse *p);
+
+
+
+
 
 #endif

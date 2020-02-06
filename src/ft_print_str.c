@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/30 15:28:10 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/06 20:09:52 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,59 +34,30 @@ char	*ft_charstr(int size, char n)
 	return (NULL);
 }
 
-char	*print_str2(char *str, t_parse *p, char *temp_str, char *temp_space)
-{
-	char	*out;
-	int		len_str;
-
-	len_str = ft_strlen(str);
-	if (!str)
-		return (ft_strdup("(null)"));
-	if (p->zero_prec)
-		return (NULL);
-	if (len_str == 0)
-		out = ft_charstr(p->width, ' ');
-	if (temp_str != 0 && temp_space != 0)
-	{
-		if (ft_strchr(p->flags, '-'))
-			out = ft_strjoin(temp_str, temp_space);
-		else
-			out = ft_strjoin(temp_space, temp_str);
-		ft_strdel(&temp_str);
-		ft_strdel(&temp_space);
-	}
-//	if (temp_str && !temp_space )
-//		out = temp_str;
-	else
-		out = ft_strdup(str);
-	return (out);
-}
-
 void	print_str(char *str, t_parse *p)
 {
 	int		len_str;
 	char	*temp_str;
-	char	*temp_space;
 	char	*out;
 
-	temp_space = NULL;
+	if (p->type == 's' && !str)
+		str = "(null)";
 	len_str = ft_strlen(str);
-	temp_str = ft_strdup(str);
-	if (p->prec != 0 && p->prec < len_str)
+	if (p->prec == 0 && p->zero_prec)
 	{
-		free(temp_str);
-		temp_str = ft_strsub(str, 0, p->prec);
-		//temp_str = ft_strnew((size_t)p->prec);
-		//ft_strncpy(temp_str, str, (size_t)p->prec);
-		len_str = p->prec;
-		if (!p->width)
-			out = temp_str;
+		temp_str = ft_strdup("");
+		len_str = 0;
 	}
-	if (!p->width)
-		temp_space = ft_strdup("");
-	if (p->width > len_str)
-		temp_space = ft_charstr((p->width - len_str), ' ');
-	out = print_str2(str, p, temp_str, temp_space);
+	else if (p->type == 's' && p->prec != 0 && p->prec < len_str)
+	{
+		temp_str = ft_strsub(str, 0, (size_t)p->prec);
+		len_str = p->prec;
+	}
+	else if (str)
+		temp_str = ft_strdup(str);
+	if (ft_strchr(p->flags, '-'))
+		out = add_symbols(temp_str, ' ', p->width - len_str, 1);
+	else
+		out = add_symbols(temp_str, ' ', p->width - len_str, 0);
 	buffer(p, out, 1);
-//	free(str);
 }

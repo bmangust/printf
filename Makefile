@@ -35,8 +35,9 @@ ft_strncmp.c ft_strncpy.c ft_strnequ.c ft_strnew.c ft_strnstr.c ft_strrchr.c \
 ft_strsplit.c ft_strstr.c ft_strsub.c ft_strtrim.c ft_tolower.c ft_toupper.c \
 ft_wrdcnt.c ft_lstrev.c ft_printf.c ft_int_length_base.c ft_dtoa.c ft_ltoa.c \
 ft_print_char.c ft_print_float.c ft_print_str.c ft_strrev.c ft_strtolower.c \
-ft_strtoupper.c
-
+ft_strtoupper.c ft_colors.c ft_read_params.c ft_mng_params.c ft_print_arg.c \
+ft_print_int_0.c ft_print_int_1.c ft_print_oct_hex.c ft_print_float_spec.c \
+ft_mng_float.c ft_print_float_determ.c ft_print_float_concat.c
 
 OBJ = $(SRC:.c=.o)
 
