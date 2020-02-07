@@ -22,7 +22,7 @@ char	*round_fractional(char *fract, int prec, int is_int, t_parse *p)
 		return (add_symbols(fract, '0', prec - ft_strlen(fract), 1));
 	}
 	i = prec;
-	if ((fract[i] >= '5' || is_int) && prec > 0)
+	if (fract && (fract[i] >= '5' || is_int))
 	{
 		p->E = (fract[i - 1] - '0' + p->E) / 10;
 		if (!p->E)
@@ -37,7 +37,7 @@ char	*round_fractional(char *fract, int prec, int is_int, t_parse *p)
 		p->E = 0;
 	if (is_int && p->E)
 		fract = add_symbols(fract, '1', 1, 0);
-	if (!is_int)
+	if (!is_int && fract)
 		fract[prec] = '\0';
 	return (fract);
 }
@@ -137,6 +137,8 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 
 	if (p->E)
 		integer = round_fractional(integer, ft_strlen(integer), 1, p);
+	if (ft_strchr(p->flags, '#') && p->zero_prec)
+		integer = ft_strjoin(integer, ".");
 	tmp = integer;
 	if (ft_strlen(fract) == 0)
 		return (integer);
@@ -148,5 +150,9 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 		integer = ft_strjoin(integer, fract);
 		free(tmp);
 	}
+//	if (ft_strchr(p->flags, '0'))
+//		integer = add_symbols(integer, '0', p->width - ft_strlen(integer), 0);
+//	if (ft_strlen(fract) == 0)
+//		return (integer);
 	return (integer);
 }

@@ -79,12 +79,14 @@ char	*get_int(t_parse *p, int64_t n)
 {
 	char *num;
 
-	if (n == 0 && p->zero_prec == 1)
+	if ((p->width || p->flags) && n == 0 && p->zero_prec == 1)
 	{
 		num = ft_strnew(1);
 		num[0] = ft_strchr(p->flags, '+') ? '+' : ' ';
 		return (num);
 	}
+	else if (n == 0 && p->zero_prec == 1)
+		return (ft_strnew(1));
 	num = p->is_signed ? ft_itoa(ft_absint(n)) : ft_itoa_base(n, 10);
 	if (p->prec > p->length)
 		num = add_symbols(num, '0', ft_absint(p->prec - p->length), 0);

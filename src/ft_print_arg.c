@@ -44,8 +44,10 @@ void    get_and_print_arg(va_list valist, t_parse *p)
 {
     if (p->type == 's')
         p->arg_s = va_arg(valist, char*);
-    else if (ft_strchr("fFgGeE", p->type))
+    else if (ft_strchr("fFgGeE", p->type) && !p->size)
         p->arg_d = va_arg(valist, double);
+	else if (ft_strchr("fFgGeE", p->type))
+		p->arg_d = va_arg(valist, long double);
     else
         p->arg_i = va_arg(valist, int64_t);
     print_arg(p);

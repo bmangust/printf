@@ -22,14 +22,10 @@
 # define MAX(a,b) ((a > b) ? a : b)
 
 #define INT 0					//without flags for d, i
-#define FLOAT 0					//without flags for d, f
 #define SHORT (1 << 0)			//h
 #define LONG (1 << 1)			//l for int
 #define LONGLONG (1 << 2)		//ll
-#define UNSIGNED (1 << 3)		//unsigned numbers u, o, x, X,
 #define CHAR (1 << 4)			//hh
-#define LONGDOUBLE (1 << 5)		//L for float
-#define FLOAT_POWER 52			//hh
 
 /*
 **	type:
@@ -186,9 +182,5 @@ char				*count_exp(t_double *num, int is_integer);
 char				*get_fractional(t_double *num, t_parse *p);
 char				*get_integer(t_double *num, t_parse *p);
 char				*concat_parts(char *integer, char *fract, t_parse *p);
-
-
-
-
 
 #endif

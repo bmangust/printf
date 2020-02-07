@@ -20,7 +20,7 @@ char	*prepare_string(t_parse *p, int base, int64_t v)
 {
 	char *s;
 
-	p->length = ft_int_length_base(v, base);
+	p->length = v == 0 ? 1 : ft_int_length_base(v, base);
 	if (p->type == 'p' || ft_strchr(p->flags, '#'))
 		p->length += (base == 8) ? 1 : 2;
 	s = (ft_strchr(p->flags, '0') && !p->prec) ? ft_strnew(p->width)
@@ -32,6 +32,8 @@ char	*prepare_string(t_parse *p, int base, int64_t v)
 		else if (v != 0)
 			(p->type == 'X') ? ft_strcat(s, "0X") : ft_strcat(s, "0x");
 	}
+	if (ft_strchr(p->flags, '#') && v == 0 && p->width)
+		s = ft_memset(s, '0', p->length - 1);
 	if (p->prec > p->length)
 		while ((p->prec)-- > p->length)
 			ft_strcat(s, "0");
@@ -82,9 +84,8 @@ void	print_percentage(t_parse *p)
 	char *s;
 	char c;
 
-	c = ft_strchr(p->flags, '0') ? '0' : ' ';
-	s = ft_strnew(p->width > 0 ? p->width : 1);
-	ft_memset(s, c, p->width > 0 ? p->width : 1);
+	c = ft_strchr(p->flags, '0') && !ft_strchr(p->flags, '-') ? '0' : ' ';
+	s = ft_charstr(p->width > 0 ? p->width : 1, c);
 	if (ft_strchr(p->flags, '-'))
 		s[0] = '%';
 	else

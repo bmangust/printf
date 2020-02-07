@@ -20,8 +20,9 @@ char	*print_float_internal(t_parse *p, t_double *num)
 	if (!p->zero_prec && !p->prec)
 		p->prec = 6;
 	integer = ft_strrev(get_integer(num, p));
-	fract = (p->zero_prec && !ft_strchr("gG", p->type)) ?
-			NULL : get_fractional(num, p);
+//	fract = (p->zero_prec && !ft_strchr("gG", p->type)) ?
+//			NULL : get_fractional(num, p);
+	fract = get_fractional(num, p);
 	if (ft_strchr("fFeE", p->type))
 		integer = concat_parts(integer, fract, p);
 	if (p->type == 'e' || p->type == 'E')
@@ -43,10 +44,17 @@ char	*print_float(double d, t_parse *p)
 		integer = ft_strdup(num->special);
 	else
 		integer = print_float_internal(p, num);
+	if (ft_strchr(p->flags, '0') && !ft_strchr(p->flags, '-'))
+	{
+		if (num->sign[0] == '1' || ft_strchr(p->flags, '+') || ft_strchr(p->flags, ' '))
+			integer = add_symbols(integer, '0', p->width - ft_strlen(integer) - 1, 0);
+		else
+			integer = add_symbols(integer, '0', p->width - ft_strlen(integer), 0);
+	}
 	num->sign[0] == '1' ? integer = add_symbols(integer, '-', 1, 0) : 0;
 	(num->sign[0] == '0' && ft_strchr(p->flags, '+')) ?
 			integer = add_symbols(integer, '+', 1, 0) : 0;
-	(num->sign[0] == '0' && ft_strchr(p->flags, ' ')) ?
+	(num->sign[0] == '0' && ft_strchr(p->flags, ' ') && p->width) ?
 			integer = add_symbols(integer, ' ', 1, 0) : 0;
 	free_double(num);
 	return (integer);
