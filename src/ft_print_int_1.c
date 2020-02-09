@@ -56,9 +56,7 @@ void	print_int(int64_t n, t_parse *p)
 			print_s_int((unsigned int)n, p);
 		else if (p->size == CHAR)
 			print_s_int((unsigned char)n, p);
-		else if (p->size == LONG)
-			print_s_int((uint64_t)n, p);
-		else if (p->size == LONGLONG)
+		else if (p->size == LONG || p->size == LONGLONG)
 			print_s_int((uint64_t)n, p);
 		else if (p->size == SHORT)
 			print_s_int((unsigned short int)n, p);

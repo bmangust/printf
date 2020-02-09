@@ -51,7 +51,7 @@ void    get_and_print_arg(va_list valist, t_parse *p)
 	else if (ft_strchr("xX", p->type) &&
 				(p->size == LONG || p->size == LONGLONG))
 		p->arg_i = va_arg(valist, unsigned long long);
-    else
+    else if (p->type != '%')
         p->arg_i = va_arg(valist, int64_t);
     print_arg(p);
 }
@@ -77,11 +77,6 @@ t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
     get_and_print_arg(valist, p);
 	return (p);
 }
-
-/*
-**	weird behavior, can't concatenate string with hex number
-**	sometimes catches segfault. With debugger everything is great
-*/
 
 void	buffer(t_parse *p, char *s, int freeable)
 {

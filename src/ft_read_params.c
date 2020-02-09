@@ -20,6 +20,8 @@ char    *read_width(t_parse *p, char *tmp, va_list valist)
     if (*tmp >= '0' && *tmp  <= '9')
     {
         (*tmp >= '0' && *tmp  <= '9') ? p->width = ft_atoi(tmp) : 0;
+        if (*tmp == '0')
+        	tmp++;
         tmp += ft_int_length_base(p->width, 10);
     }
     else if (*tmp == '*')
