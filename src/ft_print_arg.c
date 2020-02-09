@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_arg.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/31 16:14:34 by jbloodax         ###   ########.fr       */
+/*   Created: 2020/02/09 19:34:39 by akraig            #+#    #+#             */
+/*   Updated: 2020/02/09 19:36:15 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-/*
-**	prints one argument
-*/
 
 void	print_arg(t_parse *p)
 {
@@ -40,48 +36,38 @@ void	print_arg(t_parse *p)
 	}
 }
 
-void    get_and_print_arg(va_list valist, t_parse *p)
+void	get_and_print_arg(va_list valist, t_parse *p)
 {
-    if (p->type == 's')
-        p->arg_s = va_arg(valist, char*);
-    else if (ft_strchr("fFgGeE", p->type) && !p->size)
-        p->arg_d = va_arg(valist, double);
+	if (p->type == 's')
+		p->arg_s = va_arg(valist, char*);
+	else if (ft_strchr("fFgGeE", p->type) && !p->size)
+		p->arg_d = va_arg(valist, double);
 	else if (ft_strchr("fFgGeE", p->type))
 		p->arg_d = va_arg(valist, long double);
 	else if (ft_strchr("xX", p->type) &&
 				(p->size == LONG || p->size == LONGLONG))
 		p->arg_i = va_arg(valist, unsigned long long);
-    else
-        p->arg_i = va_arg(valist, int64_t);
-    print_arg(p);
+	else if (p->type != '%')
+		p->arg_i = va_arg(valist, int64_t);
+	print_arg(p);
 }
-
-/*
-**	parses string till type indetifier,
-**	returns list node with all parameters and pointer to next symbol
-*/
 
 t_parse	*parse_string(char *tmp, t_parse *p, va_list valist)
 {
 	if (!p->flags && ft_strchr("-+ 0#", *tmp))
 		tmp = read_flags(tmp, p);
-    tmp = read_width(p, tmp, valist);
+	tmp = read_width(p, tmp, valist);
 	if (*tmp == '.')
 		tmp = read_prec(tmp + 1, p, valist);
-    if (ft_strchr("hlLzjt", *tmp))
+	if (ft_strchr("hlLzjt", *tmp))
 		tmp = read_size(p, tmp);
-    if (ft_strchr("%diufFxXoscpgGeE", *tmp))
+	if (ft_strchr("%diufFxXoscpgGeE", *tmp))
 		read_type(tmp, p);
-    else
-    	p->next = tmp - 1;
-    get_and_print_arg(valist, p);
+	else
+		p->next = tmp - 1;
+	get_and_print_arg(valist, p);
 	return (p);
 }
-
-/*
-**	weird behavior, can't concatenate string with hex number
-**	sometimes catches segfault. With debugger everything is great
-*/
 
 void	buffer(t_parse *p, char *s, int freeable)
 {
@@ -102,7 +88,7 @@ void	buffer(t_parse *p, char *s, int freeable)
 char	*read_line(t_parse *p, char *s)
 {
 	char	*tmp;
-	int 	index[3];
+	int		index[3];
 
 	index[1] = ft_strchrn(s, '%');
 	index[2] = ft_strchrn(s, '{');

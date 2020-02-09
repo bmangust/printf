@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/17 09:49:51 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/23 12:27:16 by akraig           ###   ########.fr       */
+/*   Created: 2020/02/09 18:58:06 by jbloodax          #+#    #+#             */
+/*   Updated: 2020/02/09 18:58:57 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ static char	**ft_freemem(char **words, int w_num)
 
 static char	**ft_get_words(char const *s, char c, char **words)
 {
-	int		w_num;
-	int		k;
+	int	w_num;
+	int	k;
 
 	w_num = 0;
 	while (*s)
@@ -63,7 +63,7 @@ static char	**ft_get_words(char const *s, char c, char **words)
 
 char		**ft_strsplit(char const *s, char c)
 {
-	char	**words;
+	char **words;
 
 	if (!s || !(words = (char**)malloc(sizeof(char*) * (ft_wrdcnt(s, c) + 1))))
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/02/06 20:10:57 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/09 20:00:18 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,51 @@ char		*is_special_double(t_double num, char *mant)
 	return (s);
 }
 
-static char *float_e_2(char *intg, int e, int prec, t_parse *p)
+static char	*float_e_2(char *nmbr, int e, int prec, t_parse *p)
 {
-	char 	*conv_float;
-	char 	*exp;
+	char *conv_float;
+	char *exp;
+	char *intg;
+	char *fract;
 
+	intg = ft_strsub(nmbr, 0, 1);
+	fract = ft_strsub(nmbr, 2, ft_strlen(nmbr) - 2);
+	p->E = 1;
+	fract = round_fractional(fract, p->prec, 0, p);
+	if (p->E && intg[0] < '9')
+		intg[0] += 1;
+	else if (p->E)
+	{
+		free(intg);
+		intg = ft_strdup("1");
+		e += 1;
+		fract = add_symbols(fract, '0', 1, 0);
+		fract[p->prec] = '\0';
+	}
+	fract = add_symbols(fract, '.', 1, 0);
+	nmbr = ft_strjoin(intg, fract);
+	if (prec == 0)
+		nmbr[1] = '\0';
 	if ((e <= 10 && e >= 0) || (e > -9 && e < 0))
-		exp = (e <= 10 && e > 0) ? ft_strjoin("e+0", ft_itoa(e - 1 )) :
-			  ft_strjoin("e-0", ft_itoa(-e + 1));
+		exp = (e <= 10 && e > 0) ? ft_strjoin("e+0", ft_itoa(e - 1)) :
+			ft_strjoin("e-0", ft_itoa(-e + 1));
 	else if (e > 10 || e <= -9)
 		exp = (e > 10) ? ft_strjoin("e+", ft_itoa(e - 1)) :
-			  ft_strjoin("e-", ft_itoa(-e + 1));
-	if (prec == 0)
-		intg[1] = '\0';
-	conv_float = ft_strjoin(intg, exp);
-	if (p->type == 'G')
-		ft_strtoupper(conv_float, 1);
+			ft_strjoin("e-", ft_itoa(-e + 1));
+	conv_float = ft_strjoin(nmbr, exp);
+	free(nmbr);
+//	if (p->type == 'G')
+//		ft_strtoupper(conv_float, 1);
 	return (conv_float);
 }
 
-char 	*float_e(char *intg, int prec, t_parse *p)
+char		*float_e(char *intg, int prec, t_parse *p)
 {
-	int 	i;
-	int 	e;
-	char 	*conv_float;
+	int		i;
+	int		e;
+	char	*conv_float;
 
-	i = 0;
+	i = (intg[0] == '0') ? 2 : 0;
 	e = 0;
 	if (intg[0] > '0')
 	{
@@ -61,7 +80,6 @@ char 	*float_e(char *intg, int prec, t_parse *p)
 	}
 	else if (intg[0] == '0')
 	{
-		i = 2;
 		while (intg[i++] == '0')
 			e--;
 		intg = ft_strsub(intg, i - 2, ft_strlen(intg));
@@ -70,10 +88,10 @@ char 	*float_e(char *intg, int prec, t_parse *p)
 	}
 	conv_float = float_e_2(intg, e, prec, p);
 	free(intg);
-	return(conv_float);
+	return (conv_float);
 }
 
-char 	*float_g(char *intg, char *fract, t_parse *p)
+char		*float_g(char *intg, char *fract, t_parse *p)
 {
 	int n;
 	int e;

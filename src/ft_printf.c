@@ -6,13 +6,13 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/31 16:14:34 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/09 19:41:23 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int		ft_printf(const char *restrict s, ...)
+int	ft_printf(const char *restrict s, ...)
 {
 	va_list	valist;
 	t_parse	*p;
@@ -30,14 +30,13 @@ int		ft_printf(const char *restrict s, ...)
 		{
 			parse_string((char *)++s, p, valist);
 			if (!p->next)
-			    return (-1);
+				return (-1);
 			s = p->next;
 			clear_param(p);
 		}
 		s++;
 	}
 	ft_putstr(p->buf);
-	printed = p->printed;
-	del_param(p, valist);
+	printed = del_param(p, valist);
 	return (printed);
 }

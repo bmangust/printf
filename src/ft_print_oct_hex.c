@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/31 16:14:34 by akraig           ###   ########.fr       */
+/*   Updated: 2020/02/09 19:42:41 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ char	*print_base_x(uint64_t v, t_parse *p, int base)
 		num = add_symbols(num, '0', p->prec - p->length, 0);
 	if (!p->prec && !p->zero_prec && ft_strchr(p->flags, '#') && v != 0)
 		p->length += 2;
-	if (!p->prec && !p->zero_prec && ft_strchr(p->flags, '0') && !ft_strchr(p->flags, '-'))
+	if (!p->prec && !p->zero_prec && ft_strchr(p->flags, '0')
+		&& !ft_strchr(p->flags, '-'))
 		num = add_symbols(num, '0', (p->width - p->length), 0);
 	if (p->type == 'p' || (ft_strchr(p->flags, '#') && v != 0))
 	{
@@ -50,7 +51,8 @@ char	*print_base_o(uint64_t v, t_parse *p, int base)
 		num = add_symbols(num, '0', p->prec - p->length, 0);
 	if (!p->prec && !p->zero_prec && ft_strchr(p->flags, '#') && v != 0)
 		p->length += 1;
-	if (!p->prec && !p->zero_prec && ft_strchr(p->flags, '0') && !ft_strchr(p->flags, '-'))
+	if (!p->prec && !p->zero_prec && ft_strchr(p->flags, '0')
+		&& !ft_strchr(p->flags, '-'))
 		num = add_symbols(num, '0', (p->width - p->length), 0);
 	if (ft_strchr(p->flags, '#') && p->prec <= p->length && v != 0)
 	{
@@ -74,7 +76,7 @@ char	*print_base(int64_t v, t_parse *p, int base)
 
 	s = NULL;
 	if (p->type == 'p')
-		s = print_base_u((int64_t) v, p, base);
+		s = print_base_u((int64_t)v, p, base);
 	else if (p->size == INT)
 		s = print_base_u((unsigned int)v, p, base);
 	else if (p->size == SHORT)

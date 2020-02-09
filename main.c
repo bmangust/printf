@@ -1,4 +1,5 @@
 #include "ft_printf.h"
+#include <stdio.h>
 
 int main(int ac, char **av)
 {
@@ -293,30 +294,30 @@ int main(int ac, char **av)
 //        char *a;
 //        a = "123545745.58";
 //		ft_printf("---27---\n");
-		static unsigned int		mx_u = 235;
-		static long double			mx_Lf = 0.375l;
-		static double				mx_f = 0.625;
-		static long				mx_li =  4223372036854775800;
-		static long long			mx_lli = 3223372036654775200;
-		static char				mx_c = 'G';
-		static short				mx_hi = -3244;
-		static char				mx_hhi = 'F';
-		static char			   *mx_s = "Hello, World!";
-		static int					mx_i = 42;
-
-		char *s = "  %o    %f    %i    %%    %hhi    %Lf  \n";
+//		static unsigned int		mx_u = 235;
+//		static long double			mx_Lf = 0.375l;
+//		static double				mx_f = 0.625;
+//		static long				mx_li =  4223372036854775800;
+//		static long long			mx_lli = 3223372036654775200;
+//		static char				mx_c = 'G';
+//		static short				mx_hi = -3244;
+//		static char				mx_hhi = 'F';
+//		static char			   *mx_s = "Hello, World!";
+//		static int					mx_i = 42;
+//
+		char *s = "=%8g=\n";
 //		char *c = "hi low\0don't print me lol\0";
-//		double c = 1.5L;
+		double c = 992345.9999;
 //		int c = 'G';
-		p = printf(s, mx_u, mx_f, mx_i, mx_c, mx_Lf);
-		n = ft_printf(s, mx_u, mx_f, mx_i, mx_c, mx_Lf);
-		if (n == p) printf("\nSUCCESS\n");
-		else
-		{
-			printf("FAIL\n");
-			ft_printf("printed %d symbols in 1st line\n", p);
-			ft_printf("printed %d symbols in 2st line\n\n", n);
-		}
+		p = printf(s, c);
+		n = ft_printf(s, c);
+//		if (n == p) printf("\nSUCCESS\n");
+//		else
+//		{
+//			printf("FAIL\n");
+//			ft_printf("printed %d symbols in 1st line\n", p);
+//			ft_printf("printed %d symbols in 2st line\n\n", n);
+//		}
 
 
 

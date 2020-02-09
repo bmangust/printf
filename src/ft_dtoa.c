@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_dtoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/01/23 12:45:17 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/23 14:52:03 by akraig           ###   ########.fr       */
+/*   Created: 2020/02/09 19:01:32 by akraig            #+#    #+#             */
+/*   Updated: 2020/02/09 19:02:05 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static int	*count_digits(long double d)
 	params[0] = d < 0 ? 1 : 0;
 	d < 0 ? d *= -1 : d;
 	tmp = (long long)d;
-	tmp == 0 ? params[0] += 1: 0;
-	while(tmp > 0 && ++params[0] > 0)
+	tmp == 0 ? params[0] += 1 : 0;
+	while (tmp > 0 && ++params[0] > 0)
 		tmp /= 10;
 	params[1] = params[0];
 	return (params);
@@ -56,6 +56,6 @@ char		*ft_dtoa(long double d)
 			((int)d == 0) ? s[--params[0]] = '0' : 0;
 		}
 	}
-	params[2] == 1 ? s[--params[0]] = '-': 0;
+	params[2] == 1 ? s[--params[0]] = '-' : 0;
 	return (s);
 }

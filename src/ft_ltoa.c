@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/01/18 17:46:22 by jbloodax          #+#    #+#             */
-/*   Updated: 2020/01/29 16:41:59 by jbloodax         ###   ########.fr       */
+/*   Created: 2020/02/09 19:23:50 by akraig            #+#    #+#             */
+/*   Updated: 2020/02/09 20:01:34 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	count_digits(long long int n)
+static int		count_digits(long long int n)
 {
 	int cnt;
 
@@ -28,7 +28,7 @@ static int	count_digits(long long int n)
 	return (cnt);
 }
 
-static void	ft_itoa_alg(long long int base, char *s, int slen, int sign)
+static void		ft_itoa_alg(long long int base, char *s, int slen, int sign)
 {
 	int				i;
 	long long int	cutter;
@@ -44,9 +44,9 @@ static void	ft_itoa_alg(long long int base, char *s, int slen, int sign)
 	while (i < slen + sign)
 	{
 		if (sign == 2)
-			cutter = ft_pow(10, (slen - i  - 0));
+			cutter = ft_pow(10, (slen - i - 0));
 		else
-			cutter = ft_pow(10, (slen - i  - 1));
+			cutter = ft_pow(10, (slen - i - 1));
 		s[i] = base / cutter + '0';
 		base = base % cutter;
 		i++;
@@ -57,7 +57,7 @@ static void	ft_itoa_alg(long long int base, char *s, int slen, int sign)
 	}
 }
 
-char		*ft_ltoa(long long int base, int sign)
+char			*ft_ltoa(long long int base, int sign)
 {
 	int		slen;
 	char	*s;

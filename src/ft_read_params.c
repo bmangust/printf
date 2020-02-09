@@ -6,28 +6,29 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/31 16:14:34 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/09 19:32:09 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
 /*
 **	checks size of a type, uses flags in p node
 */
 
-char    *read_width(t_parse *p, char *tmp, va_list valist)
+char	*read_width(t_parse *p, char *tmp, va_list valist)
 {
-    if (*tmp >= '0' && *tmp  <= '9')
-    {
-        (*tmp >= '0' && *tmp  <= '9') ? p->width = ft_atoi(tmp) : 0;
-        tmp += ft_int_length_base(p->width, 10);
-    }
-    else if (*tmp == '*')
-    {
-        p->width = va_arg(valist, int);
-        tmp++;
-    }
-    return (tmp);
+	if (*tmp >= '0' && *tmp <= '9')
+	{
+		(*tmp >= '0' && *tmp <= '9') ? p->width = ft_atoi(tmp) : 0;
+		tmp += ft_int_length_base(p->width, 10);
+	}
+	else if (*tmp == '*')
+	{
+		p->width = va_arg(valist, int);
+		tmp++;
+	}
+	return (tmp);
 }
 
 char	*read_size(t_parse *p, char *tmp)
@@ -68,7 +69,7 @@ char	*read_flags(char *tmp, t_parse *p)
 			(ft_strchr(p->flags, '0') != NULL))
 			return (tmp);
 		if (!ft_strchr(p->flags, *tmp))
-		    p->flags[i++] = *tmp;
+			p->flags[i++] = *tmp;
 		tmp++;
 	}
 	ft_strchr(p->flags, '-') ? p->skip_0_flag = 1 : 0;
@@ -97,9 +98,9 @@ char	*read_prec(char *tmp, t_parse *p, va_list valist)
 
 void	read_type(char *tmp, t_parse *p)
 {
-    p->is_signed = 0;
-    p->type = *tmp;
-    p->next = tmp;
-    if ((*tmp == 'd' || *tmp == 'i') && !ft_strchr("tz", p->size))
-        p->is_signed = 1;
+	p->is_signed = 0;
+	p->type = *tmp;
+	p->next = tmp;
+	if ((*tmp == 'd' || *tmp == 'i') && !ft_strchr("tz", p->size))
+		p->is_signed = 1;
 }

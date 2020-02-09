@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_colors.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/31 16:14:34 by jbloodax         ###   ########.fr       */
+/*   Created: 2020/02/09 18:57:13 by akraig            #+#    #+#             */
+/*   Updated: 2020/02/09 19:01:08 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static char	*read_other(t_parse *p, char *s, int found)
 	return (s);
 }
 
-static char	**split_color(void)
+static char	*split_color(void)
 {
 	char	**ar;
 	char	*ident;
@@ -43,7 +43,7 @@ static char	**split_color(void)
 	return (ar);
 }
 
-	char		*read_color(t_parse *p, char *s, char *code)
+char		*read_color(t_parse *p, char *s, char *code)
 {
 	int		found;
 	char	**ar;
@@ -67,6 +67,6 @@ static char	**split_color(void)
 		s = ft_strchr(s, '}');
 	}
 	else if (found != 0)
- 		s = read_other(p, s, found);
+		s = read_other(p, s, found);
 	return (s);
 }

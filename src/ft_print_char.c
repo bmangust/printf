@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_char.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/29 18:03:36 by jbloodax         ###   ########.fr       */
+/*   Created: 2020/02/09 19:36:33 by akraig            #+#    #+#             */
+/*   Updated: 2020/02/09 19:36:39 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_char(char c, t_parse *p)
 	char *s;
 
 	s = ft_strnew(1);
-	s[0] = c == 0 ? '\0' : c;
+	s[0] = c == '\x00' ? '\x00' : c;
 	if (c == 0)
 		p->printed++;
 	if (p->flags && ft_strchr(p->flags, '-'))

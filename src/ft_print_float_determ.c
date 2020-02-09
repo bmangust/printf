@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_float_determ.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/25 18:06:01 by jbloodax         ###   ########.fr       */
+/*   Created: 2020/02/09 19:51:53 by akraig            #+#    #+#             */
+/*   Updated: 2020/02/09 19:53:00 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-char 	*get_five_power(char *five_power, int power)
+char	*get_five_power(char *five_power, int power)
 {
 	char	*new;
 	int		i;
-	int 	carry;
-	int 	len;
+	int		carry;
+	int		len;
 
 	i = -1;
 	len = five_power ? ft_strlen(five_power) : 1;
@@ -37,12 +37,12 @@ char 	*get_five_power(char *five_power, int power)
 	return (new);
 }
 
-char 	*get_two_power(char *two_power, int power)
+char	*get_two_power(char *two_power, int power)
 {
 	char	*new;
 	int		i;
-	int 	carry;
-	int 	len;
+	int		carry;
+	int		len;
 
 	i = -1;
 	len = two_power ? ft_strlen(two_power) : 1;

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_mng_float.c 	                                :+:      :+:    :+:   */
+/*   ft_mng_float.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/01/25 18:06:01 by jbloodax         ###   ########.fr       */
+/*   Created: 2020/02/09 19:30:51 by akraig            #+#    #+#             */
+/*   Updated: 2020/02/09 19:32:00 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-t_double *get_bits(double d, t_double *num)
+t_double	*get_bits(double d, t_double *num)
 {
 	int64_t	dl;
 	char	*bits;
@@ -33,10 +33,11 @@ t_double *get_bits(double d, t_double *num)
 	return (num);
 }
 
-t_double *new_double(double d)
+t_double	*new_double(double d)
 {
-	t_double *num = (t_double*)malloc(sizeof(t_double));
+	t_double *num;
 
+	num = (t_double*)malloc(sizeof(t_double));
 	num->sign = ft_strnew(1);
 	num->exp = NULL;
 	num->mant = NULL;
@@ -44,7 +45,7 @@ t_double *new_double(double d)
 	return (num);
 }
 
-void	free_double(t_double *num)
+void		free_double(t_double *num)
 {
 	free(num->sign);
 	free(num->exp);
@@ -68,7 +69,7 @@ int64_t		bin_to_dec(char *bin)
 	return (dec);
 }
 
-int		find_last_digit(char *mant)
+int			find_last_digit(char *mant)
 {
 	int i;
 

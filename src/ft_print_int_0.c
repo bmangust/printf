@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/02/06 20:07:52 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/09 20:00:00 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 
 int		int_length_and_update(int64_t n, t_parse *p)
 {
-
 	p->length = p->is_signed ?
 			ft_int_length_base(n, 10) : ft_uint_length_base(n, 10);
 	if (n < 0)
@@ -62,7 +61,7 @@ char	*fill_width(t_parse *p, char *num, char sign)
 	if (p->width > p->length)
 	{
 		num_of_spaces = (sign && !ft_strchr(p->flags, '-'))
-		    				? p->width - p->length + 1 : p->width - p->length;
+			? p->width - p->length + 1 : p->width - p->length;
 		symbol = (p->skip_0_flag == 0 && !ft_strchr(p->flags, '-')
 				&& ft_strchr(p->flags, '0')) ? '0' : ' ';
 		is_after = ft_strchr(p->flags, '-') ? 1 : 0;
