@@ -35,29 +35,6 @@ void	print_s_int(int64_t n, t_parse *p)
 	buffer(p, tmp, 1);
 }
 
-void	print_u_int(uint64_t n, t_parse *p)
-{
-	char	*num;
-	char	sign;
-	char	*tmp;
-
-	sign = 0;
-	int_length_and_update(n, p);
-	num = get_int(p, n);
-	if (num[0] ==  '-' || num[0] == '+' || num[0] == ' ')
-		sign = num[0];
-	if (p->width > MAX(p->prec, p->length))
-	{
-		tmp = sign && !ft_strchr(p->flags, '-')
-			  ? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);
-		free(num);
-		tmp = fill_width(p, tmp, sign);
-	}
-	else
-		tmp = fill_width(p, num, sign);
-	buffer(p, tmp, 1);
-}
-
 void	print_int(int64_t n, t_parse *p)
 {
 	if (p->is_signed)

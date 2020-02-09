@@ -16,8 +16,8 @@ int ft_int_length_base(int64_t value, int base)
 {
 	int cnt;
 
-	cnt = 0;
-	if (value <= 0) {
+	cnt = value == 0 ? 1 : 0;
+	if (value < 0) {
 		if (base == 10)
 			cnt++;
 	}
@@ -32,11 +32,7 @@ int ft_uint_length_base(uint64_t value, int base)
 {
     int cnt;
 
-    cnt = 0;
-    if (value <= 0) {
-        if (base == 10)
-            cnt++;
-    }
+	cnt = value == 0 ? 1 : 0;
     while (value) {
         value /= base;
         cnt++;

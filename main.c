@@ -296,7 +296,7 @@ int main(int ac, char **av)
 		char *s = "=%#05o=\n";
 //		char *c = "hi low\0don't print me lol\0";
 //		double c = 1.5L;
-		int c = 43;
+		int c = 0;
 		p = printf(s, c);
 		n = ft_printf(s, c);
 		if (n == p) printf("\nSUCCESS\n");

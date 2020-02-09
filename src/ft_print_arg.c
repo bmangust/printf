@@ -22,19 +22,19 @@ void	print_arg(t_parse *p)
 
 	if (ft_strchr("diu", p->type))
 		print_int((int64_t)p->arg_i, p);
-	else if ('o' == p->type)
-		print_base((uint64_t)p->arg_i, p, 8);
-	else if (ft_strchr("pxX", p->type))
-		print_base((uint64_t)p->arg_i, p, 16);
 	else if ('c' == p->type)
 		print_char((char)p->arg_i, p);
 	else if ('s' == p->type)
 		print_str(p->arg_s, p);
 	else if ('%' == p->type)
 		print_percentage(p);
-	else if (ft_strchr("fFgGeE", p->type))
+	else if (ft_strchr("fFgGeEpxXo", p->type))
 	{
-		s = print_float(p->arg_d, p);
+		if ('o' == p->type)
+			s = print_base((uint64_t)p->arg_i, p, 8);
+		else
+			s = ft_strchr("pxX", p->type) ?
+			print_base((uint64_t)p->arg_i, p, 16) : print_float(p->arg_d, p);
 		print_str(s, p);
 		free(s);
 	}
