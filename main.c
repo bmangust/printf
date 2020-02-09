@@ -293,12 +293,23 @@ int main(int ac, char **av)
 //        char *a;
 //        a = "123545745.58";
 //		ft_printf("---27---\n");
-		char *s = "=%#05o=\n";
+		static unsigned int		mx_u = 235;
+		static long double			mx_Lf = 0.375l;
+		static double				mx_f = 0.625;
+		static long				mx_li =  4223372036854775800;
+		static long long			mx_lli = 3223372036654775200;
+		static char				mx_c = 'G';
+		static short				mx_hi = -3244;
+		static char				mx_hhi = 'F';
+		static char			   *mx_s = "Hello, World!";
+		static int					mx_i = 42;
+
+		char *s = "  %o    %f    %i    %%    %hhi    %Lf  \n";
 //		char *c = "hi low\0don't print me lol\0";
 //		double c = 1.5L;
-		int c = 0;
-		p = printf(s, c);
-		n = ft_printf(s, c);
+//		int c = 'G';
+		p = printf(s, mx_u, mx_f, mx_i, mx_c, mx_Lf);
+		n = ft_printf(s, mx_u, mx_f, mx_i, mx_c, mx_Lf);
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{
@@ -306,24 +317,107 @@ int main(int ac, char **av)
 			ft_printf("printed %d symbols in 1st line\n", p);
 			ft_printf("printed %d symbols in 2st line\n\n", n);
 		}
-//		ft_printf("%lf\n", 123456789012345678990.123456789);
-//		for (int i = 0; i < 10; i++)
-//		{
-//			char *s = "=%+10.6lg=\n";
-//			s[]
-//			double c = 12310.1234567;
-//			p = printf(s, c);
-//			n = ft_printf(s, c);
-//			if (n == p) printf("\nSUCCESS\n");
-//			else
-//			{
-//				printf("FAIL\n");
-//				ft_printf("printed %d symbols in 1st line\n", p);
-//				ft_printf("printed %d symbols in 2st line\n\n", n);
-//			}
-//		}
 
 
+
+//
+//		int c = 0;
+//
+//		ft_printf(">%x<\n", c);
+//		ft_printf(">%#x<\n", c);
+//		ft_printf(">%#0x<\n", c);
+//		ft_printf(">%0x<\n\n", c);
+//
+//		ft_printf(">%5x<\n", c);
+//		ft_printf(">%5.0x<\n", c);        // prints nothing
+//		ft_printf(">%5.3x<\n\n", c);
+//
+//		ft_printf(">%#5x<\n", c);
+//		ft_printf(">%#5.0x<\n", c);        // prints nothing
+//		ft_printf(">%#5.3x<\n\n", c);
+//
+//		ft_printf(">%#05x<\n", c);
+//		ft_printf(">%#05.0x<\n", c);       // prints nothing
+//		ft_printf(">%#05.3x<\n\n", c);
+//
+//		ft_printf(">%05x<\n", c);
+//		ft_printf(">%05.0x<\n", c);        // prints nothing
+//		ft_printf(">%05.3x<\n\n\n", c);
+//
+//
+//
+//
+//		ft_printf(">%o<\n", c);
+//		ft_printf(">%#o<\n", c);
+//		ft_printf(">%#0o<\n", c);
+//		ft_printf(">%0o<\n\n", c);
+//
+//		ft_printf(">%5o<\n", c);
+//		ft_printf(">%5.0o<\n", c);        // prints nothing
+//		ft_printf(">%5.3o<\n\n", c);
+//
+//		ft_printf(">%#5o<\n", c);
+//		ft_printf(">%#5.0o<\n", c);        // prints 0
+//		ft_printf(">%#5.3o<\n\n", c);
+//
+//		ft_printf(">%#05o<\n", c);
+//		ft_printf(">%#05.0o<\n", c);        // prints 0
+//		ft_printf(">%#05.3o<\n\n", c);
+//
+//		ft_printf(">%05o<\n", c);
+//		ft_printf(">%05.0o<\n", c);        // prints nothing
+//		ft_printf(">%05.3o<\n\n\n", c);
+//
+//		c = 42;
+//
+//		ft_printf(">%x<\n", c);
+//		ft_printf(">%#x<\n", c);
+//		ft_printf(">%#0x<\n", c);
+//		ft_printf(">%0x<\n\n", c);
+//
+//		ft_printf(">%5x<\n", c);
+//		ft_printf(">%5.0x<\n", c);
+//		ft_printf(">%5.3x<\n\n", c);
+//
+//		ft_printf(">%#5x<\n", c);
+//		ft_printf(">%#5.0x<\n", c);
+//		ft_printf(">%#5.3x<\n\n", c);
+//
+//		ft_printf(">%#05x<\n", c);
+//		ft_printf(">%#05.0x<\n", c);
+//		ft_printf(">%#05.3x<\n\n", c);
+//
+//		ft_printf(">%05x<\n", c);
+//		ft_printf(">%05.0x<\n", c);
+//		ft_printf(">%05.3x<\n\n\n", c);
+//
+//
+//
+//
+//		ft_printf(">%o<\n", c);
+//		ft_printf(">%#o<\n", c);
+//		ft_printf(">%#0o<\n", c);
+//		ft_printf(">%0o<\n\n", c);
+//
+//		ft_printf(">%5o<\n", c);
+//		ft_printf(">%5.0o<\n", c);
+//		ft_printf(">%5.3o<\n\n", c);
+//
+//		ft_printf(">%#5o<\n", c);
+//		ft_printf(">%#5.0o<\n", c);
+//		ft_printf(">%#5.3o<\n\n", c);
+//
+//		ft_printf(">%#05o<\n", c);
+//		ft_printf(">%#05.0o<\n", c);
+//		ft_printf(">%#05.3o<\n\n", c);
+//
+//		ft_printf(">%05o<\n", c);
+//		ft_printf(">%05.0o<\n", c);
+//		ft_printf(">%05.3o<\n\n\n", c);
+//
+//		char *p = NULL;
+//		printf(">%p\n", 0);
+//		ft_printf(">%p\n", 0);
 
 //		uint64_t	tasks[] = {2, 2, 0, 0, -9223372036854775807, 1844674407370955161, 0, 0, 0, 0, 1, 0};
 //		char 		*exprs[] = {"=%#.o=\n",  "=%#.0o=\n", "=%5.o=\n",  "=%5.0o=\n", "=%lu=\n", "=%llu=\n", "=%5.d=\n", "=%5.0d=\n", "=%02d=\n", "=%02.0d=\n", "=%03.2d=\n", "=%03.2d=\n"};
