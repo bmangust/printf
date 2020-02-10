@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_mng_params.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/09 19:33:10 by akraig            #+#    #+#             */
-/*   Updated: 2020/02/09 19:33:39 by akraig           ###   ########.fr       */
+/*   Updated: 2020/02/10 21:51:08 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,3 @@ int			del_param(t_parse *p, va_list valist)
 	va_end(valist);
 	return (printed);
 }
-

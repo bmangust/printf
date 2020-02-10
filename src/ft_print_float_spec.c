@@ -6,12 +6,11 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/02/09 20:00:18 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/10 22:05:02 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
 char		*is_special_double(t_double num, char *mant)
 {
@@ -34,11 +33,12 @@ static char	*float_e_exp(char *nmbr, int e, int prec, t_parse *p)
 		nmbr[1] = '\0';
 	if ((e <= 10 && e >= 0) || (e > -9 && e < 0))
 		exp = (e <= 10 && e > 0) ? ft_strjoin("e+0", ft_itoa(e - 1)) :
-			  ft_strjoin("e-0", ft_itoa(-e + 1));
+			ft_strjoin("e-0", ft_itoa(-e + 1));
 	else if (e > 10 || e <= -9)
 		exp = (e > 10) ? ft_strjoin("e+", ft_itoa(e - 1)) :
-			  ft_strjoin("e-", ft_itoa(-e + 1));
+			ft_strjoin("e-", ft_itoa(-e + 1));
 	conv_float = ft_strjoin(nmbr, exp);
+	free(nmbr);
 	return (conv_float);
 }
 
@@ -68,19 +68,16 @@ static char	*float_e_2(char *nmbr, int e, int prec, t_parse *p)
 	fract = add_symbols(fract, '.', 1, 0);
 	nmbr = ft_strjoin(intg, fract);
 	conv_float = float_e_exp(nmbr, e, prec, p);
-	free(nmbr);
 	return (conv_float);
 }
 
-char		*float_e(char *intg, int prec, t_parse *p)
+char		*float_e(char *intg, int prec, t_parse *p, int e)
 {
 	int		i;
-	int		e;
 	char	*conv_float;
 
 	(!ft_strchr(intg, '.')) ? intg = add_symbols(intg, '.', 1, 1) : 0;
 	i = (intg[0] == '0') ? 2 : 0;
-	e = 0;
 	if (intg[0] > '0')
 	{
 		while (intg[i++] != '.')
@@ -102,22 +99,20 @@ char		*float_e(char *intg, int prec, t_parse *p)
 	return (conv_float);
 }
 
-char		*float_g(char *intg, char *fract, t_parse *p)
+char		*float_g(char *intg, char *fract, t_parse *p, int n)
 {
-	int n;
 	int e;
 	int i;
 
 	e = (p->zero_prec && p->prec == 0) ? 1 : 0;
 	i = 0;
-	n = ft_strlen(intg);
 	if (n < p->prec && (p->prec - n) > 3 && n > 1)
 	{
-		fract = round_fractional(fract, p->prec - n , 0, p);
+		fract = round_fractional(fract, p->prec - n, 0, p);
 		(intg[p->prec] == '.') ? intg[p->prec] = '\0' : 0;
 		return (concat_parts(intg, fract, p));
 	}
-	else if ((p->prec == n || (p->prec - n) < 4) && intg[0] != '0' )
+	else if ((p->prec == n || (p->prec - n) < 4) && intg[0] != '0')
 		intg[n] = '\0';
 	else
 	{
@@ -128,7 +123,7 @@ char		*float_g(char *intg, char *fract, t_parse *p)
 		fract = round_fractional(fract, p->prec + e, 0, p);
 		intg = concat_parts(intg, fract, p);
 		if (e > 3 || n > p->prec)
-			intg = float_e(intg, p->prec, p);
+			intg = float_e(intg, p->prec, p, 0);
 	}
 	return (intg);
 }

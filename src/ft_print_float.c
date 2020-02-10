@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:03:59 by akraig            #+#    #+#             */
-/*   Updated: 2020/02/09 19:48:07 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/10 22:06:04 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 char	*print_float_internal(t_parse *p, t_double *num)
 {
-	char		*integer;
-	char		*fract;
+	char	*integer;
+	char	*fract;
+	int		len_int;
 
+	len_int = ft_strlen(integer);
 	if (!p->zero_prec && !p->prec)
 		p->prec = 6;
 	integer = ft_strrev(get_integer(num, p));
@@ -24,9 +26,9 @@ char	*print_float_internal(t_parse *p, t_double *num)
 	if (ft_strchr("fFeE", p->type))
 		integer = concat_parts(integer, fract, p);
 	if (p->type == 'e' || p->type == 'E')
-		integer = float_e(integer, p->prec, p);
+		integer = float_e(integer, p->prec, p, 0);
 	else if (p->type == 'g' || p->type == 'G')
-		integer = float_g(integer, fract, p);
+		integer = float_g(integer, fract, p, len_int);
 	return (integer);
 }
 

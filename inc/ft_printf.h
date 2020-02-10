@@ -6,7 +6,7 @@
 /*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 21:07:11 by akraig            #+#    #+#             */
-/*   Updated: 2020/02/09 19:41:05 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/02/10 22:04:40 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ t_parse				*parse_string(char *tmp, t_parse *p, va_list valist);
 void				buffer(t_parse *p, char *s, int freeable);
 char				*read_line(t_parse *p, char *s);
 char				*is_special_double(t_double num, char *mant);
-char 				*float_e(char *intg, int prec, t_parse *p);
-char 				*float_g(char *intg, char *fract, t_parse *p);
+char 				*float_e(char *intg, int prec, t_parse *p, int e);
+char 				*float_g(char *intg, char *fract, t_parse *p, int n);
 t_double 			*get_bits(double d, t_double *num);
 t_double			 *new_double(double d);
 void				free_double(t_double *num);
