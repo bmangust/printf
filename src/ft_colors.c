@@ -33,7 +33,7 @@ static char	*read_other(t_parse *p, char *s, int found)
 	return (s);
 }
 
-static char	*split_color(void)
+static char	**split_color(void)
 {
 	char	**ar;
 	char	*ident;

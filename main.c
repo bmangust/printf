@@ -305,19 +305,19 @@ int main(int ac, char **av)
 //		static char			   *mx_s = "Hello, World!";
 //		static int					mx_i = 42;
 //
-		char *s = "=%8g=\n";
+		char *s = "=%.12g=\n";
 //		char *c = "hi low\0don't print me lol\0";
-		double c = 992345.9999;
+		double c = 123456789.9999;
 //		int c = 'G';
 		p = printf(s, c);
 		n = ft_printf(s, c);
-//		if (n == p) printf("\nSUCCESS\n");
-//		else
-//		{
-//			printf("FAIL\n");
-//			ft_printf("printed %d symbols in 1st line\n", p);
-//			ft_printf("printed %d symbols in 2st line\n\n", n);
-//		}
+		if (n == p) printf("\nSUCCESS\n");
+		else
+		{
+			printf("FAIL\n");
+			ft_printf("printed %d symbols in 1st line\n", p);
+			ft_printf("printed %d symbols in 2st line\n\n", n);
+		}
 
 
 

@@ -21,7 +21,7 @@ char	*ft_strtoupper(char *str, int is_freeable)
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
-	if (!(new = ft_strnew(len)))
+	if (!(new = ft_strdup(str)))
 		return (NULL);
 	i = -1;
 	while (++i < len)
