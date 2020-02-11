@@ -18,17 +18,19 @@ char	*print_float_internal(t_parse *p, t_double *num)
 	char	*fract;
 	int		len_int;
 
-	len_int = ft_strlen(integer);
 	if (!p->zero_prec && !p->prec)
 		p->prec = 6;
 	integer = ft_strrev(get_integer(num, p));
 	fract = get_fractional(num, p);
+	len_int = ft_strlen(integer);
 	if (ft_strchr("fFeE", p->type))
 		integer = concat_parts(integer, fract, p);
 	if (p->type == 'e' || p->type == 'E')
 		integer = float_e(integer, p->prec, p, 0);
 	else if (p->type == 'g' || p->type == 'G')
 		integer = float_g(integer, fract, p, len_int);
+	if (ft_strchr("FEG", p->type))
+		integer = ft_strtoupper(integer, 1);
 	return (integer);
 }
 
@@ -38,7 +40,7 @@ char	*print_float(double d, t_parse *p)
 	char		*integer;
 
 	num = new_double(d);
-	if (num->special && (p->type == 'F' || p->type == 'G' || p->type == 'E'))
+	if (num->special && ft_strchr("FEG", p->type))
 		integer = ft_strtoupper(num->special, 1);
 	else if (num->special)
 		integer = ft_strdup(num->special);

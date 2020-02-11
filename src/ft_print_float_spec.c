@@ -53,8 +53,11 @@ static char	*float_e_2(char *nmbr, int e, int prec, t_parse *p)
 		intg = ft_strsub(nmbr, 0, 1);
 		fract = ft_strsub(nmbr, 2, ft_strlen(nmbr) - 2);
 	}
-	p->E = 1;
-	fract = round_fractional(fract, p->prec, 0, p);
+	else
+		intg = ft_strdup(nmbr);
+	if (ft_strchr("gG", p->type))
+		p->prec -= p->zero_prec ? 0 : 1;		//need to make sure prec is not negative
+	fract = round_fractional(fract, p->prec, 0, p);		//for g need to substaract 1 from p->prec
 	if (p->E && intg[0] < '9')
 		intg[0] += 1;
 	else if (p->E)
@@ -65,9 +68,8 @@ static char	*float_e_2(char *nmbr, int e, int prec, t_parse *p)
 		fract = add_symbols(fract, '0', 1, 0);
 		fract[p->prec] = '\0';
 	}
-	fract = add_symbols(fract, '.', 1, 0);
-	nmbr = ft_strjoin(intg, fract);
-	conv_float = float_e_exp(nmbr, e, prec, p);
+	intg = concat_parts(intg, fract, p);
+	conv_float = float_e_exp(intg, e, prec, p);
 	return (conv_float);
 }
 
@@ -101,29 +103,21 @@ char		*float_e(char *intg, int prec, t_parse *p, int e)
 
 char		*float_g(char *intg, char *fract, t_parse *p, int n)
 {
-	int e;
 	int i;
 
-	e = (p->zero_prec && p->prec == 0) ? 1 : 0;
+	n = (intg[0] == '0' && ft_strlen(intg) == 1) ? 0 : n;
 	i = 0;
-	if (n < p->prec && (p->prec - n) > 3 && n > 1)
+	while(fract && fract[i] == '0' && !n)
+		i++;
+	if (p->prec >= n)
 	{
-		fract = round_fractional(fract, p->prec - n, 0, p);
-		(intg[p->prec] == '.') ? intg[p->prec] = '\0' : 0;
-		return (concat_parts(intg, fract, p));
+		fract = fract ? round_fractional(fract, p->prec - n + i, 0, p) : NULL;
+		intg = concat_parts(intg, fract, p);
 	}
-	else if ((p->prec == n || (p->prec - n) < 4) && intg[0] != '0')
-		intg[n] = '\0';
 	else
 	{
-		if (intg[0] == '0' && ft_strlen(intg) == 1)
-			while (fract[i++] == '0')
-				e++;
-		(p->prec && p->prec > 0) ? p->prec -= 1 : 0;
-		fract = round_fractional(fract, p->prec + e, 0, p);
 		intg = concat_parts(intg, fract, p);
-		if (e > 3 || n > p->prec)
-			intg = float_e(intg, p->prec, p, 0);
+		intg = float_e(intg, p->prec - 1, p, 0);
 	}
 	return (intg);
 }

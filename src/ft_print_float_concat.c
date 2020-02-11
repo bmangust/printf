@@ -19,8 +19,11 @@ char	*round_fractional(char *fract, int prec, int is_int, t_parse *p)
 	if (prec > (int)ft_strlen(fract) && (p->E = 0) == 0)
 		return (add_symbols(fract, '0', prec - ft_strlen(fract), 1));
 	i = prec;
-	if (fract && (fract[i] >= '5' || is_int))
+	if (fract && fract[i] >= '5' && prec == 0)
+		p->E = 1;
+	else if (fract && (fract[i] >= '5' || is_int))
 	{
+		p->E = is_int ? p->E : 1;
 		p->E = (fract[i - 1] - '0' + p->E) / 10;
 		if (!p->E)
 			fract[prec - 1] = (fract[prec - 1] - '0' + 1) % 10 + '0';
@@ -132,16 +135,19 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 		integer = round_fractional(integer, ft_strlen(integer), 1, p);
 	if (ft_strchr(p->flags, '#') && p->zero_prec)
 		integer = ft_strjoin(integer, ".");
-	tmp = integer;
+	if (fract && fract[ft_strlen(fract) - 1] == '0' && ft_strlen(fract) == 1)
+		fract[0] = '\0';
 	if (ft_strlen(fract) == 0)
 		return (integer);
 	if (!p->zero_prec || ft_strchr("eEgG", p->type))
 	{
+		tmp = integer;
 		integer = ft_strjoin(integer, ".");
 		free(tmp);
 		tmp = integer;
 		integer = ft_strjoin(integer, fract);
 		free(tmp);
 	}
+	free(fract);					//should we do it here?
 	return (integer);
 }
