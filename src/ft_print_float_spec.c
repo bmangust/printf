@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include <stdio.h>
 
 char		*is_special_double(t_double num, char *mant)
 {
@@ -56,7 +57,7 @@ static char	*float_e_2(char *nmbr, int e, int prec, t_parse *p)
 	else
 		intg = ft_strdup(nmbr);
 	if (ft_strchr("gG", p->type))
-		p->prec -= p->zero_prec ? 0 : 1;		//need to make sure prec is not negative
+		p->prec -= p->zero_prec ? 0 : 1;						//need to make sure prec is not negative
 	fract = round_fractional(fract, p->prec, 0, p);		//for g need to substaract 1 from p->prec
 	if (p->E && intg[0] < '9')
 		intg[0] += 1;
@@ -101,18 +102,34 @@ char		*float_e(char *intg, int prec, t_parse *p, int e)
 	return (conv_float);
 }
 
-char		*float_g(char *intg, char *fract, t_parse *p, int n)
+static int 		ft_is_same_chr(char *str, int c)
 {
 	int i;
 
-	n = (intg[0] == '0' && ft_strlen(intg) == 1) ? 0 : n;
-	i = 0;
-	while(fract && fract[i] == '0' && !n)
+	while (str[i] == c)
 		i++;
-	if (p->prec >= n)
+	if (i == ft_strlen(str))
+		return (1);
+	else
+		return (0);
+}
+
+char		*float_g(char *intg, char *fract, t_parse *p, int len)
+{
+	int i;
+	int zero_fract;
+
+	len = (intg[0] == '0' && ft_strlen(intg) == 1) ? 0 : len;
+	i = 0;
+	while(fract && fract[i] == '0' && !len)
+		i++;
+	if (p->prec >= len)
 	{
-		fract = fract ? round_fractional(fract, p->prec - n + i, 0, p) : NULL;
+		fract = fract ? round_fractional(fract, p->prec - len + i, 0, p) : NULL;
+		zero_fract = ft_is_same_chr(fract, '0');
 		intg = concat_parts(intg, fract, p);
+		if (zero_fract && ft_strchrn(intg, '.'))
+			intg[len] = '\0';
 	}
 	else
 	{

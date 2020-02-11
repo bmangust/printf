@@ -305,9 +305,9 @@ int main(int ac, char **av)
 //		static char			   *mx_s = "Hello, World!";
 //		static int					mx_i = 42;
 //
-		char *s = "=%.1G=\n";
+		char *s = "=%.2G=\n";
 //		char *c = "hi low\0don't print me lol\0";
-		double c = 101.1654;
+		double c = 101.999123;
 //		int c = 'G';
 		ft_putstr("orig:");
 		p = printf(s, c);

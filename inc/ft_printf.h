@@ -91,7 +91,7 @@ void				buffer(t_parse *p, char *s, int freeable);
 char				*read_line(t_parse *p, char *s);
 char				*is_special_double(t_double num, char *mant);
 char 				*float_e(char *intg, int prec, t_parse *p, int e);
-char 				*float_g(char *intg, char *fract, t_parse *p, int n);
+char 				*float_g(char *intg, char *fract, t_parse *p, int len);
 t_double 			*get_bits(double d, t_double *num);
 t_double			 *new_double(double d);
 void				free_double(t_double *num);
