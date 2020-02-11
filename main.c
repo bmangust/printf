@@ -1,5 +1,6 @@
 #include "ft_printf.h"
 #include <stdio.h>
+#include <float.h>
 
 int main(int ac, char **av)
 {
@@ -305,10 +306,10 @@ int main(int ac, char **av)
 //		static char			   *mx_s = "Hello, World!";
 //		static int					mx_i = 42;
 //
-		char *s = "=%.1G=\n";
 //		char *c = "hi low\0don't print me lol\0";
-		double c = 101.1654;
 //		int c = 'G';
+		char *s = "=%f=\n";
+		double c = DBL_MIN;
 		ft_putstr("orig:");
 		p = printf(s, c);
 		ft_putstr("ours:");

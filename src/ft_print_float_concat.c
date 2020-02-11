@@ -54,7 +54,7 @@ char	*count_exp(t_double *num, int is_integer)
 	if (exp >= 0 && exp < 53)
 		return ((is_integer) ? ft_strsub(num->mant, 0, exp + 1) :
 			ft_strsub(num->mant, exp + 1, 53));
-		if (exp > 52 && is_integer)
+	if (exp > 52 && is_integer)
 	{
 		bin = add_symbols(num->mant, '0', exp - 52, 1);
 		num->mant = ft_strdup("0");
@@ -135,7 +135,8 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 		integer = round_fractional(integer, ft_strlen(integer), 1, p);
 	if (ft_strchr(p->flags, '#') && p->zero_prec)
 		integer = ft_strjoin(integer, ".");
-	if (fract && fract[ft_strlen(fract) - 1] == '0' && ft_strlen(fract) == 1)
+	if (fract && fract[ft_strlen(fract) - 1] == '0' &&
+		ft_strlen(fract) == 1 && ft_strchr("gG", p->type))
 		fract[0] = '\0';
 	if (ft_strlen(fract) == 0)
 		return (integer);
