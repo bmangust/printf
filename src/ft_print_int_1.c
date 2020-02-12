@@ -23,7 +23,7 @@ void	print_s_int(int64_t n, t_parse *p)
 	num = get_int(p, n);
 	if (num[0] == '-' || num[0] == '+' || num[0] == ' ')
 		sign = num[0];
-	if (p->width > MAX(p->prec, p->length))
+	if (p->width > ft_max(p->prec, p->length))
 	{
 		tmp = sign && !ft_strchr(p->flags, '-')
 			? ft_strsub(num, 1, ft_strlen(num) - 1) : ft_strdup(num);

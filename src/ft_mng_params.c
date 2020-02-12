@@ -29,7 +29,7 @@ t_parse		*new_param(void)
 	new->printed = 0;
 	new->length = 0;
 	new->skip_0_flag = 0;
-	new->E = 0;
+	new->carry = 0;
 	new->next = NULL;
 	new->buf = NULL;
 	new->arg_i = 0;
@@ -51,7 +51,7 @@ void		clear_param(t_parse *p)
 	p->zero_prec = 0;
 	p->length = 0;
 	p->skip_0_flag = 0;
-	p->E = 0;
+	p->carry = 0;
 	p->next = NULL;
 }
 

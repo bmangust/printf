@@ -17,7 +17,7 @@ void	print_char(char c, t_parse *p)
 	char *s;
 
 	s = ft_strnew(1);
-	s[0] = c == '\x00' ? '\x00' : c;
+	s[0] = c;
 	if (c == 0)
 		p->printed++;
 	if (p->flags && ft_strchr(p->flags, '-'))

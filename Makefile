@@ -37,22 +37,22 @@ ft_wrdcnt.c ft_lstrev.c ft_printf.c ft_int_length_base.c ft_dtoa.c ft_ltoa.c \
 ft_print_char.c ft_print_float.c ft_print_str.c ft_strrev.c ft_strtolower.c \
 ft_strtoupper.c ft_colors.c ft_read_params.c ft_mng_params.c ft_print_arg.c \
 ft_print_int_0.c ft_print_int_1.c ft_print_oct_hex.c ft_print_float_spec.c \
-ft_mng_float.c ft_print_float_determ.c ft_print_float_concat.c
+ft_mng_float.c ft_print_float_determ.c ft_print_float_concat.c ft_max.c
 
 OBJ = $(SRC:.c=.o)
 
 OBJS = $(addprefix $(OBJ_DIR)/, $(OBJ))
 
-all: $(OBJ_DIR) $(NAME)
+all: $(NAME)
 
-$(NAME): $(OBJS)
-	@ar rcs $(NAME) $(OBJS)
+$(NAME): $(OBJ_DIR) $(OBJS)
+	ar rcs $(NAME) $(OBJS)
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@gcc $(FLAGS) -I $(INC_DIR) -o $@ -c $<
+	gcc $(FLAGS) -I $(INC_DIR) -o $@ -c $<
 
 clean:
 	rm -rf $(OBJ_DIR) 

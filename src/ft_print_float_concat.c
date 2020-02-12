@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_float_concat.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/09 19:37:00 by akraig            #+#    #+#             */
-/*   Updated: 2020/02/09 19:50:42 by akraig           ###   ########.fr       */
+/*   Updated: 2020/02/12 14:25:57 by jbloodax         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,24 @@ char	*round_fractional(char *fract, int prec, int is_int, t_parse *p)
 {
 	int	i;
 
-	if (prec > (int)ft_strlen(fract) && (p->E = 0) == 0)
+	prec = prec < 0 ? 0 : prec;
+	if (prec > (int)ft_strlen(fract) && (p->carry = 0) == 0)
 		return (add_symbols(fract, '0', prec - ft_strlen(fract), 1));
 	i = prec;
-	if (fract && fract[i] >= '5' && prec == 0)
-		p->E = 1;
-	else if (fract && (fract[i] >= '5' || is_int))
+	if (fract && prec != 0 && (fract[i] >= '5' || is_int))
 	{
-		p->E = is_int ? p->E : 1;
-		p->E = (fract[i - 1] - '0' + p->E) / 10;
-		if (!p->E)
+		p->carry = is_int ? p->carry : 1;
+		p->carry = (fract[i - 1] - '0' + p->carry) / 10;
+		if (!p->carry)
 			fract[prec - 1] = (fract[prec - 1] - '0' + 1) % 10 + '0';
-		while (p->E == 1 && --i >= 0)
+		while (p->carry == 1 && --i >= 0)
 		{
-			p->E = (fract[i] - '0' + 1) / 10;
+			p->carry = (fract[i] - '0' + 1) / 10;
 			fract[i] = (fract[i] - '0' + 1) % 10 + '0';
 		}
 	}
-	else
-		p->E = 0;
-	if (is_int && p->E)
+	p->carry = (fract && fract[i] >= '5' && prec == 0) || p->carry ? 1 : 0;
+	if (is_int && p->carry)
 		fract = add_symbols(fract, '1', 1, 0);
 	if (!is_int && fract)
 		fract[prec] = '\0';
@@ -93,7 +91,7 @@ char	*get_fractional(t_double *num, t_parse *p)
 	if (p->type == 'F' || p->type == 'f')
 		fract = round_fractional(fract, p->prec, 0, p);
 	else
-		p->E = 0;
+		p->carry = 0;
 	free(fract_bin);
 	free(five_power);
 	return (fract);
@@ -109,11 +107,11 @@ char	*get_integer(t_double *num, t_parse *p)
 
 	i = -1;
 	integer_bin = ft_strrev(count_exp(num, 1));
-	p->E = find_last_digit(integer_bin);
-	integer_len = p->E ? p->E / 3 + 1 : 1;
+	p->carry = find_last_digit(integer_bin);
+	integer_len = p->carry ? p->carry / 3 + 1 : 1;
 	intg = ft_charstr(integer_len, '0');
 	two_power = NULL;
-	while (++i <= p->E)
+	while (++i <= p->carry)
 	{
 		two_power = get_two_power(two_power, i);
 		if (integer_bin[i] == '1')
@@ -123,7 +121,7 @@ char	*get_integer(t_double *num, t_parse *p)
 		intg[ft_strlen(intg) - 1] = '\0';
 	free(integer_bin);
 	free(two_power);
-	p->E = 1;
+	p->carry = 0;
 	return (intg);
 }
 
@@ -131,11 +129,15 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 {
 	char *tmp;
 
-	if (p->E)
+	if (p->carry)
+	{
 		integer = round_fractional(integer, ft_strlen(integer), 1, p);
+		p->carry = 0;
+	}
 	if (ft_strchr(p->flags, '#') && p->zero_prec)
 		integer = ft_strjoin(integer, ".");
-	if (fract && fract[ft_strlen(fract) - 1] == '0' && ft_strlen(fract) == 1)
+	if (fract && fract[ft_strlen(fract) - 1] == '0' && ft_strlen(fract) == 1
+											&& ft_strchr("gG", p->type))
 		fract[0] = '\0';
 	if (ft_strlen(fract) == 0)
 		return (integer);
@@ -148,6 +150,6 @@ char	*concat_parts(char *integer, char *fract, t_parse *p)
 		integer = ft_strjoin(integer, fract);
 		free(tmp);
 	}
-	free(fract);					//should we do it here?
+	free(fract);
 	return (integer);
 }

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-#include <stdio.h>
 
 char		*is_special_double(t_double num, char *mant)
 {
@@ -30,6 +29,8 @@ static char	*float_e_exp(char *nmbr, int e, int prec, t_parse *p)
 	char *conv_float;
 	char *exp;
 
+	if (ft_strchr("gG", p->type))
+		ft_cut_zero_fract(nmbr);
 	if (prec == 0)
 		nmbr[1] = '\0';
 	if ((e <= 10 && e >= 0) || (e > -9 && e < 0))
@@ -49,25 +50,22 @@ static char	*float_e_2(char *nmbr, int e, int prec, t_parse *p)
 	char *intg;
 	char *fract;
 
-	if (ft_strchr(nmbr, '.'))
-	{
-		intg = ft_strsub(nmbr, 0, 1);
-		fract = ft_strsub(nmbr, 2, ft_strlen(nmbr) - 2);
-	}
-	else
-		intg = ft_strdup(nmbr);
+	intg = ft_strchr(nmbr, '.') ? ft_strsub(nmbr, 0, 1) : ft_strdup(nmbr);
+	fract = ft_strchr(nmbr, '.') ?
+			ft_strsub(nmbr, 2, ft_strlen(nmbr) - 2) : NULL;
 	if (ft_strchr("gG", p->type))
-		p->prec -= p->zero_prec ? 0 : 1;						//need to make sure prec is not negative
-	fract = round_fractional(fract, p->prec, 0, p);		//for g need to substaract 1 from p->prec
-	if (p->E && intg[0] < '9')
+		p->prec -= p->zero_prec ? 0 : 1;
+	fract = round_fractional(fract, p->prec, 0, p);
+	if (p->carry && intg[0] < '9' && (p->carry = 0) == 0)
 		intg[0] += 1;
-	else if (p->E)
+	else if (p->carry)
 	{
 		free(intg);
 		intg = ft_strdup("1");
 		e += 1;
 		fract = add_symbols(fract, '0', 1, 0);
 		fract[p->prec] = '\0';
+		p->carry = 0;
 	}
 	intg = concat_parts(intg, fract, p);
 	conv_float = float_e_exp(intg, e, prec, p);
@@ -79,7 +77,7 @@ char		*float_e(char *intg, int prec, t_parse *p, int e)
 	int		i;
 	char	*conv_float;
 
-	(!ft_strchr(intg, '.')) ? intg = add_symbols(intg, '.', 1, 1) : 0;
+	!ft_strchr(intg, '.') ? intg = add_symbols(intg, '.', 1, 1) : 0;
 	i = (intg[0] == '0') ? 2 : 0;
 	if (intg[0] > '0')
 	{
@@ -102,18 +100,6 @@ char		*float_e(char *intg, int prec, t_parse *p, int e)
 	return (conv_float);
 }
 
-static int 		ft_is_same_chr(char *str, int c)
-{
-	int i;
-
-	while (str[i] == c)
-		i++;
-	if (i == ft_strlen(str))
-		return (1);
-	else
-		return (0);
-}
-
 char		*float_g(char *intg, char *fract, t_parse *p, int len)
 {
 	int i;
@@ -121,20 +107,24 @@ char		*float_g(char *intg, char *fract, t_parse *p, int len)
 
 	len = (intg[0] == '0' && ft_strlen(intg) == 1) ? 0 : len;
 	i = 0;
-	while(fract && fract[i] == '0' && !len)
+	while (fract && fract[i] == '0' && !len)
 		i++;
-	if (p->prec >= len)
+	if ((p->zero_prec == 0 && p->prec >= len) || i > 6)
 	{
 		fract = fract ? round_fractional(fract, p->prec - len + i, 0, p) : NULL;
 		zero_fract = ft_is_same_chr(fract, '0');
 		intg = concat_parts(intg, fract, p);
-		if (zero_fract && ft_strchrn(intg, '.'))
-			intg[len] = '\0';
+		if (p->prec != len && ft_strchr(intg, '.'))
+		{
+			ft_cut_zero_fract(intg);
+			if (zero_fract > 0 && ft_strchr(intg, '.'))
+				intg[ft_strchrn(intg, '.')] = '\0';
+		}
+		else if (p->prec != (int)ft_strlen(intg))
+			intg = float_e(intg, ft_strlen(intg), p, 0);
+		return (intg);
 	}
-	else
-	{
-		intg = concat_parts(intg, fract, p);
-		intg = float_e(intg, p->prec - 1, p, 0);
-	}
+	intg = concat_parts(intg, fract, p);
+	intg = float_e(intg, p->prec - 1, p, 0);
 	return (intg);
 }

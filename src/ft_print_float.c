@@ -61,3 +61,31 @@ char	*print_float(double d, t_parse *p)
 	free_double(num);
 	return (integer);
 }
+
+void	ft_cut_zero_fract(char *fract)
+{
+	int	len;
+
+	if (!fract)
+		return ;
+	len = ft_strlen(fract);
+	while (fract[--len] == '0')
+		;
+	fract[len + 1] = '\0';
+	if (fract[len] == '.')
+		fract[len] = '\0';
+}
+
+int		ft_is_same_chr(char *str, int c)
+{
+	size_t i;
+
+	if (!str)
+		return (-1);
+	i = 0;
+	while (str[i] == c)
+		i++;
+	if (i == ft_strlen(str) && i != 0)
+		return (1);
+	return (0);
+}

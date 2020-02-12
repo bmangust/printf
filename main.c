@@ -305,14 +305,14 @@ int main(int ac, char **av)
 //		static char			   *mx_s = "Hello, World!";
 //		static int					mx_i = 42;
 //
-		char *s = "=%.2G=\n";
+		char *s = "=%*3d=\n";
 //		char *c = "hi low\0don't print me lol\0";
-		double c = 101.999123;
-//		int c = 'G';
+//		double c = -123.123;
+//		int c = 0;
 		ft_putstr("orig:");
-		p = printf(s, c);
+		p = printf(s, 5, 0);
 		ft_putstr("ours:");
-		n = ft_printf(s, c);
+		n = ft_printf(s, 5, 0);
 		if (n == p) printf("\nSUCCESS\n");
 		else
 		{
@@ -320,6 +320,7 @@ int main(int ac, char **av)
 			ft_printf("printed %d symbols in 1st line\n", p);
 			ft_printf("printed %d symbols in 2st line\n\n", n);
 		}
+
 
 
 
