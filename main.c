@@ -1,6 +1,7 @@
 #include "ft_printf.h"
 #include <stdio.h>
 #include <float.h>
+#include <limits.h>
 
 int main(int ac, char **av)
 {
@@ -307,9 +308,9 @@ int main(int ac, char **av)
 //		static int					mx_i = 42;
 //
 //		char *c = "hi low\0don't print me lol\0";
-//		int c = 'G';
-		char *s = "=%f=\n";
-		double c = DBL_MIN;
+		long long c = 1234;
+		char *s = "=%-10.2d=\n";
+//		double c = 1.45l;
 		ft_putstr("orig:");
 		p = printf(s, c);
 		ft_putstr("ours:");

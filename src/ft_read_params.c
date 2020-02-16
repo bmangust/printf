@@ -20,12 +20,18 @@ char	*read_width(t_parse *p, char *tmp, va_list valist)
 {
 	if (*tmp >= '0' && *tmp <= '9')
 	{
+		tmp += *tmp == '0' && ft_atoi(tmp) ? 1 : 0;
 		(*tmp >= '0' && *tmp <= '9') ? p->width = ft_atoi(tmp) : 0;
 		tmp += ft_int_length_base(p->width, 10);
 	}
 	else if (*tmp == '*')
 	{
 		p->width = va_arg(valist, int);
+		if (p->width < 0)
+		{
+			p->width = -p->width;
+			p->flags = p->flags ? ft_strcat(p->flags, "-") : ft_strdup("-");
+		}
 		tmp++;
 	}
 	return (tmp);
