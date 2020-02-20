@@ -89,8 +89,3 @@ int		ft_is_same_chr(char *str, int c)
 		return (1);
 	return (0);
 }
-
-int64_t 	dtol(double d, t_parse *p)
-{
-
-}
